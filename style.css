@@ -107,6 +107,22 @@ button { font: inherit; color: inherit; }
 .finish p { margin: 0; color: var(--text-muted); max-width: 32rem; }
 .finish .row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
+/* ---------- Wortkarten ---------- */
+.prompt { margin: 22px 0 4px; padding: 18px 20px 16px; border-radius: 22px; background: linear-gradient(#2d1e4a, #2d1e4a) padding-box, var(--prism) border-box; border: 1.5px solid transparent; display: grid; gap: 10px; justify-items: start; }
+.prompt__q { font-weight: 900; font-size: clamp(1.25rem, 1rem + 1vw, 1.6rem); line-height: 1.15; letter-spacing: -0.01em; color: var(--paper); }
+.prompt__dots { display: flex; gap: 6px; }
+.prompt__dots i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+.picked { margin: 0; font-size: 0.875rem; color: var(--text-muted); }
+.picked strong { color: var(--paper); font-weight: 900; }
+.grp { display: grid; gap: 8px; }
+.grp__name { margin: 0; font-weight: 900; font-size: 1.1875rem; line-height: 1.2; color: var(--gc); hyphens: auto; -webkit-hyphens: auto; }
+.grp__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: 0.875rem; font-weight: 600; line-height: 1.2; padding: 6px 11px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--gc) 55%, transparent); background: transparent; color: var(--paper); cursor: pointer; max-width: 100%; text-align: left;
+  hyphens: auto; -webkit-hyphens: auto; transition: background var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast); }
+.chip:hover { border-color: var(--gc); }
+.chip:active { transform: scale(0.96); }
+.chip.is-on { background: var(--gc); border-color: var(--gc); color: var(--purple-ink); font-weight: 900; }
+
 /* ---------- Abgelegte Karten ---------- */
 .played { position: relative; z-index: 2; display: grid; gap: 14px; padding-block: 8px 64px; border-top: 1px solid var(--line); margin-top: 8px; }
 .played__head { padding-top: 24px; }

@@ -18,7 +18,7 @@
 
   /* ---------- Speichern ---------- */
   function load() {
-    try { var raw = localStorage.getItem(KEY); if (raw) { var s = JSON.parse(raw); if (s && s.cols && s.total === CARDS.length) return s; } } catch (e) {}
+    try { var raw = localStorage.getItem(KEY); if (raw) { var s = JSON.parse(raw); if (s && s.cols && s.total === CARDS.length) { s.picks = s.picks || {}; return s; } } } catch (e) {}
     return null;
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
@@ -33,7 +33,7 @@
       for (var col = r % COLS; col < COLS && k < order.length; col++) cols[col].push(order[k++]);
       r++;
     }
-    return { total: CARDS.length, cols: cols, up: [], done: [], notes: notes || {} };
+    return { total: CARDS.length, cols: cols, up: [], done: [], notes: notes || {}, picks: (state && state.picks) || {} };
   }
 
   /* ---------- Hilfen ---------- */
@@ -131,6 +131,20 @@
     return "<li>" + md(x) + "</li>";
   }
 
+  /* Wortkarten: Gruppen mit antippbaren Wörtern */
+  function pickedHTML(idx) {
+    var l = state.picks[idx] || [];
+    return l.length ? "<strong>Deine Auswahl:</strong> " + l.map(esc).join(" · ") : "Tipp die Wörter an, die gerade auf dich zutreffen.";
+  }
+  function renderGroups(c, idx) {
+    var l = state.picks[idx] || [];
+    return '<p class="picked" aria-live="polite">' + pickedHTML(idx) + "</p>" + c.gruppen.map(function (g) {
+      return '<section class="grp" style="--gc:' + g.farbe + '"><h3 class="grp__name">' + esc(hy(g.name)) + '</h3><div class="grp__chips">' +
+        g.woerter.map(function (w) { var on = l.indexOf(w) >= 0; return '<button type="button" class="chip' + (on ? " is-on" : "") + '" aria-pressed="' + on + '" data-w="' + esc(w) + '">' + esc(hy(w)) + "</button>"; }).join("") +
+        "</div></section>";
+    }).join("");
+  }
+
   /* ---------- Aufdecken und Lesen ---------- */
   function flip(idx, el) {
     lastFocus = el;
@@ -150,11 +164,12 @@
       '<div class="reader" role="dialog" aria-modal="true" aria-labelledby="rtitle">' +
         '<article class="big" style="--acc:' + k.farbe + '">' +
           '<span class="big__no">' + (played ? "Abgelegt · " : "") + no + " / " + state.total + "</span>" +
-          (c.grafik && window.GRAFIK ? '<div class="big__media big__media--grafik">' + window.GRAFIK(c.grafik) + '</div>' : '<div class="big__media"><img src="' + esc(k.bild) + '" alt=""></div>') +
+          (c.prompt ? '<div class="prompt"><span class="prompt__q">' + esc(c.prompt) + '</span><span class="prompt__dots">' + (c.gruppen || []).map(function (g) { return '<i style="background:' + g.farbe + '"></i>'; }).join("") + "</span></div>" : c.grafik && window.GRAFIK ? '<div class="big__media big__media--grafik">' + window.GRAFIK(c.grafik) + '</div>' : '<div class="big__media"><img src="' + esc(k.bild) + '" alt=""></div>') +
           '<span class="big__cat">' + esc(k.name) + (c.teil ? ' <span class="big__teil">· ' + esc(c.teil) + "</span>" : "") + "</span>" +
           '<h2 class="big__title" id="rtitle">' + esc(hy(c.titel)) + "</h2>" +
           (c.text ? '<p class="big__text">' + md(c.text) + "</p>" : "") +
           (c.liste && c.liste.length ? '<ul class="big__list">' + c.liste.map(function (x, i) { return listItem(c, x, i); }).join("") + "</ul>" : "") +
+          (c.gruppen ? renderGroups(c, idx) : "") +
           (c.impuls ? '<p class="big__hint">' + md(c.impuls) + "</p>" : "") +
         "</article>" +
         '<div class="notes">' +
@@ -172,6 +187,15 @@
     o.hidden = false;
     var ta = $("#note", o);
     ta.addEventListener("input", function () { state.notes[idx] = ta.value; save(); });
+    o.querySelectorAll(".chip").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var w = b.dataset.w, list = state.picks[idx] || (state.picks[idx] = []), k = list.indexOf(w);
+        if (k >= 0) list.splice(k, 1); else list.push(w);
+        b.classList.toggle("is-on", k < 0); b.setAttribute("aria-pressed", k < 0 ? "true" : "false");
+        var sel = o.querySelector(".picked"); if (sel) sel.innerHTML = pickedHTML(idx);
+        save();
+      });
+    });
     if (!played) $("#done", o).addEventListener("click", function () { finishCard(idx); });
     $("#later", o).addEventListener("click", closeOverlays);
     setTimeout(function () { ta.focus({ preventScroll: true }); ta.setSelectionRange(ta.value.length, ta.value.length); }, 50);
@@ -196,6 +220,7 @@
       lines.push("■ " + cat(i).name + " — " + CARDS[i].titel);
       if (CARDS[i].text) lines.push(CARDS[i].text.replace(/\*\*/g, ""));
       (CARDS[i].liste || []).forEach(function (x) { lines.push("  • " + x.replace(/\*\*/g, "")); });
+      if (state.picks[i] && state.picks[i].length) lines.push("Ausgewählt: " + state.picks[i].join(", "));
       lines.push(n ? n : "(keine Notiz)");
       lines.push("");
     });
