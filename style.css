@@ -148,6 +148,12 @@ button { font: inherit; color: inherit; }
 .big__list { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; font-size: 1rem; line-height: 1.5; }
 .big__list li { position: relative; padding-left: 18px; }
 .big__list li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 8px; height: 2px; border-radius: 2px; background: var(--acc); }
+.big__list li.is-num { padding-left: 42px; min-height: 28px; }
+.big__list li.is-num::before { display: none; }
+.big__list .num { position: absolute; left: 0; top: 0; min-width: 30px; height: 26px; padding: 0 6px; border-radius: 7px; background: var(--nc, var(--acc)); color: var(--purple-ink);
+  font-weight: 900; font-size: 0.875rem; display: grid; place-items: center; font-variant-numeric: tabular-nums; box-shadow: 0 0 14px color-mix(in srgb, var(--nc, var(--acc)) 35%, transparent); }
+.big__list li.is-num strong { display: block; font-weight: 900; color: var(--paper); }
+.big__list .num__text { display: block; color: var(--text-muted); margin-top: 2px; }
 .big__hint { margin: auto 0 0; font-size: 0.9375rem; color: var(--text-muted); padding-top: 12px; border-top: 1px solid var(--line); }
 .big__no { position: absolute; top: 22px; right: 26px; font-size: 0.8125rem; color: var(--text-faint); font-variant-numeric: tabular-nums; }
 

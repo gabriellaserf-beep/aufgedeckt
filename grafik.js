@@ -12,24 +12,30 @@
   function lines(x, y, arr, size, w, fill, lh) { return arr.map(function (s, i) { return t(x, y + i * (lh || size * 1.15), s, size, w, fill); }).join(""); }
   function dim(on) { return on ? 1 : 0.2; }
 
-  /* Konfliktfelder: Kreis mit vier Feldern und Konflikt-Stern in der Mitte */
+  /* Konfliktfelder: Ring mit vier Feldern, Konflikt-Stern im Zentrum */
+  function arc(cx, cy, r0, r1, a0, a1) {
+    function p(r, a) { return (cx + Math.cos(a) * r).toFixed(1) + " " + (cy + Math.sin(a) * r).toFixed(1); }
+    return "M" + p(r1, a0) + " A" + r1 + " " + r1 + " 0 0 1 " + p(r1, a1) + " L" + p(r0, a1) + " A" + r0 + " " + r0 + " 0 0 0 " + p(r0, a0) + "Z";
+  }
   function felder(a) {
-    var cx = 160, cy = 100, r = 96;
+    var cx = 160, cy = 102, r0 = 40, r1 = 90, gap = 0.035, PI = Math.PI;
     var Q = [
-      { n: ["Struktur"], c: "#0DADF2", d: "M" + cx + " " + cy + " L" + (cx - r) + " " + cy + " A" + r + " " + r + " 0 0 1 " + cx + " " + (cy - r) + "Z", lx: cx - 46, ly: cy - 46 },
-      { n: ["Inhalte"], c: "#F471DE", d: "M" + cx + " " + cy + " L" + cx + " " + (cy - r) + " A" + r + " " + r + " 0 0 1 " + (cx + r) + " " + cy + "Z", lx: cx + 46, ly: cy - 46 },
-      { n: ["Zwischen-", "menschlich"], c: "#35B680", d: "M" + cx + " " + cy + " L" + cx + " " + (cy + r) + " A" + r + " " + r + " 0 0 1 " + (cx - r) + " " + cy + "Z", lx: cx - 46, ly: cy + 42 },
-      { n: ["Individuell"], c: "#F9851F", d: "M" + cx + " " + cy + " L" + (cx + r) + " " + cy + " A" + r + " " + r + " 0 0 1 " + cx + " " + (cy + r) + "Z", lx: cx + 46, ly: cy + 50 }
+      { n: ["Struktur"], c: "#0DADF2", a0: PI, a1: 1.5 * PI },
+      { n: ["Inhalte"], c: "#F471DE", a0: 1.5 * PI, a1: 2 * PI },
+      { n: ["Zwischen-", "menschlich"], c: "#35B680", a0: 0.5 * PI, a1: PI },
+      { n: ["Individuell"], c: "#F9851F", a0: 0, a1: 0.5 * PI }
     ];
-    var order = [0, 1, 2, 3]; // Teil 1..4 = Struktur, Inhalte, Zwischenmenschlich, Individuell
-    var out = Q.map(function (q, i) {
-      var on = !a || a === order[i] + 1;
-      return '<path d="' + q.d + '" fill="' + q.c + '" fill-opacity="' + (on ? 0.95 : 0.16) + '" stroke="#1a1029" stroke-width="2"/>' +
-        lines(q.lx, q.ly, q.n, 10, 900, on ? INK : MUTED, 12);
-    }).join("");
+    var out = '<defs><linearGradient id="fpr" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="' + LIME + '"/><stop offset="1" stop-color="' + AQUA + '"/></linearGradient>' +
+      '<filter id="fgl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter></defs>';
+    Q.forEach(function (q, i) {
+      var on = !a || a === i + 1, d = arc(cx, cy, r0, r1, q.a0 + gap, q.a1 - gap), mid = (q.a0 + q.a1) / 2, lr = (r0 + r1) / 2 + 2;
+      if (on && a) out += '<path d="' + d + '" fill="' + q.c + '" opacity="0.55" filter="url(#fgl)"/>';
+      out += '<path d="' + d + '" fill="' + (on ? q.c : "#2d1e4a") + '" stroke="' + q.c + '" stroke-opacity="' + (on ? 1 : 0.6) + '" stroke-width="1.5"/>' +
+        lines(cx + Math.cos(mid) * lr, cy + Math.sin(mid) * lr + (q.n.length > 1 ? -2 : 4), q.n, 10, 900, on ? INK : q.c, 12);
+    });
     var pts = [];
-    for (var i = 0; i < 24; i++) { var rr = i % 2 ? 17 : 28, an = (i / 24) * Math.PI * 2 - Math.PI / 2; pts.push((cx + Math.cos(an) * rr * 1.25).toFixed(1) + "," + (cy + Math.sin(an) * rr * 0.9).toFixed(1)); }
-    out += '<polygon points="' + pts.join(" ") + '" fill="' + PAPER + '" stroke="#1a1029" stroke-width="2.5"/>' + t(cx, cy + 4, "Konflikt", 11, 900, INK);
+    for (var i = 0; i < 20; i++) { var rr = i % 2 ? 22 : 34, an = (i / 20) * PI * 2 - PI / 2; pts.push((cx + Math.cos(an) * rr).toFixed(1) + "," + (cy + Math.sin(an) * rr).toFixed(1)); }
+    out += '<polygon points="' + pts.join(" ") + '" fill="url(#fpr)" stroke="#1a1029" stroke-width="2" stroke-linejoin="round"/>' + t(cx, cy + 4, "Konflikt", 10.5, 900, INK);
     return svg(out);
   }
 
@@ -44,8 +50,8 @@
     ];
     var out = Q.map(function (q) {
       var on = !a || a === q.k;
-      return '<rect x="' + q.x + '" y="' + q.y + '" width="' + w + '" height="' + h + '" rx="10" fill="' + q.c + '" fill-opacity="' + (on ? 0.95 : 0.14) + '"/>' +
-        lines(q.x + w / 2, q.y + h / 2 + (q.n.length > 1 ? -2 : 5), q.n, 13, 900, on ? INK : MUTED, 14);
+      return '<rect x="' + q.x + '" y="' + q.y + '" width="' + w + '" height="' + h + '" rx="10" fill="' + (on ? q.c : "#2d1e4a") + '" stroke="' + q.c + '" stroke-opacity="' + (on ? 1 : 0.6) + '" stroke-width="1.5"/>' +
+        lines(q.x + w / 2, q.y + h / 2 + (q.n.length > 1 ? -2 : 5), q.n, 13, 900, on ? INK : q.c, 14);
     }).join("");
     var axX = x0 - 12, axY = y0 + 2 * h + g + 12;
     out += '<path d="M' + axX + " " + (axY) + " V" + (y0 - 2) + '" stroke="' + AQUA + '" stroke-width="2" marker-end="url(#ar)"/>' +
@@ -62,8 +68,8 @@
     for (var i = 0; i < 9; i++) {
       var ph = Math.floor(i / 3), on = !p || p === ph + 1;
       var x = 14 + i * 32, y = 14 + i * 17;
-      out += '<rect x="' + x + '" y="' + y + '" width="44" height="22" rx="5" fill="' + cols[ph] + '" fill-opacity="' + (on ? 0.95 : 0.15) + '"/>' +
-        t(x + 22, y + 16, String(i + 1), 13, 900, on ? INK : MUTED);
+      out += '<rect x="' + x + '" y="' + y + '" width="44" height="22" rx="6" fill="' + (on ? cols[ph] : "#2d1e4a") + '" stroke="' + cols[ph] + '" stroke-opacity="' + (on ? 1 : 0.6) + '" stroke-width="1.5"/>' +
+        t(x + 22, y + 16, String(i + 1), 13, 900, on ? INK : cols[ph]);
     }
     var labels = [["gemeinsam", "lösen"], ["gewinnen &", "verlieren"], ["alle", "verlieren"]];
     labels.forEach(function (l, k) {
@@ -132,7 +138,7 @@
     var names = ["Einsteiger", "Erfahrene", "Profi"], hs = [80, 108, 136], cs = ["#F9CE1F", "#F9851F", "#F471DE"];
     for (var i = 0; i < 3; i++) {
       var on = !level || level === i + 1, x = 52 + i * 80, h = hs[i];
-      out += '<rect x="' + x + '" y="' + (168 - h) + '" width="56" height="' + h + '" rx="6" fill="' + cs[i] + '" fill-opacity="' + (on ? 0.95 : 0.16) + '"/>' +
+      out += '<rect x="' + x + '" y="' + (168 - h) + '" width="56" height="' + h + '" rx="6" fill="' + (on ? cs[i] : "#2d1e4a") + '" stroke="' + cs[i] + '" stroke-opacity="' + (on ? 1 : 0.6) + '" stroke-width="1.5"/>' +
         '<rect x="' + (x + 8) + '" y="' + (168 - h + 12) + '" width="40" height="3" rx="1.5" fill="' + (on ? INK : MUTED) + '" fill-opacity="0.6"/>' +
         '<rect x="' + (x + 8) + '" y="' + (168 - h + 20) + '" width="28" height="3" rx="1.5" fill="' + (on ? INK : MUTED) + '" fill-opacity="0.6"/>' +
         t(x + 28, 190, names[i], 10, on ? 900 : 700, on ? PAPER : MUTED);
@@ -149,7 +155,7 @@
         t(p[0], p[1] + 4, String(i + 1), 11, 900, i === 9 ? INK : PAPER);
     });
     out += '<path d="M300 25 V8 L318 14 L300 20" fill="' + LIME + '" stroke="' + LIME + '" stroke-width="2" stroke-linejoin="round"/>';
-    return svg(out);
+    return svg('<g transform="translate(-8 22) scale(0.94 0.86)">' + out + '</g>');
   }
 
   /* Harvard-Methode: vier Prinzipien als verbundene Kreise */
@@ -159,9 +165,9 @@
     P.forEach(function (p, i) {
       var x = 48 + i * 74.7, on = !n || n === i + 1;
       var r = on && n ? 37 : 34;
-      out += '<circle cx="' + x + '" cy="100" r="' + r + '" fill="#b794e8" fill-opacity="' + (on ? 0.95 : 0.15) + '"/>' +
+      out += '<circle cx="' + x + '" cy="100" r="' + r + '" fill="' + (on ? "#b794e8" : "#2d1e4a") + '" stroke="#b794e8" stroke-opacity="' + (on ? 1 : 0.6) + '" stroke-width="1.5"/>' +
         t(x, 100 - r - 8, String(i + 1), 12, 900, on ? "#b794e8" : MUTED) +
-        lines(x, p.length > 1 ? 98 : 104, p, 9.5, 900, on ? INK : MUTED, 11);
+        lines(x, p.length > 1 ? 98 : 104, p, 9.5, 900, on ? INK : "#b794e8", 11);
     });
     out += t(160, 176, "hart in der Sache · fair zu den Menschen", 11, 700, MUTED);
     return svg(out);
@@ -197,7 +203,8 @@
     var W = ["S", "A", "G", "E", "S"], out = "";
     W.forEach(function (c, i) {
       var grp = i < 3 ? 1 : 2, on = !n || n === grp, x = 22 + i * 58 + (i > 2 ? 10 : 0);
-      out += '<rect x="' + x + '" y="52" width="50" height="62" rx="12" fill="' + (grp === 1 ? "#b794e8" : AQUA) + '" fill-opacity="' + (on ? 0.95 : 0.15) + '"/>' + t(x + 25, 96, c, 34, 900, on ? INK : MUTED);
+      var gc = grp === 1 ? "#b794e8" : AQUA;
+      out += '<rect x="' + x + '" y="52" width="50" height="62" rx="12" fill="' + (on ? gc : "#2d1e4a") + '" stroke="' + gc + '" stroke-opacity="' + (on ? 1 : 0.6) + '" stroke-width="1.5"/>' + t(x + 25, 96, c, 34, 900, on ? INK : gc);
     });
     out += '<path d="M22 130 H186" stroke="#b794e8" stroke-width="2" stroke-opacity="' + (!n || n === 1 ? 1 : 0.3) + '"/>' + t(104, 150, "meine Sicht", 11, 800, !n || n === 1 ? PAPER : MUTED) +
       '<path d="M206 130 H298" stroke="' + AQUA + '" stroke-width="2" stroke-opacity="' + (!n || n === 2 ? 1 : 0.3) + '"/>' + t(252, 150, "deine Sicht & Lösung", 11, 800, !n || n === 2 ? PAPER : MUTED);
@@ -218,6 +225,7 @@
   }
 
   var MAP = { felder: felder, stile: stile, eskalation: eskalation, checkliste: checkliste, uebung: uebung, playlist: playlist, buecher: buecher, fuehrung: fuehrung, harvard: harvard, batna: batna, leaf: leaf, sages: sages, ablauf: ablauf };
+  window.GRAFIK_FARBE = function (kategorie, n) { if (kategorie === "eskalation") return ["#35B680", "#F9851F", "#f4005e"][Math.min(2, Math.floor((n - 1) / 3))]; return null; };
   window.GRAFIK = function (spec) {
     if (!spec) return "";
     var p = String(spec).split(":"), fn = MAP[p[0]];

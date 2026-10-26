@@ -106,6 +106,15 @@
     });
   }
 
+  /* Listenpunkt: "3. Titel – Text" wird zu Zahlen-Kasten + fettem Titel (Farbe wie in der Grafik) */
+  function listItem(c, x) {
+    var m = /^(\d+)\.\s+(.*)$/.exec(x);
+    if (!m) return "<li>" + esc(hy(x)) + "</li>";
+    var n = parseInt(m[1], 10), rest = m[2], col = (window.GRAFIK_FARBE && window.GRAFIK_FARBE(c.kategorie, n)) || "";
+    var cut = rest.search(/ – |: /), head = cut > 0 ? rest.slice(0, cut) : rest, tail = cut > 0 ? rest.slice(cut + (rest.charAt(cut) === ":" ? 2 : 3)) : "";
+    return '<li class="is-num"><span class="num"' + (col ? ' style="--nc:' + col + '"' : "") + ">" + n + "</span><span><strong>" + esc(hy(head)) + "</strong>" + (tail ? '<span class="num__text">' + esc(hy(tail)) + "</span>" : "") + "</span></li>";
+  }
+
   /* ---------- Aufdecken und Lesen ---------- */
   function flip(idx, el) {
     lastFocus = el;
@@ -129,7 +138,7 @@
           '<span class="big__cat">' + esc(k.name) + (c.teil ? ' <span class="big__teil">· ' + esc(c.teil) + "</span>" : "") + "</span>" +
           '<h2 class="big__title" id="rtitle">' + esc(hy(c.titel)) + "</h2>" +
           (c.text ? '<p class="big__text">' + esc(hy(c.text)) + "</p>" : "") +
-          (c.liste && c.liste.length ? '<ul class="big__list">' + c.liste.map(function (x) { return "<li>" + esc(hy(x)) + "</li>"; }).join("") + "</ul>" : "") +
+          (c.liste && c.liste.length ? '<ul class="big__list">' + c.liste.map(function (x) { return listItem(c, x); }).join("") + "</ul>" : "") +
           (c.impuls ? '<p class="big__hint">' + esc(hy(c.impuls)) + "</p>" : "") +
         "</article>" +
         '<div class="notes">' +
