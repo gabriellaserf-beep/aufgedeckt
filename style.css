@@ -56,6 +56,7 @@ button { font: inherit; color: inherit; }
 .intro { position: relative; z-index: 2; display: grid; gap: 12px; padding-block: 12px 28px; max-width: 46rem; }
 .eyebrow { font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--aqua); }
 .headline { margin: 0; font-weight: 900; font-size: clamp(2.25rem, 1rem + 5vw, 4.5rem); line-height: 1.02; letter-spacing: -0.03em; text-wrap: balance; }
+.headline .sub { display: block; color: var(--paper); font-size: 0.5em; line-height: 1.15; letter-spacing: -0.02em; margin-top: 0.12em; }
 .prism { background: var(--prism); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .lead { margin: 0; color: var(--text-muted); font-size: clamp(1.05rem, 1rem + 0.4vw, 1.3rem); max-width: 40rem; }
 

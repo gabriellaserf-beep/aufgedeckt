@@ -140,7 +140,7 @@
 
   /* ---------- Notizen ansehen und herunterladen ---------- */
   function notesText() {
-    var lines = ["Gefühlskarten — meine Notizen", new Date().toLocaleDateString("de-DE"), ""];
+    var lines = ["Aufgedeckt — meine Notizen", new Date().toLocaleDateString("de-DE"), ""];
     state.done.concat(state.up).forEach(function (i) {
       var n = (state.notes[i] || "").trim();
       lines.push("■ " + cat(i).name + " — " + CARDS[i].titel);
@@ -154,7 +154,7 @@
 
   function download(msgEl) {
     var text = notesText();
-    var name = "gefuehlskarten-notizen.txt";
+    var name = "aufgedeckt-notizen.txt";
     var done = function (ok) { if (msgEl) msgEl.textContent = ok ? "Datei gespeichert." : "Speichern wurde abgebrochen."; };
     var fallback = function () {
       try {

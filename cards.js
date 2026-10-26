@@ -17,7 +17,8 @@ window.KATEGORIEN = {
   felder:     { name: "Konfliktfelder",    bild: "gear.webp",      farbe: "#0DADF2" },
   stile:      { name: "Konfliktstile",     bild: "heart.webp",     farbe: "#F9851F" },
   playlist:   { name: "Playlist",          bild: "speaker.webp",   farbe: "#F471DE" },
-  buecher:    { name: "Bücher",            bild: "lightbulb.webp", farbe: "#F9CE1F" }
+  buecher:    { name: "Bücher",            bild: "lightbulb.webp", farbe: "#F9CE1F" },
+  fuehrung:   { name: "Führung",           bild: "rocket.webp",    farbe: "#b5fd42" }
 };
 
 window.KARTEN = [
@@ -70,5 +71,8 @@ window.KARTEN = [
   { kategorie: "buecher", teil: "DISG & Persönlichkeitstypen · Profi", titel: "DISG-Modell & Persönlichkeitstypen", liste: ["„The Platinum Rule“ – Tony Alessandra: Fortgeschrittene Anwendung von Persönlichkeitsmodellen", "„Type Talk at Work“ – Otto Kroeger & Janet M. Thuesen: MBTI in der Führung, übertragbar auf DISG"] },
   { kategorie: "buecher", teil: "Kommunikation · Einsteiger", titel: "Kommunikation", liste: ["„Miteinander reden 1“ – Friedemann Schulz von Thun: Grundlagen des Kommunikationsquadrats", "„Die Kunst des klaren Denkens“ – Rolf Dobelli: Einfache Tipps für bessere Kommunikation"] },
   { kategorie: "buecher", teil: "Kommunikation · Erfahrene", titel: "Kommunikation", liste: ["„Miteinander reden 2“ – Friedemann Schulz von Thun: Werte und innere Teamkonflikte", "„Die Kunst des klugen Handelns“ – Rolf Dobelli: Psychologische Fallstricke in Gesprächen"] },
-  { kategorie: "buecher", teil: "Kommunikation · Profi", titel: "Kommunikation", liste: ["„Miteinander reden 3“ – Friedemann Schulz von Thun: Kommunikation in Gruppen und Organisationen", "„Anleitung zum Unglücklichsein“ – Paul Watzlawick: Kommunikationsparadoxien und systemische Sicht"] }
+  { kategorie: "buecher", teil: "Kommunikation · Profi", titel: "Kommunikation", liste: ["„Miteinander reden 3“ – Friedemann Schulz von Thun: Kommunikation in Gruppen und Organisationen", "„Anleitung zum Unglücklichsein“ – Paul Watzlawick: Kommunikationsparadoxien und systemische Sicht"] },
+
+  /* ---------- Führung ---------- */
+  { kategorie: "fuehrung", titel: "10-Schritte-Plan im Konflikt", liste: ["Bestandsaufnahme", "Schlüsselpersonen identifizieren", "Erste Einzelgespräche führen", "Ursachen statt Symptome erkennen (Kernkonflikt)", "Klare Teambotschaft setzen", "Aufgaben, Belastung und Zumutungen sortieren", "Konfliktherde gezielt bearbeiten", "Spielregeln für Kommunikation und Zusammenarbeit festziehen (sozialen Raum stabilisieren)", "Nachhalten statt hoffen", "Stimmung erneut prüfen und den nächsten Zyklus festlegen"], impuls: "„Das Team soll wissen, dass es geführt wird.“" }
 ];
