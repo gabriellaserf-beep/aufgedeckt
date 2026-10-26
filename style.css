@@ -123,6 +123,15 @@ button { font: inherit; color: inherit; }
 .chip:active { transform: scale(0.96); }
 .chip.is-on { background: var(--gc); border-color: var(--gc); color: var(--purple-ink); font-weight: 900; }
 
+/* ---------- Skala & Link ---------- */
+.scale { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 5px; }
+.scale__n { font: inherit; font-weight: 900; font-size: 0.9375rem; height: 40px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, var(--sc) 60%, transparent); background: transparent; color: var(--paper); cursor: pointer; padding: 0; font-variant-numeric: tabular-nums; transition: background var(--dur-fast), transform var(--dur-fast); }
+.scale__n:hover { border-color: var(--sc); }
+.scale__n.is-on { background: var(--sc); border-color: var(--sc); color: var(--purple-ink); transform: translateY(-2px); box-shadow: 0 6px 18px color-mix(in srgb, var(--sc) 40%, transparent); }
+.scale__legend { display: flex; justify-content: space-between; font-size: 0.8125rem; color: var(--text-muted); margin-top: -6px; }
+.big__link { justify-self: start; align-self: flex-start; display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 4px; padding: 10px 16px; border-radius: 999px; border: 1px solid var(--acc); color: var(--acc); font-weight: 800; font-size: 0.875rem; text-decoration: none; transition: background var(--dur-fast); }
+.big__link:hover, .big__link:focus-visible { background: color-mix(in srgb, var(--acc) 14%, transparent); }
+
 /* ---------- Abgelegte Karten ---------- */
 .played { position: relative; z-index: 2; display: grid; gap: 14px; padding-block: 8px 64px; border-top: 1px solid var(--line); margin-top: 8px; }
 .played__head { padding-top: 24px; }

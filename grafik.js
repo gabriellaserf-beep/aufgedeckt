@@ -241,7 +241,18 @@
     return svg(out, "0 18 320 100");
   }
 
-  var MAP = { felder: felder, stile: stile, eskalation: eskalation, checkliste: checkliste, uebung: uebung, playlist: playlist, buecher: buecher, fuehrung: fuehrung, harvard: harvard, batna: batna, leaf: leaf, sages: sages, ablauf: ablauf, reflexion: reflexion };
+  /* Boxenstop: Thermometer 1–10, quer liegend */
+  function thermo() {
+    var out = '<defs><linearGradient id="th" x1="0" x2="1"><stop offset="0" stop-color="#f4005e"/><stop offset="0.45" stop-color="#F9851F"/><stop offset="0.75" stop-color="' + AQUA + '"/><stop offset="1" stop-color="' + LIME + '"/></linearGradient></defs>' +
+      '<rect x="52" y="44" width="236" height="22" rx="11" fill="#1a1029" stroke="rgba(246,244,251,0.35)" stroke-width="1.5"/>' +
+      '<circle cx="44" cy="55" r="20" fill="#1a1029" stroke="rgba(246,244,251,0.35)" stroke-width="1.5"/>' +
+      '<circle cx="44" cy="55" r="13" fill="#f4005e"/>' +
+      '<rect x="44" y="49" width="244" height="12" rx="6" fill="url(#th)"/>';
+    for (var i = 1; i <= 10; i++) { var x = 60 + (i - 1) * 24.5; out += '<path d="M' + x + ' 72 V80" stroke="' + MUTED + '" stroke-width="1.5"/>' + t(x, 96, String(i), 11, 900, PAPER); }
+    return svg(out, "0 26 320 82");
+  }
+
+  var MAP = { felder: felder, stile: stile, eskalation: eskalation, checkliste: checkliste, uebung: uebung, playlist: playlist, buecher: buecher, fuehrung: fuehrung, harvard: harvard, batna: batna, leaf: leaf, sages: sages, ablauf: ablauf, reflexion: reflexion, thermo: thermo };
   window.GRAFIK_FARBE = function (c, n, i) {
     if (c.kategorie === "eskalation" && n) return ["#35B680", "#F9851F", "#f4005e"][Math.min(2, Math.floor((n - 1) / 3))];
     if (c.grafik === "uebung:1") return "#f4005e";

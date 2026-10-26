@@ -136,6 +136,11 @@
     var l = state.picks[idx] || [];
     return l.length ? "<strong>Deine Auswahl:</strong> " + l.map(esc).join(" · ") : "Tipp die Wörter an, die gerade auf dich zutreffen.";
   }
+  function renderScale(c, idx) {
+    var v = (state.picks[idx] || [])[0], out = '<div class="scale" role="group" aria-label="Skala von 1 bis 10">';
+    for (var i = 1; i <= 10; i++) out += '<button type="button" class="scale__n' + (String(i) === v ? " is-on" : "") + '" aria-pressed="' + (String(i) === v) + '" data-v="' + i + '" style="--sc:' + (i <= 3 ? "#f4005e" : i <= 6 ? "#F9851F" : i <= 8 ? "#59d5dc" : "#b5fd42") + '">' + i + "</button>";
+    return out + '</div><div class="scale__legend"><span>läuft gar nicht</span><span>läuft super</span></div>';
+  }
   function renderGroups(c, idx) {
     var l = state.picks[idx] || [];
     return '<p class="picked" aria-live="polite">' + pickedHTML(idx) + "</p>" + c.gruppen.map(function (g) {
@@ -170,6 +175,9 @@
           (c.text ? '<p class="big__text">' + md(c.text) + "</p>" : "") +
           (c.liste && c.liste.length ? '<ul class="big__list">' + c.liste.map(function (x, i) { return listItem(c, x, i); }).join("") + "</ul>" : "") +
           (c.gruppen ? renderGroups(c, idx) : "") +
+          (c.skala ? renderScale(c, idx) : "") +
+          (c.text2 ? '<p class="big__text">' + md(c.text2) + "</p>" : "") +
+          (c.link ? '<a class="big__link" href="' + esc(c.link.url) + '" target="_blank" rel="noopener noreferrer">' + esc(c.link.text) + ' <span aria-hidden="true">↗</span><span class="sr"> (öffnet in neuem Tab)</span></a>' : "") +
           (c.impuls ? '<p class="big__hint">' + md(c.impuls) + "</p>" : "") +
         "</article>" +
         '<div class="notes">' +
@@ -187,6 +195,14 @@
     o.hidden = false;
     var ta = $("#note", o);
     ta.addEventListener("input", function () { state.notes[idx] = ta.value; save(); });
+    o.querySelectorAll(".scale__n").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var on = !b.classList.contains("is-on");
+        o.querySelectorAll(".scale__n").forEach(function (x) { x.classList.remove("is-on"); x.setAttribute("aria-pressed", "false"); });
+        if (on) { b.classList.add("is-on"); b.setAttribute("aria-pressed", "true"); state.picks[idx] = [b.dataset.v]; } else delete state.picks[idx];
+        save();
+      });
+    });
     o.querySelectorAll(".chip").forEach(function (b) {
       b.addEventListener("click", function () {
         var w = b.dataset.w, list = state.picks[idx] || (state.picks[idx] = []), k = list.indexOf(w);
@@ -219,6 +235,7 @@
       var n = (state.notes[i] || "").trim();
       lines.push("■ " + cat(i).name + " — " + CARDS[i].titel);
       if (CARDS[i].text) lines.push(CARDS[i].text.replace(/\*\*/g, ""));
+      if (CARDS[i].text2) lines.push(CARDS[i].text2.replace(/\*\*/g, ""));
       (CARDS[i].liste || []).forEach(function (x) { lines.push("  • " + x.replace(/\*\*/g, "")); });
       if (state.picks[i] && state.picks[i].length) lines.push("Ausgewählt: " + state.picks[i].join(", "));
       lines.push(n ? n : "(keine Notiz)");
