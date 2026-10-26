@@ -12,6 +12,10 @@
   var state;
   var lastFocus = null;
 
+  /* Weiche Trennstellen (&shy;) für lange Wörter aus TRENNUNGEN einsetzen */
+  var HY = (window.TRENNUNGEN || []).map(function (w) { return [w.replace(/\|/g, ""), w.replace(/\|/g, "\u00ad")]; });
+  function hy(s) { s = String(s == null ? "" : s); HY.forEach(function (p) { s = s.split(p[0]).join(p[1]); }); return s; }
+
   /* ---------- Speichern ---------- */
   function load() {
     try { var raw = localStorage.getItem(KEY); if (raw) { var s = JSON.parse(raw); if (s && s.cols && s.total === CARDS.length) return s; } } catch (e) {}
@@ -104,10 +108,10 @@
           '<span class="big__no">' + (state.done.length + 1) + " / " + state.total + "</span>" +
           '<div class="big__media"><img src="' + esc(k.bild) + '" alt=""></div>' +
           '<span class="big__cat">' + esc(k.name) + (c.teil ? ' <span class="big__teil">· ' + esc(c.teil) + "</span>" : "") + "</span>" +
-          '<h2 class="big__title" id="rtitle">' + esc(c.titel) + "</h2>" +
-          (c.text ? '<p class="big__text">' + esc(c.text) + "</p>" : "") +
-          (c.liste && c.liste.length ? '<ul class="big__list">' + c.liste.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") +
-          (c.impuls ? '<p class="big__hint">' + esc(c.impuls) + "</p>" : "") +
+          '<h2 class="big__title" id="rtitle">' + esc(hy(c.titel)) + "</h2>" +
+          (c.text ? '<p class="big__text">' + esc(hy(c.text)) + "</p>" : "") +
+          (c.liste && c.liste.length ? '<ul class="big__list">' + c.liste.map(function (x) { return "<li>" + esc(hy(x)) + "</li>"; }).join("") + "</ul>" : "") +
+          (c.impuls ? '<p class="big__hint">' + esc(hy(c.impuls)) + "</p>" : "") +
         "</article>" +
         '<div class="notes">' +
           '<label class="notes__label" for="note">Deine Notizen</label>' +

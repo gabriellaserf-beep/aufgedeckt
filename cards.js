@@ -22,6 +22,20 @@ window.KATEGORIEN = {
   eskalation: { name: "Eskalation",        bild: "wave.webp",      farbe: "#35B680" }
 };
 
+/*
+  Trennstellen für lange Wörter. Ein "|" markiert, wo das Wort umbrechen darf,
+  wenn es nicht in die Zeile passt (dann mit Trennstrich). Neue Wörter einfach ergänzen.
+*/
+window.TRENNUNGEN = [
+  "Zwischen|mensch|lich", "Lösungs|varianten", "Entgegen|kommen", "Konflikt|ursachen", "Konflikt|lösung",
+  "Konflikt|felder", "Konflikt|stile", "Selbst|reflexion", "Eskalations|prävention", "Perspektiv|wechsel",
+  "Team|zusammen|halt", "Persönlichkeits|typen", "Kommuni|kation", "Konfron|tieren", "Verein|barung",
+  "Wahr|nehmung", "Gemein|sames", "Fort|schritt", "Weiter|atmen", "Indivi|duell", "Koope|rieren",
+  "Gewalt|freie", "Schlüssel|personen", "Einzel|gespräche", "Vernichtungs|schläge", "Zer|splitterung",
+  "Gesichts|verlust", "Droh|strategien", "Verantwor|tung", "Unter|stützung", "Kooperations|wille",
+  "Konfrontations|bereitschaft", "Problem-Lösungs-|Gymnastik", "Bestands|aufnahme", "Team|botschaft"
+];
+
 window.KARTEN = [
   /* ---------- Checkliste für Konflikte ---------- */
   { kategorie: "checkliste", teil: "Einstieg", titel: "Fortschritt statt Sieg", text: "„Das Ziel eines Konflikts oder einer Auseinandersetzung soll nicht der Sieg, sondern der Fortschritt sein.“", impuls: "Joseph Joubert" },
