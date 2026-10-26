@@ -8,12 +8,12 @@
   - Die Anzahl der Karten ist frei. Die Auslage verteilt sie automatisch auf die Spalten.
 */
 window.KATEGORIEN = {
-  wahrnehmen: { name: "Wahrnehmen", bild: "img/eye.webp", farbe: "#59d5dc" },
-  benennen:   { name: "Benennen",   bild: "img/lightbulb.webp", farbe: "#b5fd42" },
-  annehmen:   { name: "Annehmen",   bild: "img/hands.webp", farbe: "#9F9FF4" },
-  ausdruecken:{ name: "Ausdrücken", bild: "img/speaker.webp", farbe: "#F9CE1F" },
-  loslassen:  { name: "Loslassen",  bild: "img/wave.webp", farbe: "#0DADF2" },
-  staerken:   { name: "Stärken",    bild: "img/heart.webp", farbe: "#F471DE" }
+  wahrnehmen: { name: "Wahrnehmen", bild: "eye.webp", farbe: "#59d5dc" },
+  benennen:   { name: "Benennen",   bild: "lightbulb.webp", farbe: "#b5fd42" },
+  annehmen:   { name: "Annehmen",   bild: "hands.webp", farbe: "#9F9FF4" },
+  ausdruecken:{ name: "Ausdrücken", bild: "speaker.webp", farbe: "#F9CE1F" },
+  loslassen:  { name: "Loslassen",  bild: "wave.webp", farbe: "#0DADF2" },
+  staerken:   { name: "Stärken",    bild: "heart.webp", farbe: "#F471DE" }
 };
 
 window.KARTEN = [
