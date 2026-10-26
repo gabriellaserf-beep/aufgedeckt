@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a1029">
+<title>Gefühlskarten</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600;700;800;900&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="table">
+  <div class="haze" aria-hidden="true"></div>
+  <header class="wrap top">
+    <span class="logo" data-logo></span>
+    <div class="actions">
+      <button class="btn btn--secondary" type="button" id="notesBtn">Notizen</button>
+      <button class="btn btn--outline" type="button" id="restartBtn">Neu mischen</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="wrap intro">
+      <span class="eyebrow">Ein Kartenspiel über Gefühle</span>
+      <h1 class="headline"><span class="prism">Zieh eine Karte.</span> Nimm dir Zeit.</h1>
+      <p class="lead">Deck eine leuchtende Karte auf und setz dich mit ihr auseinander. Wenn du magst, schreib dir etwas dazu auf. Dann leg sie ab und deck die nächste auf.</p>
+    </section>
+
+    <section class="wrap status" aria-label="Fortschritt">
+      <div class="track" role="presentation"><div class="track__fill" id="track"></div></div>
+      <span class="count" id="count" aria-live="polite">0 von 0 Karten</span>
+    </section>
+
+    <section class="wrap" aria-label="Auslage">
+      <h2 class="sr">Auslage</h2>
+      <div class="board" id="board"></div>
+      <div class="finish" id="finish" hidden>
+        <span class="eyebrow">Alle Karten gezogen</span>
+        <h2 class="headline prism" tabindex="-1">Gut gemacht</h2>
+        <p>Du hast dich mit allen Karten beschäftigt. Sieh dir deine Notizen an oder lade sie herunter.</p>
+        <div class="row">
+          <button class="btn btn--primary" type="button" id="finishNotes">Notizen ansehen <span class="arr">→</span></button>
+          <button class="btn btn--outline" type="button" id="finishRestart">Noch einmal spielen</button>
+        </div>
+      </div>
+      <div class="pilebar">
+        <button class="pile" type="button" id="pile" aria-label="Abgelegte Karten und Notizen ansehen"></button>
+        <span id="pileText">Noch keine Karte abgelegt</span>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="overlay" id="reader" hidden></div>
+
+<script src="cards.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
