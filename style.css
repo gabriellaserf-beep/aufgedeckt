@@ -75,14 +75,27 @@ button { font: inherit; color: inherit; }
 .card.is-up .card__inner { transform: rotateY(180deg); }
 .face { position: absolute; inset: 0; border-radius: calc(var(--cw) * 0.1); backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
 
-/* Rückseite: Verlauf mit Wortmarke und Pillenmuster */
-.back { background: var(--prism); box-shadow: 0 1px 0 rgba(26,16,41,0.6), 0 calc(var(--cw) * 0.06) calc(var(--cw) * 0.16) rgba(12,8,20,0.45); }
-.back::before { content: ""; position: absolute; inset: 7%; border-radius: calc(var(--cw) * 0.06); border: max(1px, calc(var(--cw) * 0.012)) solid rgba(35,22,57,0.35); }
-.back__mark { position: absolute; left: 50%; top: 50%; width: 64%; transform: translate(-50%, -50%); color: var(--purple-ink); }
+/* Rückseite: tiefes Purple, Wortmarke in Aqua, feiner Aqua-Rahmen, weicher Magenta-Schein darunter */
+.back { background:
+    radial-gradient(120% 80% at 50% 0%, rgba(89,213,220,0.10) 0%, rgba(89,213,220,0) 55%),
+    linear-gradient(165deg, #2d1e4a 0%, #231639 48%, #1a1029 100%);
+  border: 1px solid rgba(89,213,220,0.22);
+  box-shadow: inset 0 1px 0 rgba(246,244,251,0.10), 0 calc(var(--cw) * 0.05) calc(var(--cw) * 0.12) rgba(12,8,20,0.55); }
+.back::before { content: ""; position: absolute; inset: 7%; border-radius: calc(var(--cw) * 0.06); border: 1px solid rgba(89,213,220,0.30); }
+.back::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(115deg, rgba(246,244,251,0) 35%, rgba(246,244,251,0.07) 48%, rgba(246,244,251,0) 60%); }
+.back__mark { position: absolute; left: 50%; top: 50%; width: 58%; transform: translate(-50%, -50%); color: var(--aqua); filter: drop-shadow(0 0 calc(var(--cw) * 0.06) rgba(89,213,220,0.35)); }
 .back__mark svg { width: 100%; height: auto; fill: currentColor; display: block; }
-.back__pills { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 8%; width: 46%; justify-content: center; }
-.back__pills--t { top: 17%; } .back__pills--b { bottom: 17%; }
-.back__pills i { display: block; flex: 1; height: max(2px, calc(var(--cw) * 0.03)); border-radius: 99px; background: var(--purple-ink); opacity: 0.55; }
+.back__pills { position: absolute; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; width: 30%; }
+.back__pills--t { top: 15%; } .back__pills--b { bottom: 15%; }
+.back__pills i { display: none; }
+.back__pills i:first-child { display: block; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(89,213,220,0), rgba(89,213,220,0.6), rgba(89,213,220,0)); }
+
+/* Magenta-Schein unter der obersten Karte jeder Spalte */
+.card.is-playable::before { content: ""; position: absolute; left: -6%; right: -6%; bottom: -24%; height: 42%; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255,0,254,0.75) 0%, rgba(255,0,254,0.30) 45%, rgba(255,0,254,0) 75%);
+  filter: blur(calc(var(--cw) * 0.09)); opacity: 0.9; transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out); }
+.card.is-playable:hover::before, .card.is-playable:focus-visible::before { opacity: 1; transform: scale(1.12, 1.2); }
 
 /* Vorderseite in der Auslage */
 .front { transform: rotateY(180deg); background: var(--surface-raised); border: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6%; padding: 8%; }
@@ -92,7 +105,7 @@ button { font: inherit; color: inherit; }
 .card.is-playable { cursor: pointer; }
 .card.is-playable .card__inner { transition: transform var(--dur-reveal) var(--ease-out), translate var(--dur-base) var(--ease-out); }
 .card.is-playable:hover .card__inner, .card.is-playable:focus-visible .card__inner { translate: 0 -6px; }
-.card.is-playable:not(.is-up) .back { box-shadow: 0 0 0 2px var(--purple-900), 0 0 0 3px var(--aqua), 0 0 22px rgba(89,213,220,0.45), 0 calc(var(--cw) * 0.06) calc(var(--cw) * 0.16) rgba(12,8,20,0.45); }
+.card.is-playable:not(.is-up) .back { border-color: rgba(89,213,220,0.55); box-shadow: inset 0 1px 0 rgba(246,244,251,0.14), 0 0 calc(var(--cw) * 0.14) rgba(89,213,220,0.18), 0 calc(var(--cw) * 0.05) calc(var(--cw) * 0.12) rgba(12,8,20,0.55); }
 .card:focus-visible { outline: none; }
 .card:focus-visible .face { outline: 2px solid var(--lime); outline-offset: 3px; }
 
