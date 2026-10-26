@@ -380,3 +380,7 @@ button { font: inherit; color: inherit; }
   .bar .layouts__list { mask-image: linear-gradient(90deg, #000 85%, transparent); }
   .stage { --desk-h: clamp(420px, 62vh, 600px); }
 }
+
+/* Ausgewählte Karte hebt sich über alle anderen, bevor sie sich umdreht */
+.desk .card.is-lift, .desk .card.is-lift.is-up, .desk .card.is-lift.is-picked { transform: rotate(0deg) scale(1.45); }
+.desk .card.is-lift .face { box-shadow: 0 0 0 1px #ffa0fa, 0 24px 50px rgba(12,8,20,0.7), 0 0 44px rgba(255,0,254,0.55) !important; }

@@ -345,11 +345,15 @@
   /* ---------- Aufdecken und Lesen ---------- */
   function flip(idx, el) {
     lastFocus = el;
-    if (isUp(idx)) { openReader(idx); return; }
+    /* Karte zuerst ganz nach oben auf den Stapel holen, dann umdrehen */
+    state.top++; if (state.pos[idx]) state.pos[idx].z = state.top;
+    el.style.zIndex = 9000 + state.top;
+    if (isUp(idx)) { save(); openReader(idx); return; }
     state.up.push(idx); save();
-    el.classList.add("is-up");
     var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setTimeout(function () { render(); openReader(idx); }, reduce ? 0 : 650);
+    el.classList.add("is-lift");
+    setTimeout(function () { el.classList.add("is-up"); }, reduce ? 0 : 300);
+    setTimeout(function () { render(); openReader(idx); }, reduce ? 0 : 950);
   }
 
   function openReader(idx) {
