@@ -227,13 +227,28 @@
     return svg(out, "0 26 320 120");
   }
 
-  var MAP = { felder: felder, stile: stile, eskalation: eskalation, checkliste: checkliste, uebung: uebung, playlist: playlist, buecher: buecher, fuehrung: fuehrung, harvard: harvard, batna: batna, leaf: leaf, sages: sages, ablauf: ablauf };
+  /* Weiterdenken: drei schräg gelegte Notizzettel mit Fragezeichen */
+  function reflexion(n) {
+    var out = "";
+    [[-6, 70, 64], [3, 160, 56], [-3, 250, 66]].forEach(function (p, i) {
+      var on = !n || n === i + 1, w = 74, h = 62;
+      out += '<g transform="rotate(' + p[0] + " " + p[1] + " " + p[2] + ')">' +
+        '<rect x="' + (p[1] - w / 2) + '" y="' + (p[2] - h / 2) + '" width="' + w + '" height="' + h + '" rx="6" fill="' + (on ? PAPER : "#2d1e4a") + '" stroke="' + PAPER + '" stroke-opacity="' + (on ? 1 : 0.45) + '" stroke-width="1.5"/>' +
+        t(p[1], p[2] + 16, "?", 46, 900, on ? INK : "rgba(246,244,251,0.55)") + "</g>";
+    });
+    out += '<defs><linearGradient id="rfl" x1="0" x2="1"><stop offset="0" stop-color="' + LIME + '"/><stop offset="1" stop-color="' + AQUA + '"/></linearGradient></defs>' +
+      '<path d="M40 112 H280" stroke="url(#rfl)" stroke-width="2" stroke-linecap="round" opacity="0.7"/>';
+    return svg(out, "0 18 320 100");
+  }
+
+  var MAP = { felder: felder, stile: stile, eskalation: eskalation, checkliste: checkliste, uebung: uebung, playlist: playlist, buecher: buecher, fuehrung: fuehrung, harvard: harvard, batna: batna, leaf: leaf, sages: sages, ablauf: ablauf, reflexion: reflexion };
   window.GRAFIK_FARBE = function (c, n, i) {
     if (c.kategorie === "eskalation" && n) return ["#35B680", "#F9851F", "#f4005e"][Math.min(2, Math.floor((n - 1) / 3))];
     if (c.grafik === "uebung:1") return "#f4005e";
     if (c.grafik === "uebung:2") return AQUA;
     if (/^sages/.test(c.grafik || "") && i != null) return i < 3 ? "#b794e8" : AQUA;
     if (/^leaf/.test(c.grafik || "")) return LIME;
+    if (c.kategorie === "reflexion") return PAPER;
     return null;
   };
   window.GRAFIK = function (spec) {
