@@ -10,6 +10,7 @@ Ein Kartenspiel von pub.tech über Konflikte: Man deckt Karten wie bei Patience 
 | `style.css` | Aussehen (Farben und Schrift aus dem pub.tech Design System) |
 | `app.js` | Spiellogik |
 | `cards.js` | **Die Karteninhalte** — hier trägst du deine Texte ein |
+| `grafik.js` | Die Grafiken oben auf den Karten (Kreis, Matrix, Treppe …) |
 | `*.webp` | 3D-Objekte für die Kategorien |
 
 ## Karten ändern

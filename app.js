@@ -125,7 +125,7 @@
       '<div class="reader" role="dialog" aria-modal="true" aria-labelledby="rtitle">' +
         '<article class="big" style="--acc:' + k.farbe + '">' +
           '<span class="big__no">' + (played ? "Abgelegt · " : "") + no + " / " + state.total + "</span>" +
-          '<div class="big__media"><img src="' + esc(k.bild) + '" alt=""></div>' +
+          (c.grafik && window.GRAFIK ? '<div class="big__media big__media--grafik">' + window.GRAFIK(c.grafik) + '</div>' : '<div class="big__media"><img src="' + esc(k.bild) + '" alt=""></div>') +
           '<span class="big__cat">' + esc(k.name) + (c.teil ? ' <span class="big__teil">· ' + esc(c.teil) + "</span>" : "") + "</span>" +
           '<h2 class="big__title" id="rtitle">' + esc(hy(c.titel)) + "</h2>" +
           (c.text ? '<p class="big__text">' + esc(hy(c.text)) + "</p>" : "") +
