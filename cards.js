@@ -18,7 +18,8 @@ window.KATEGORIEN = {
   stile:      { name: "Konfliktstile",     bild: "heart.webp",     farbe: "#F9851F" },
   playlist:   { name: "Playlist",          bild: "speaker.webp",   farbe: "#F471DE" },
   buecher:    { name: "Bücher",            bild: "lightbulb.webp", farbe: "#F9CE1F" },
-  fuehrung:   { name: "Führung",           bild: "rocket.webp",    farbe: "#b5fd42" }
+  fuehrung:   { name: "Führung",           bild: "rocket.webp",    farbe: "#b5fd42" },
+  eskalation: { name: "Eskalation",        bild: "wave.webp",      farbe: "#35B680" }
 };
 
 window.KARTEN = [
@@ -74,5 +75,11 @@ window.KARTEN = [
   { kategorie: "buecher", teil: "Kommunikation · Profi", titel: "Kommunikation", liste: ["„Miteinander reden 3“ – Friedemann Schulz von Thun: Kommunikation in Gruppen und Organisationen", "„Anleitung zum Unglücklichsein“ – Paul Watzlawick: Kommunikationsparadoxien und systemische Sicht"] },
 
   /* ---------- Führung ---------- */
-  { kategorie: "fuehrung", titel: "10-Schritte-Plan im Konflikt", liste: ["Bestandsaufnahme", "Schlüsselpersonen identifizieren", "Erste Einzelgespräche führen", "Ursachen statt Symptome erkennen (Kernkonflikt)", "Klare Teambotschaft setzen", "Aufgaben, Belastung und Zumutungen sortieren", "Konfliktherde gezielt bearbeiten", "Spielregeln für Kommunikation und Zusammenarbeit festziehen (sozialen Raum stabilisieren)", "Nachhalten statt hoffen", "Stimmung erneut prüfen und den nächsten Zyklus festlegen"], impuls: "„Das Team soll wissen, dass es geführt wird.“" }
+  { kategorie: "fuehrung", titel: "10-Schritte-Plan im Konflikt", liste: ["Bestandsaufnahme", "Schlüsselpersonen identifizieren", "Erste Einzelgespräche führen", "Ursachen statt Symptome erkennen (Kernkonflikt)", "Klare Teambotschaft setzen", "Aufgaben, Belastung und Zumutungen sortieren", "Konfliktherde gezielt bearbeiten", "Spielregeln für Kommunikation und Zusammenarbeit festziehen (sozialen Raum stabilisieren)", "Nachhalten statt hoffen", "Stimmung erneut prüfen und den nächsten Zyklus festlegen"], impuls: "„Das Team soll wissen, dass es geführt wird.“" },
+
+  /* ---------- Der Konflikt und ich: Eskalationsstufen (nach Friedrich Glasl) ---------- */
+  { kategorie: "eskalation", teil: "Überblick", titel: "Über 9 Stufen in den Untergang", text: "Konflikte eskalieren Stufe für Stufe. Auf welcher Stufe steht dein Konflikt gerade?", liste: ["1. Verhärtung", "2. Debatte", "3. Taten statt Worte", "4. Koalitionen", "5. Gesichtsverlust", "6. Drohstrategien", "7. Begrenzte Vernichtungsschläge", "8. Zersplitterung", "9. Gemeinsam in den Abgrund"], impuls: "Eskalationsstufen nach Friedrich Glasl" },
+  { kategorie: "eskalation", teil: "Stufe 1–3", titel: "Gemeinsam lösen", text: "„Wir haben ein Problem und suchen gemeinsam eine Lösung.“ Doch schon hier geht Stück für Stück die Empathie verloren:", liste: ["1. Verhärtung – die kognitive Empathie geht verloren: die Fähigkeit, sich in das Denken der anderen Partei hineinzuversetzen.", "2. Debatte – die emotionale Empathie geht verloren: „Ich spüre, was bei dir los ist.“", "3. Taten statt Worte – die intentionale Empathie geht verloren: der Zugang zu Bedürfnissen, Zielen und Werten des Gegenübers."] },
+  { kategorie: "eskalation", teil: "Stufe 4–6", titel: "Gewinnen und verlieren", text: "„Ich will gewinnen, du sollst verlieren.“", liste: ["4. Koalitionen", "5. Gesichtsverlust", "6. Drohstrategien"], impuls: "Ab Stufe 4 braucht es professionelle Unterstützung: Vermittlung, Mediation, Begleitung. Objektiv kann es noch Lösungen geben, aber die Beteiligten können sie wegen ihrer Haltung nicht mehr sehen." },
+  { kategorie: "eskalation", teil: "Stufe 7–9", titel: "Alle verlieren", text: "„Hauptsache, der andere verliert, auch wenn ich selbst Schaden nehme.“", liste: ["7. Begrenzte Vernichtungsschläge", "8. Zersplitterung", "9. Gemeinsam in den Abgrund"], impuls: "Spätestens jetzt: Hol dir Hilfe von außen." }
 ];
