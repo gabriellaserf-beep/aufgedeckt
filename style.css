@@ -154,6 +154,8 @@ button { font: inherit; color: inherit; }
 .big__list li.is-book strong { font-size: 1.0625rem; line-height: 1.3; }
 .big__list li.is-book .by { font-weight: 600; color: var(--paper); font-size: 0.9375rem; }
 .big__list li.is-book .desc { color: var(--text-muted); font-size: 0.9375rem; }
+.big__list .shop { justify-self: start; margin-top: 4px; font-size: 0.8125rem; font-weight: 800; letter-spacing: 0.04em; color: var(--aqua); text-decoration: none; border-bottom: 1px solid rgba(89,213,220,0.4); padding-bottom: 1px; }
+.big__list .shop:hover, .big__list .shop:focus-visible { color: var(--aqua-bright); border-bottom-color: var(--aqua-bright); }
 .big__list li.is-num { padding-left: 42px; min-height: 28px; }
 .big__list li.is-num::before { display: none; }
 .big__list .num { position: absolute; left: 0; top: 0; min-width: 30px; height: 26px; padding: 0 6px; border-radius: 7px; background: var(--nc, var(--acc)); color: var(--purple-ink);

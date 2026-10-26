@@ -123,7 +123,9 @@
     if ((m = /^(\d+)\.\s+(.*)$/.exec(x))) { p = split2(m[2]); return badgeItem(m[1], F(c, parseInt(m[1], 10), i), p[0], p[1]); }
     if ((m = /^([A-Z])\s–\s(.*)$/.exec(x))) { p = split2(m[2]); return badgeItem(m[1], F(c, 0, i), p[0], p[1]); }
     if ((m = /^„([^“]+)“\s–\s([^:]+):\s(.*)$/.exec(x))) {
-      return '<li class="is-book"><strong>' + md(m[1]) + '</strong><span class="by">' + md(m[2]) + '</span><span class="desc">' + md(m[3]) + "</span></li>";
+      var q = encodeURIComponent(m[1] + " " + m[2]).replace(/%20/g, "+");
+      return '<li class="is-book"><strong>' + md(m[1]) + '</strong><span class="by">' + md(m[2]) + '</span><span class="desc">' + md(m[3]) + "</span>" +
+        '<a class="shop" href="https://www.amazon.de/s?k=' + q + '&i=stripbooks" target="_blank" rel="noopener noreferrer">Bei Amazon ansehen <span aria-hidden="true">↗</span><span class="sr"> (öffnet in neuem Tab)</span></a></li>';
     }
     if ((m = /^([^„:]{2,70}):\s(.*)$/.exec(x))) return '<li><strong>' + md(m[1]) + "</strong> " + '<span class="li__rest">' + md(m[2]) + "</span></li>";
     return "<li>" + md(x) + "</li>";
