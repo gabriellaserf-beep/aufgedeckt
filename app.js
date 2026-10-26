@@ -30,25 +30,104 @@
 
   /* ---------- Neues Spiel: Karten lose auf dem Schreibtisch verteilen ---------- */
   function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
-  function deal(notes) {
-    var order = shuffle(CARDS.map(function (_, i) { return i; })), n = order.length;
-    /* mehrere lose Stapel, über den Tisch verteilt */
-    var P = Math.max(4, Math.min(8, Math.ceil(n / 10))), pc = P <= 4 ? 2 : P <= 6 ? 3 : 4, pr = Math.ceil(P / pc), centers = [];
-    for (var s = 0; s < P; s++) {
-      var c = s % pc, r = Math.floor(s / pc), inRow = Math.min(pc, P - r * pc), off = (pc - inRow) / 2;
-      centers.push({ x: (c + off + 0.5 + (Math.random() - 0.5) * 0.7) / pc, y: (r + 0.5 + (Math.random() - 0.5) * 0.55) / pr });
+  /* ---------- Auslagen: Formen, die die Karten auf dem Tisch bilden ---------- */
+  function ell(cx, cy, rx, ry, rot, n) { var c = Math.cos(rot || 0), s = Math.sin(rot || 0), a = []; n = n || 48;
+    for (var i = 0; i <= n; i++) { var t = i / n * 2 * Math.PI, x = Math.cos(t) * rx, y = Math.sin(t) * ry; a.push([cx + x * c - y * s, cy + x * s + y * c]); } return a; }
+  function closed(p) { return p.concat([p[0]]); }
+  var SHAPES = {
+    blume: function () { var p = []; for (var i = 0; i < 5; i++) { var w = i / 5 * 2 * Math.PI - Math.PI / 2; p.push(ell(Math.cos(w) * 0.64, Math.sin(w) * 0.64, 0.38, 0.2, w)); }
+      p.push(ell(0, 0, 0.16, 0.16)); p.push([[0, 1.0], [0.04, 1.3], [0, 1.6]]); p.push(ell(0.28, 1.3, 0.26, 0.1, -0.55)); return p; },
+    herz: function () { var a = []; for (var i = 0; i <= 80; i++) { var t = i / 80 * 2 * Math.PI, s = Math.sin(t);
+      a.push([16 * s * s * s, -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t))]); } return [a]; },
+    stern: function () { var a = []; for (var i = 0; i < 10; i++) { var r = i % 2 ? 0.42 : 1, w = i / 10 * 2 * Math.PI - Math.PI / 2; a.push([Math.cos(w) * r, Math.sin(w) * r]); } return [closed(a)]; },
+    ente: function () { return [
+      [[-0.95, -0.15], [-0.7, 0.05], [-0.3, 0.12], [0.2, 0.1], [0.55, -0.05], [0.7, 0.2], [0.55, 0.55], [0, 0.72], [-0.55, 0.62], [-0.85, 0.35], [-0.95, -0.15]],
+      ell(0.62, -0.42, 0.27, 0.27), closed([[0.86, -0.46], [1.2, -0.38], [0.86, -0.28]]), [[-0.4, 0.3], [-0.05, 0.42], [0.3, 0.3]],
+      [[-1.1, 0.95], [-0.7, 0.85], [-0.3, 0.95], [0.1, 0.85], [0.5, 0.95], [0.9, 0.85]] ]; },
+    auto: function () { return [
+      closed([[-1, 0.3], [-1, 0], [-0.62, -0.06], [-0.36, -0.42], [0.32, -0.42], [0.6, -0.06], [1, 0.02], [1, 0.3]]),
+      [[-0.06, -0.42], [-0.06, -0.06]], ell(-0.55, 0.32, 0.2, 0.2), ell(0.56, 0.32, 0.2, 0.2) ]; },
+    fisch: function () { return [ ell(-0.1, 0, 0.7, 0.4), closed([[0.55, 0], [1.05, -0.38], [1.05, 0.38]]), ell(-0.5, -0.08, 0.06, 0.06, 0, 12) ]; },
+    haus: function () { return [ closed([[-0.6, 0], [0.6, 0], [0.6, 0.95], [-0.6, 0.95]]), [[-0.78, 0.06], [0, -0.7], [0.78, 0.06]], [[-0.15, 0.95], [-0.15, 0.5], [0.15, 0.5], [0.15, 0.95]] ]; },
+    smiley: function () { return [ ell(0, 0, 1, 1), ell(-0.36, -0.3, 0.1, 0.14, 0, 12), ell(0.36, -0.3, 0.1, 0.14, 0, 12), ell(0, 0.08, 0.58, 0.48, 0, 48).slice(4, 21) ]; },
+    kreuz: function () { return [[[-0.12, -1], [-0.12, 1]], [[0.12, 1], [0.12, -1]], [[-1, -0.12], [1, -0.12]], [[1, 0.12], [-1, 0.12]]]; },
+    spirale: function () { var a = []; for (var i = 0; i <= 160; i++) { var t = i / 160 * 3.2 * 2 * Math.PI, r = 0.06 + t * 0.047; a.push([Math.cos(t) * r, Math.sin(t) * r]); } return [a]; },
+    welle: function () { var a = [], b = []; for (var i = 0; i <= 60; i++) { var x = i / 60 * 4 - 2; a.push([x, Math.sin(x * 2.4) * 0.38 - 0.35]); b.push([x, Math.sin(x * 2.4 + 1.6) * 0.38 + 0.35]); } return [a, b]; }
+  };
+  var LAYOUTS = [["stapel", "Unordentlich"], ["verstreut", "Verstreut"], ["blume", "Blume"], ["herz", "Herz"], ["stern", "Stern"], ["ente", "Ente"], ["auto", "Auto"], ["fisch", "Fisch"], ["haus", "Haus"], ["smiley", "Smiley"], ["kreuz", "Kreuz"], ["spirale", "Spirale"], ["welle", "Welle"]];
+
+  function shapeClass(layout) { var d = $("#board"); if (d) d.classList.toggle("is-shape", !!SHAPES[layout]); }
+  function deskSize() {
+    var d = $("#board"), W = (d && d.clientWidth) || 1000, H = (d && d.clientHeight) || 700, cw = 90, ch = 126;
+    if (d) { var t = document.createElement("div"); t.style.cssText = "position:absolute;width:var(--cw);height:var(--ch);visibility:hidden"; d.appendChild(t); cw = t.offsetWidth || cw; ch = t.offsetHeight || ch; d.removeChild(t); }
+    return { W: W, H: H, cw: cw, ch: ch };
+  }
+  function jit(v) { return (Math.random() - 0.5) * v; }
+  function clamp01(v) { return Math.min(1, Math.max(0, v)); }
+
+  /* Verteilt die Karten (ids) nach Auslage und gibt neue Positionen zurück */
+  function arrange(layout, ids) {
+    var n = ids.length, pos = {};
+    if (!n) return pos;
+    if (layout === "verstreut") { ids.forEach(function (idx, k) { pos[idx] = { x: Math.random(), y: Math.random(), r: Math.round(jit(70)), z: k + 1 }; }); return pos; }
+    if (!SHAPES[layout]) {
+      var P = Math.max(3, Math.min(8, Math.ceil(n / 10))), pc = P <= 4 ? 2 : P <= 6 ? 3 : 4, pr = Math.ceil(P / pc), centers = [];
+      for (var s = 0; s < P; s++) { var c = s % pc, r = Math.floor(s / pc), inRow = Math.min(pc, P - r * pc), off = (pc - inRow) / 2;
+        centers.push({ x: (c + off + 0.5 + jit(0.7)) / pc, y: (r + 0.5 + jit(0.55)) / pr }); }
+      ids.forEach(function (idx, k) { var ce = centers[k % P]; pos[idx] = { x: clamp01(ce.x + jit(0.17)), y: clamp01(ce.y + jit(0.2)), r: Math.round(jit(50)), z: k + 1 }; });
+      return pos;
     }
-    var pos = {};
-    order.forEach(function (idx, k) {
-      var ce = centers[k % P], spread = 0.085;
-      pos[idx] = {
-        x: Math.min(1, Math.max(0, ce.x + (Math.random() - 0.5) * spread * 2)),
-        y: Math.min(1, Math.max(0, ce.y + (Math.random() - 0.5) * spread * 2.4)),
-        r: Math.round((Math.random() - 0.5) * 50),
-        z: k + 1
-      };
+    shapeClass(layout);
+    var D = deskSize(), paths = SHAPES[layout](), x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    paths.forEach(function (p) { p.forEach(function (q) { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); y0 = Math.min(y0, q[1]); y1 = Math.max(y1, q[1]); }); });
+    var pad = Math.min(D.W, D.H) * 0.03, aw = D.W - D.cw - 2 * pad, ah = D.H - D.ch - 2 * pad, sc = Math.min(aw / (x1 - x0), ah / (y1 - y0));
+    var ox = pad + D.cw / 2 + (aw - (x1 - x0) * sc) / 2 - x0 * sc, oy = pad + D.ch / 2 + (ah - (y1 - y0) * sc) / 2 - y0 * sc;
+    var segs = [], L = 0;
+    paths.forEach(function (p) { for (var i = 1; i < p.length; i++) { var a = [ox + p[i - 1][0] * sc, oy + p[i - 1][1] * sc], b = [ox + p[i][0] * sc, oy + p[i][1] * sc], l = Math.hypot(b[0] - a[0], b[1] - a[1]); if (l > 0) { segs.push({ a: a, b: b, l: l, s: L }); L += l; } } });
+    var si = 0;
+    ids.forEach(function (idx, k) {
+      var d = (k + 0.5) / n * L; while (si < segs.length - 1 && segs[si].s + segs[si].l < d) si++;
+      var g = segs[si], f = (d - g.s) / g.l, cx = g.a[0] + (g.b[0] - g.a[0]) * f + jit(4), cy = g.a[1] + (g.b[1] - g.a[1]) * f + jit(4);
+      var r = Math.atan2(g.b[1] - g.a[1], g.b[0] - g.a[0]) * 180 / Math.PI - 90; while (r > 90) r -= 180; while (r <= -90) r += 180;
+      pos[idx] = { x: clamp01((cx - D.cw / 2) / (D.W - D.cw)), y: clamp01((cy - D.ch / 2) / (D.H - D.ch)), r: Math.round(r + jit(8)), z: k + 1 };
     });
-    return { total: CARDS.length, pos: pos, top: n + 1, up: [], done: [], notes: notes || {}, picks: (state && state.picks) || {} };
+    return pos;
+  }
+
+  function deal(notes, layout) {
+    layout = layout || (state && state.layout) || "stapel";
+    var order = shuffle(CARDS.map(function (_, i) { return i; })), n = order.length;
+    return { total: CARDS.length, layout: layout, pos: arrange(layout, order), top: n + 1, up: [], done: [], notes: notes || {}, picks: (state && state.picks) || {} };
+  }
+
+  /* Auslage wechseln: offene Karten gleiten in die neue Form, Fortschritt bleibt */
+  function setLayout(layout) {
+    var open = shuffle(CARDS.map(function (_, i) { return i; }).filter(function (i) { return state.done.indexOf(i) < 0; }));
+    var pos = arrange(layout, open);
+    if (!SHAPES[layout]) shapeClass(layout);
+    state.layout = layout; state.top = Math.max(state.top, open.length + 1);
+    Object.keys(pos).forEach(function (k) { state.pos[k] = pos[k]; });
+    save(); renderLayouts();
+    var desk = $("#board"), reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) { render(); return; }
+    desk.classList.add("is-arranging");
+    open.forEach(function (idx) { var el = desk.querySelector('.card[data-idx="' + idx + '"]'), p = state.pos[idx]; if (!el) return;
+      el.style.left = "calc(" + p.x + " * (100% - var(--cw)))"; el.style.top = "calc(" + p.y + " * (100% - var(--ch)))";
+      el.style.setProperty("--rot", p.r + "deg"); el.style.zIndex = isUp(idx) ? 5000 + p.z : p.z; });
+    clearTimeout(setLayout.t); setLayout.t = setTimeout(function () { desk.classList.remove("is-arranging"); render(); }, 900);
+  }
+  function shapeIcon(id) {
+    if (id === "stapel") return '<svg viewBox="0 0 24 24"><rect x="4" y="5" width="9" height="12" rx="2" transform="rotate(-14 8 11)"/><rect x="10" y="7" width="9" height="12" rx="2" transform="rotate(12 14 13)"/></svg>';
+    if (id === "verstreut") return '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="6" height="8" rx="1.5" transform="rotate(-20 5 7)"/><rect x="15" y="2" width="6" height="8" rx="1.5" transform="rotate(18 18 6)"/><rect x="8" y="13" width="6" height="8" rx="1.5" transform="rotate(8 11 17)"/></svg>';
+    var p = SHAPES[id](), x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    p.forEach(function (q) { q.forEach(function (v) { x0 = Math.min(x0, v[0]); x1 = Math.max(x1, v[0]); y0 = Math.min(y0, v[1]); y1 = Math.max(y1, v[1]); }); });
+    var s = 18 / Math.max(x1 - x0, y1 - y0), ox = 12 - (x0 + x1) / 2 * s, oy = 12 - (y0 + y1) / 2 * s;
+    return '<svg viewBox="0 0 24 24">' + p.map(function (q) { return '<polyline points="' + q.map(function (v) { return (ox + v[0] * s).toFixed(1) + "," + (oy + v[1] * s).toFixed(1); }).join(" ") + '"/>'; }).join("") + "</svg>";
+  }
+  function renderLayouts() {
+    var el = $("#layouts"); if (!el) return;
+    el.innerHTML = LAYOUTS.map(function (l) { var on = (state.layout || "stapel") === l[0];
+      return '<button type="button" class="lay' + (on ? " is-on" : "") + '" aria-pressed="' + on + '" data-l="' + l[0] + '">' + shapeIcon(l[0]) + "<span>" + l[1] + "</span></button>"; }).join("");
   }
 
   /* ---------- Hilfen ---------- */
@@ -67,7 +146,7 @@
 
   function render() {
     var desk = $("#board");
-    desk.innerHTML = PROPS;
+    desk.innerHTML = ""; shapeClass(state.layout);
     var open = CARDS.map(function (_, i) { return i; }).filter(function (i) { return state.done.indexOf(i) < 0; });
     open.forEach(function (idx) {
       var p = state.pos[idx], up = isUp(idx);
@@ -90,7 +169,7 @@
     $("#randomBtn").disabled = open.filter(function (i) { return !isUp(i); }).length === 0;
     renderPlayed();
     $("#finish").hidden = done < total || total === 0;
-    desk.hidden = done >= total && total > 0;
+    $("#deskZone").hidden = done >= total && total > 0;
   }
 
   /* Karten lassen sich verschieben; ein kurzer Klick deckt auf */
@@ -361,9 +440,12 @@
   /* ---------- Start ---------- */
   function start() {
     document.querySelectorAll("[data-logo]").forEach(function (el) { el.innerHTML = LOGO_SVG; });
+    $("#deskZone").insertAdjacentHTML("afterbegin", PROPS);
     state = load() || deal();
+    state.layout = state.layout || "stapel";
     save();
-    render();
+    render(); renderLayouts();
+    $("#layouts").addEventListener("click", function (e) { var b = e.target.closest(".lay"); if (b) setLayout(b.dataset.l); });
     $("#notesBtn").addEventListener("click", openNotes);
     $("#restartBtn").addEventListener("click", askRestart);
     $("#randomBtn").addEventListener("click", drawRandom);

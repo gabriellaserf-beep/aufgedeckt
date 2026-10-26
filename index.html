@@ -33,7 +33,11 @@
   <main>
     <section class="wrap" aria-label="Schreibtisch">
       <h2 class="sr">Schreibtisch mit Karten</h2>
-      <div class="desk" id="board"></div>
+      <div class="layouts" role="group" aria-label="Auslage der Karten">
+        <span class="layouts__label">Auslage</span>
+        <div class="layouts__list" id="layouts"></div>
+      </div>
+      <div class="desk-zone" id="deskZone"><div class="desk" id="board"></div></div>
       <p class="hint">Tipp eine Karte an, um sie umzudrehen, oder zieh sie über den Tisch.</p>
       <div class="finish" id="finish" hidden>
         <span class="eyebrow">Alle Karten gezogen</span>
