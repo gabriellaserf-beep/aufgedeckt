@@ -1,6 +1,6 @@
 # Aufgedeckt – Fortschritt statt Sieg
 
-Ein Kartenspiel von pub.tech über Konflikte: Man deckt Karten wie bei Patience auf und setzt sich mit dem Inhalt auseinander. Notizen bleiben nur im eigenen Browser und lassen sich als Textdatei herunterladen. Keine Datenbank, kein Login.
+Ein Kartenspiel von pub.tech über Konflikte: Die Karten liegen in losen Stapeln auf einem Schreibtisch. Man deckt zufällig welche auf (oder lässt eine ziehen) und setzt sich mit dem Inhalt auseinander. Karten lassen sich frei verschieben. Notizen bleiben nur im eigenen Browser und lassen sich als Textdatei herunterladen. Keine Datenbank, kein Login.
 
 ## Dateien
 

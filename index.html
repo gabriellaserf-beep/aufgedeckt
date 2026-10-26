@@ -15,28 +15,26 @@
 <div class="table" lang="de">
   <div class="haze" aria-hidden="true"></div>
   <header class="wrap top">
-    <span class="logo" data-logo></span>
+    <div class="brand">
+      <span class="logo" data-logo></span>
+      <h1 class="brand__title"><span class="prism">Aufgedeckt</span> <span class="brand__sub">Fortschritt statt Sieg</span></h1>
+    </div>
+    <div class="status" aria-label="Fortschritt">
+      <div class="track" role="presentation"><div class="track__fill" id="track"></div></div>
+      <span class="count" id="count" aria-live="polite">0 / 0</span>
+    </div>
     <div class="actions">
+      <button class="btn btn--primary" type="button" id="randomBtn">Zufällige Karte <span class="arr">→</span></button>
       <button class="btn btn--secondary" type="button" id="notesBtn">Notizen</button>
       <button class="btn btn--outline" type="button" id="restartBtn">Neu mischen</button>
     </div>
   </header>
 
   <main>
-    <section class="wrap intro">
-      <span class="eyebrow">Ein Kartenspiel über Konflikte von pub.tech</span>
-      <h1 class="headline"><span class="prism">Aufgedeckt</span><span class="sub">Fortschritt statt Sieg</span></h1>
-      <p class="lead">Zieh eine Karte und nimm dir Zeit. Deck eine leuchtende Karte auf und setz dich mit ihr auseinander. Wenn du magst, schreib dir etwas dazu auf. Dann leg sie ab und deck die nächste auf.</p>
-    </section>
-
-    <section class="wrap status" aria-label="Fortschritt">
-      <div class="track" role="presentation"><div class="track__fill" id="track"></div></div>
-      <span class="count" id="count" aria-live="polite">0 von 0 Karten</span>
-    </section>
-
-    <section class="wrap" aria-label="Auslage">
-      <h2 class="sr">Auslage</h2>
-      <div class="board" id="board"></div>
+    <section class="wrap" aria-label="Schreibtisch">
+      <h2 class="sr">Schreibtisch mit Karten</h2>
+      <div class="desk" id="board"></div>
+      <p class="hint">Tipp eine Karte an, um sie umzudrehen, oder zieh sie über den Tisch.</p>
       <div class="finish" id="finish" hidden>
         <span class="eyebrow">Alle Karten gezogen</span>
         <h2 class="headline prism" tabindex="-1">Gut gemacht</h2>

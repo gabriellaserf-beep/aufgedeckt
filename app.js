@@ -18,28 +18,41 @@
 
   /* ---------- Speichern ---------- */
   function load() {
-    try { var raw = localStorage.getItem(KEY); if (raw) { var s = JSON.parse(raw); if (s && s.cols && s.total === CARDS.length) { s.picks = s.picks || {}; return s; } } } catch (e) {}
+    try { var raw = localStorage.getItem(KEY); if (raw) { var s = JSON.parse(raw); if (s && s.total === CARDS.length) {
+      s.picks = s.picks || {}; s.notes = s.notes || {}; s.done = s.done || []; s.up = s.up || [];
+      if (!s.pos) { var n = deal(s.notes); n.done = s.done; n.up = s.up.filter(function (i) { return s.done.indexOf(i) < 0; }); n.picks = s.picks; return n; }
+      return s;
+    } } } catch (e) {}
     return null;
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 
-  /* ---------- Neues Spiel: mischen und wie bei Patience austeilen ---------- */
+  /* ---------- Neues Spiel: Karten lose auf dem Schreibtisch verteilen ---------- */
   function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function deal(notes) {
-    var order = shuffle(CARDS.map(function (_, i) { return i; }));
-    var cols = []; for (var c = 0; c < COLS; c++) cols.push([]);
-    var r = 0, k = 0;
-    while (k < order.length) {
-      for (var col = r % COLS; col < COLS && k < order.length; col++) cols[col].push(order[k++]);
-      r++;
+    var order = shuffle(CARDS.map(function (_, i) { return i; })), n = order.length;
+    /* mehrere lose Stapel, über den Tisch verteilt */
+    var P = Math.max(4, Math.min(8, Math.ceil(n / 10))), pc = P <= 4 ? 2 : P <= 6 ? 3 : 4, pr = Math.ceil(P / pc), centers = [];
+    for (var s = 0; s < P; s++) {
+      var c = s % pc, r = Math.floor(s / pc), inRow = Math.min(pc, P - r * pc), off = (pc - inRow) / 2;
+      centers.push({ x: (c + off + 0.5 + (Math.random() - 0.5) * 0.7) / pc, y: (r + 0.5 + (Math.random() - 0.5) * 0.55) / pr });
     }
-    return { total: CARDS.length, cols: cols, up: [], done: [], notes: notes || {}, picks: (state && state.picks) || {} };
+    var pos = {};
+    order.forEach(function (idx, k) {
+      var ce = centers[k % P], spread = 0.085;
+      pos[idx] = {
+        x: Math.min(1, Math.max(0, ce.x + (Math.random() - 0.5) * spread * 2)),
+        y: Math.min(1, Math.max(0, ce.y + (Math.random() - 0.5) * spread * 2.4)),
+        r: Math.round((Math.random() - 0.5) * 50),
+        z: k + 1
+      };
+    });
+    return { total: CARDS.length, pos: pos, top: n + 1, up: [], done: [], notes: notes || {}, picks: (state && state.picks) || {} };
   }
 
   /* ---------- Hilfen ---------- */
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function cat(i) { return CATS[CARDS[i].kategorie] || { name: "", bild: "", farbe: "#59d5dc" }; }
-  function topOf(col) { return col.length ? col[col.length - 1] : null; }
   function isUp(i) { return state.up.indexOf(i) >= 0; }
 
   /* ---------- Darstellung ---------- */
@@ -52,38 +65,75 @@
   }
 
   function render() {
-    var board = $("#board");
-    board.innerHTML = "";
-    state.cols.forEach(function (col, ci) {
-      var el = document.createElement("div");
-      el.className = "col";
-      el.style.minHeight = "calc(var(--ch) + " + Math.max(0, col.length - 1) + " * var(--stack))";
-      el.innerHTML = '<span class="col__slot" aria-hidden="true"></span>';
-      col.forEach(function (idx, pos) {
-        var top = pos === col.length - 1;
-        var b = document.createElement(top ? "button" : "div");
-        b.className = "card" + (top ? " is-playable" : "") + (top && isUp(idx) ? " is-up" : "");
-        b.style.top = "calc(" + pos + " * var(--stack))";
-        b.innerHTML = '<span class="card__inner">' + backHTML() + frontHTML(idx) + "</span>";
-        if (top) {
-          b.type = "button";
-          b.dataset.idx = idx;
-          b.setAttribute("aria-label", isUp(idx) ? "Aufgedeckte Karte: " + CARDS[idx].titel + " — öffnen" : "Verdeckte Karte in Spalte " + (ci + 1) + " aufdecken");
-          b.addEventListener("click", function () { flip(idx, b); });
-        } else {
-          b.setAttribute("aria-hidden", "true");
-        }
-        el.appendChild(b);
-      });
-      board.appendChild(el);
+    var desk = $("#board");
+    desk.innerHTML = "";
+    var open = CARDS.map(function (_, i) { return i; }).filter(function (i) { return state.done.indexOf(i) < 0; });
+    open.forEach(function (idx) {
+      var p = state.pos[idx], up = isUp(idx);
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "card is-playable" + (up ? " is-up" : "");
+      b.dataset.idx = idx;
+      b.style.left = "calc(" + p.x + " * (100% - var(--cw)))";
+      b.style.top = "calc(" + p.y + " * (100% - var(--ch)))";
+      b.style.zIndex = up ? 5000 + p.z : p.z;
+      b.style.setProperty("--rot", p.r + "deg");
+      b.innerHTML = '<span class="card__inner">' + backHTML() + frontHTML(idx) + "</span>";
+      b.setAttribute("aria-label", up ? "Aufgedeckte Karte: " + CARDS[idx].titel + " — öffnen" : "Verdeckte Karte aufdecken");
+      dragable(b, idx);
+      desk.appendChild(b);
     });
-
     var done = state.done.length, total = state.total;
     $("#track").style.transform = "scaleX(" + (total ? done / total : 0) + ")";
-    $("#count").textContent = done + " von " + total + " Karten";
+    $("#count").textContent = done + " / " + total;
+    $("#randomBtn").disabled = open.filter(function (i) { return !isUp(i); }).length === 0;
     renderPlayed();
     $("#finish").hidden = done < total || total === 0;
-    $("#board").hidden = done >= total && total > 0;
+    desk.hidden = done >= total && total > 0;
+  }
+
+  /* Karten lassen sich verschieben; ein kurzer Klick deckt auf */
+  function dragable(b, idx) {
+    var sx, sy, ox, oy, moved = false, active = false, rect;
+    b.addEventListener("pointerdown", function (e) {
+      if (e.button && e.button !== 0) return;
+      active = true; moved = false; sx = e.clientX; sy = e.clientY;
+      rect = $("#board").getBoundingClientRect(); ox = b.offsetLeft; oy = b.offsetTop;
+      try { b.setPointerCapture(e.pointerId); } catch (x) {}
+    });
+    b.addEventListener("pointermove", function (e) {
+      if (!active) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      if (!moved && Math.abs(dx) + Math.abs(dy) < 6) return;
+      if (!moved) { moved = true; b.classList.add("is-drag"); b.style.zIndex = (isUp(idx) ? 5000 : 0) + (++state.top); }
+      var W = rect.width - b.offsetWidth, H = rect.height - b.offsetHeight;
+      b.style.left = Math.max(0, Math.min(W, ox + dx)) + "px"; b.style.top = Math.max(0, Math.min(H, oy + dy)) + "px";
+    });
+    function end() {
+      if (!active) return; active = false;
+      if (moved) {
+        b.classList.remove("is-drag");
+        var W = rect.width - b.offsetWidth, H = rect.height - b.offsetHeight;
+        state.pos[idx].x = W > 0 ? b.offsetLeft / W : 0; state.pos[idx].y = H > 0 ? b.offsetTop / H : 0; state.pos[idx].z = state.top;
+        save();
+      }
+    }
+    b.addEventListener("pointerup", end);
+    b.addEventListener("pointercancel", end);
+    b.addEventListener("click", function (e) { if (moved) { e.preventDefault(); moved = false; return; } flip(idx, b); });
+  }
+
+  /* Zufällige verdeckte Karte ziehen */
+  function drawRandom() {
+    var hidden = CARDS.map(function (_, i) { return i; }).filter(function (i) { return state.done.indexOf(i) < 0 && !isUp(i); });
+    if (!hidden.length) return;
+    var idx = hidden[Math.floor(Math.random() * hidden.length)];
+    var el = document.querySelector('.card[data-idx="' + idx + '"]');
+    if (!el) return;
+    el.style.zIndex = ++state.top + 5000;
+    el.classList.add("is-picked");
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setTimeout(function () { flip(idx, el); }, reduce ? 0 : 450);
   }
 
   /* ---------- Abgelegte Karten: offen sichtbar, jederzeit wieder zu öffnen ---------- */
@@ -218,7 +268,6 @@
   }
 
   function finishCard(idx) {
-    state.cols.forEach(function (col) { if (topOf(col) === idx) col.pop(); });
     state.up = state.up.filter(function (i) { return i !== idx; });
     state.done.push(idx);
     save();
@@ -291,7 +340,7 @@
     o.innerHTML =
       '<div class="confirm" role="dialog" aria-modal="true" aria-labelledby="ctitle">' +
         '<h2 id="ctitle" tabindex="-1">Neu mischen?</h2>' +
-        "<p>Alle Karten kommen zurück in die Auslage. Deine Notizen bleiben gespeichert.</p>" +
+        "<p>Alle Karten kommen zurück auf den Tisch. Deine Notizen bleiben gespeichert.</p>" +
         '<div class="row"><button class="btn btn--primary" type="button" id="yes">Neu mischen <span class="arr">→</span></button>' +
         '<button class="btn btn--outline" type="button" id="no">Abbrechen</button></div>' +
       "</div>";
@@ -315,6 +364,7 @@
     render();
     $("#notesBtn").addEventListener("click", openNotes);
     $("#restartBtn").addEventListener("click", askRestart);
+    $("#randomBtn").addEventListener("click", drawRandom);
     $("#finishNotes").addEventListener("click", openNotes);
     $("#finishRestart").addEventListener("click", function () { state = deal(state.notes); save(); render(); });
     $("#reader").addEventListener("click", function (e) { if (e.target.id === "reader") closeOverlays(); });
