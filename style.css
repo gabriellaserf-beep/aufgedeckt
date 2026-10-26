@@ -289,17 +289,13 @@ button { font: inherit; color: inherit; }
 /* ---------- Schreibtisch-Gegenstände: liegen am Rand und darüber hinaus ---------- */
 .desk-zone { position: relative; }
 .props { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
-.prop { position: absolute; display: block; filter: drop-shadow(0 18px 24px rgba(12,8,20,0.55)); }
-.prop--keyboard { width: min(44%, 540px); left: -16%; bottom: 3%; transform: rotate(-9deg); }
-.prop--mouse { width: min(7.5%, 92px); right: -4.5%; bottom: 6%; transform: rotate(14deg); }
-.prop--stand { width: min(30%, 360px); left: 50%; top: -1%; transform: translateX(-50%); }
-.prop--mug { width: min(11%, 130px); right: -7%; top: 14%; }
-.prop--pen { width: min(17%, 200px); left: -9%; top: 12%; transform: rotate(62deg); }
+.prop { position: absolute; transform-origin: 50% 50%; filter: drop-shadow(0 14px 18px rgba(8,4,16,0.6)) drop-shadow(0 2px 3px rgba(8,4,16,0.5)); }
+.prop svg { display: block; width: 100%; height: auto; }
 .desk .card { z-index: 1; }
 .desk .card, .desk .card * { -webkit-user-select: none; user-select: none; -webkit-user-drag: none; -webkit-touch-callout: none; }
 .desk .card { cursor: grab; }
 .desk.is-arranging .card { transition: left 0.8s var(--ease-out), top 0.8s var(--ease-out), transform 0.8s var(--ease-out); }
-@media (max-width: 760px) { .props { display: none; } }
+@media (max-width: 860px) { .props { display: none; } }
 
 /* ---------- Auswahl der Auslage ---------- */
 .layouts { display: flex; align-items: center; gap: 12px; margin: 0 0 10px; min-width: 0; }
