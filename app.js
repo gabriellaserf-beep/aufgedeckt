@@ -169,13 +169,13 @@
     var A = shuffle(["keyboard", "mouse", "pen"]), B = shuffle(["coffee", "notebook", "plant", "phone", "notes"]), flip = Math.random() < 0.5;
     propLay = [];
     [[A, flip ? 1 : 0], [B, flip ? 0 : 1]].forEach(function (g) {
-      g[0].forEach(function (k, j) { var d = PROP_DEFS[k]; propLay.push({ k: k, side: g[1], slot: j, n: g[0].length, out: rnd(0.62, 1.05), rot: rnd(d.rot[0], d.rot[1]), gap: Math.random() }); });
+      g[0].forEach(function (k, j) { var d = PROP_DEFS[k]; propLay.push({ k: k, side: g[1], slot: j, n: g[0].length, out: rnd(0.8, 1.08), rot: rnd(d.rot[0], d.rot[1]), gap: Math.random() }); });
     });
     placeProps();
   }
   function placeProps() {
-    var z = $("#deskZone"), box = z && z.querySelector(".props"); if (!box || !propLay) return;
-    var W = z.clientWidth, H = z.clientHeight, s = Math.max(0.65, Math.min(1.1, W / 1000)), html = "";
+    var z = $("#stage"), box = z && z.querySelector(".props"), dz = $("#deskZone"); if (!box || !propLay || !dz) return;
+    var W = z.clientWidth, H = dz.clientHeight, s = Math.max(0.65, Math.min(1.1, W / 1000)), html = "";
     [0, 1].forEach(function (side) {
       var items = propLay.filter(function (p) { return p.side === side; }).sort(function (a, b) { return a.slot - b.slot; });
       var dims = items.map(function (p) { var d = PROP_DEFS[p.k], w = d.w * s, h = w * d.ar, r = p.rot * Math.PI / 180;
@@ -278,6 +278,7 @@
   }
 
   /* ---------- Abgelegte Karten: offen sichtbar, jederzeit wieder zu öffnen ---------- */
+  var justDone = null;
   function renderPlayed() {
     var grid = $("#played"), ids = state.done.slice().reverse();
     $("#playedCount").textContent = ids.length ? "(" + ids.length + ")" : "";
@@ -287,7 +288,7 @@
       var k = cat(idx), hasNote = (state.notes[idx] || "").trim().length > 0;
       var b = document.createElement("button");
       b.type = "button";
-      b.className = "mini";
+      b.className = "mini" + (idx === justDone ? " is-new" : "");
       b.style.setProperty("--acc", k.farbe);
       b.setAttribute("aria-label", CARDS[idx].titel + (hasNote ? ", mit Notiz" : "") + " — öffnen");
       b.innerHTML = '<img src="' + esc(k.bild) + '" alt=""><span class="mini__cat">' + esc(k.name) + '</span><span class="mini__title">' + esc(hy(CARDS[idx].titel)) + "</span>" +
@@ -412,8 +413,11 @@
     state.up = state.up.filter(function (i) { return i !== idx; });
     state.done.push(idx);
     save();
+    justDone = idx;
     closeOverlays(true);
     render();
+    justDone = null;
+    var pg = $("#played"); if (pg) pg.scrollTop = 0;
     var next = document.querySelector(".card.is-playable");
     if (next) next.focus({ preventScroll: true }); else $("#finish h2") && $("#finish h2").focus();
   }
@@ -500,7 +504,7 @@
   /* ---------- Start ---------- */
   function start() {
     document.querySelectorAll("[data-logo]").forEach(function (el) { el.innerHTML = LOGO_SVG; });
-    $("#deskZone").insertAdjacentHTML("afterbegin", '<div class="props" aria-hidden="true"></div>');
+    $("#stage").insertAdjacentHTML("afterbegin", '<div class="props" aria-hidden="true"></div>');
     state = load() || deal();
     state.layout = state.layout || "stapel";
     save();
