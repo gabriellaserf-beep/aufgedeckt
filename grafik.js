@@ -152,7 +152,72 @@
     return svg(out);
   }
 
-  var MAP = { felder: felder, stile: stile, eskalation: eskalation, checkliste: checkliste, uebung: uebung, playlist: playlist, buecher: buecher, fuehrung: fuehrung };
+  /* Harvard-Methode: vier Prinzipien als verbundene Kreise */
+  function harvard(n) {
+    var P = [["Menschen", "& Problem"], ["Interessen"], ["Optionen"], ["Kriterien"]], out = "";
+    out += '<path d="M48 100 H272" stroke="rgba(183,148,232,0.35)" stroke-width="3" stroke-dasharray="3 6" stroke-linecap="round"/>';
+    P.forEach(function (p, i) {
+      var x = 48 + i * 74.7, on = !n || n === i + 1;
+      var r = on && n ? 37 : 34;
+      out += '<circle cx="' + x + '" cy="100" r="' + r + '" fill="#b794e8" fill-opacity="' + (on ? 0.95 : 0.15) + '"/>' +
+        t(x, 100 - r - 8, String(i + 1), 12, 900, on ? "#b794e8" : MUTED) +
+        lines(x, p.length > 1 ? 98 : 104, p, 9.5, 900, on ? INK : MUTED, 11);
+    });
+    out += t(160, 176, "hart in der Sache · fair zu den Menschen", 11, 700, MUTED);
+    return svg(out);
+  }
+
+  /* BATNA: Weggabelung zwischen Einigung und Plan B */
+  function batna(n) {
+    var out = '<path d="M30 150 C 110 150, 120 100, 160 100" fill="none" stroke="' + PAPER + '" stroke-opacity="0.5" stroke-width="4" stroke-linecap="round"/>' +
+      '<path d="M160 100 C 200 100, 220 50, 290 46" fill="none" stroke="#b794e8" stroke-width="4" stroke-linecap="round"/>' +
+      '<path d="M160 100 C 200 100, 220 150, 290 154" fill="none" stroke="' + LIME + '" stroke-width="4" stroke-linecap="round" stroke-dasharray="' + (n ? "0" : "2 8") + '"/>' +
+      '<circle cx="160" cy="100" r="7" fill="' + PAPER + '"/>' +
+      '<rect x="214" y="16" width="96" height="26" rx="13" fill="#b794e8"/>' + t(262, 34, "Einigung", 12, 900, INK) +
+      '<rect x="214" y="158" width="96" height="26" rx="13" fill="' + LIME + '"/>' + t(262, 176, "Plan B = BATNA", 11, 900, INK) +
+      t(70, 186, "Verhandlung", 11, 700, MUTED);
+    return svg(out);
+  }
+
+  /* LEAF: vier Blätter */
+  function leaf(n) {
+    var L = [["L", "Listen"], ["E", "Empathize"], ["A", "Apologize"], ["F", "Find a Solution"]], out = "";
+    out += '<path d="M40 150 Q160 120 290 150" fill="none" stroke="#35B680" stroke-width="3" stroke-linecap="round"/>';
+    L.forEach(function (l, i) {
+      var x = 62 + i * 66, y = 92 - (i % 2) * 14;
+      out += '<g transform="rotate(' + (-18 + i * 12) + " " + x + " " + y + ')"><path d="M' + x + " " + (y + 40) + " C " + (x - 36) + " " + (y + 10) + ", " + (x - 22) + " " + (y - 36) + ", " + x + " " + (y - 46) + " C " + (x + 22) + " " + (y - 36) + ", " + (x + 36) + " " + (y + 10) + ", " + x + " " + (y + 40) + 'Z" fill="' + LIME + '" fill-opacity="' + (n ? 0.95 : 0.85 - i * 0.12) + '"/>' +
+        '<path d="M' + x + " " + (y + 40) + " V" + (y - 38) + '" stroke="' + INK + '" stroke-opacity="0.25" stroke-width="1.5"/></g>' +
+        t(x, y + 8, l[0], 26, 900, INK) + t(x, 178, l[1], 9.5, 800, MUTED);
+    });
+    return svg(out);
+  }
+
+  /* SAG ES: Buchstaben-Kacheln, deine Sicht und die andere Sicht */
+  function sages(n) {
+    var W = ["S", "A", "G", "E", "S"], out = "";
+    W.forEach(function (c, i) {
+      var grp = i < 3 ? 1 : 2, on = !n || n === grp, x = 22 + i * 58 + (i > 2 ? 10 : 0);
+      out += '<rect x="' + x + '" y="52" width="50" height="62" rx="12" fill="' + (grp === 1 ? "#b794e8" : AQUA) + '" fill-opacity="' + (on ? 0.95 : 0.15) + '"/>' + t(x + 25, 96, c, 34, 900, on ? INK : MUTED);
+    });
+    out += '<path d="M22 130 H186" stroke="#b794e8" stroke-width="2" stroke-opacity="' + (!n || n === 1 ? 1 : 0.3) + '"/>' + t(104, 150, "meine Sicht", 11, 800, !n || n === 1 ? PAPER : MUTED) +
+      '<path d="M206 130 H298" stroke="' + AQUA + '" stroke-width="2" stroke-opacity="' + (!n || n === 2 ? 1 : 0.3) + '"/>' + t(252, 150, "deine Sicht & Lösung", 11, 800, !n || n === 2 ? PAPER : MUTED);
+    return svg(out);
+  }
+
+  /* Gesprächsablauf: acht Stationen, je zwei pro Karte */
+  function ablauf(n) {
+    var S = ["Einstieg", "Wahr-|nehmung", "Sicht|Gegenüber", "Verständnis", "Lösung", "Kriterien", "Verein-|barung", "Abschluss"], out = "";
+    out += '<path d="M36 92 H284" stroke="rgba(183,148,232,0.35)" stroke-width="3"/>';
+    S.forEach(function (s, i) {
+      var x = 36 + i * 35.4, on = !n || Math.floor(i / 2) + 1 === n, y = i % 2 ? 128 : 60;
+      out += '<circle cx="' + x + '" cy="92" r="' + (on ? 11 : 7) + '" fill="' + (on ? "#b794e8" : "#2d1e4a") + '" stroke="#b794e8" stroke-width="2"/>' +
+        '<path d="M' + x + " " + (i % 2 ? 103 : 81) + " V" + (i % 2 ? 112 : 72) + '" stroke="#b794e8" stroke-opacity="' + (on ? 1 : 0.3) + '" stroke-width="1.5"/>' +
+        lines(x, i % 2 ? 126 : 50 - (s.indexOf("|") >= 0 ? 12 : 0), s.split("|"), 10, on ? 900 : 700, on ? PAPER : MUTED, 12);
+    });
+    return svg(out);
+  }
+
+  var MAP = { felder: felder, stile: stile, eskalation: eskalation, checkliste: checkliste, uebung: uebung, playlist: playlist, buecher: buecher, fuehrung: fuehrung, harvard: harvard, batna: batna, leaf: leaf, sages: sages, ablauf: ablauf };
   window.GRAFIK = function (spec) {
     if (!spec) return "";
     var p = String(spec).split(":"), fn = MAP[p[0]];
