@@ -81,12 +81,29 @@
     var done = state.done.length, total = state.total;
     $("#track").style.transform = "scaleX(" + (total ? done / total : 0) + ")";
     $("#count").textContent = done + " von " + total + " Karten";
-    var pile = $("#pile");
-    pile.classList.toggle("has-cards", done > 0);
-    if (done) pile.style.setProperty("--acc", cat(state.done[done - 1]).farbe);
-    $("#pileText").textContent = done ? done + (done === 1 ? " Karte abgelegt" : " Karten abgelegt") : "Noch keine Karte abgelegt";
+    renderPlayed();
     $("#finish").hidden = done < total || total === 0;
     $("#board").hidden = done >= total && total > 0;
+  }
+
+  /* ---------- Abgelegte Karten: offen sichtbar, jederzeit wieder zu öffnen ---------- */
+  function renderPlayed() {
+    var grid = $("#played"), ids = state.done.slice().reverse();
+    $("#playedCount").textContent = ids.length ? "(" + ids.length + ")" : "";
+    $("#playedEmpty").hidden = ids.length > 0;
+    grid.innerHTML = "";
+    ids.forEach(function (idx) {
+      var k = cat(idx), hasNote = (state.notes[idx] || "").trim().length > 0;
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "mini";
+      b.style.setProperty("--acc", k.farbe);
+      b.setAttribute("aria-label", CARDS[idx].titel + (hasNote ? ", mit Notiz" : "") + " — öffnen");
+      b.innerHTML = '<img src="' + esc(k.bild) + '" alt=""><span class="mini__cat">' + esc(k.name) + '</span><span class="mini__title">' + esc(hy(CARDS[idx].titel)) + "</span>" +
+        (hasNote ? '<span class="mini__note">Notiz</span>' : "");
+      b.addEventListener("click", function () { lastFocus = b; openReader(idx); });
+      grid.appendChild(b);
+    });
   }
 
   /* ---------- Aufdecken und Lesen ---------- */
@@ -101,11 +118,13 @@
 
   function openReader(idx) {
     var c = CARDS[idx], k = cat(idx);
+    var played = state.done.indexOf(idx) >= 0;
+    var no = played ? state.done.indexOf(idx) + 1 : state.done.length + 1;
     var o = $("#reader");
     o.innerHTML =
       '<div class="reader" role="dialog" aria-modal="true" aria-labelledby="rtitle">' +
         '<article class="big" style="--acc:' + k.farbe + '">' +
-          '<span class="big__no">' + (state.done.length + 1) + " / " + state.total + "</span>" +
+          '<span class="big__no">' + (played ? "Abgelegt · " : "") + no + " / " + state.total + "</span>" +
           '<div class="big__media"><img src="' + esc(k.bild) + '" alt=""></div>' +
           '<span class="big__cat">' + esc(k.name) + (c.teil ? ' <span class="big__teil">· ' + esc(c.teil) + "</span>" : "") + "</span>" +
           '<h2 class="big__title" id="rtitle">' + esc(hy(c.titel)) + "</h2>" +
@@ -118,17 +137,19 @@
           '<textarea id="note" placeholder="Schreib auf, was dir dazu einfällt. Nur du siehst das.">' + esc(state.notes[idx] || "") + "</textarea>" +
           '<p class="notes__meta">Wird nur in diesem Browser gespeichert.</p>' +
           '<div class="row">' +
-            '<button class="btn btn--primary" type="button" id="done">Karte ablegen <span class="arr">→</span></button>' +
-            '<button class="btn btn--outline" type="button" id="later">Später weiter</button>' +
+            (played
+              ? '<button class="btn btn--primary" type="button" id="later">Fertig <span class="arr">→</span></button>'
+              : '<button class="btn btn--primary" type="button" id="done">Karte ablegen <span class="arr">→</span></button>' +
+                '<button class="btn btn--outline" type="button" id="later">Später weiter</button>') +
           "</div>" +
         "</div>" +
       "</div>";
     o.hidden = false;
     var ta = $("#note", o);
     ta.addEventListener("input", function () { state.notes[idx] = ta.value; save(); });
-    $("#done", o).addEventListener("click", function () { finishCard(idx); });
+    if (!played) $("#done", o).addEventListener("click", function () { finishCard(idx); });
     $("#later", o).addEventListener("click", closeOverlays);
-    setTimeout(function () { ta.focus({ preventScroll: true }); }, 50);
+    setTimeout(function () { ta.focus({ preventScroll: true }); ta.setSelectionRange(ta.value.length, ta.value.length); }, 50);
   }
 
   function finishCard(idx) {
@@ -184,7 +205,7 @@
         '<span class="eyebrow">Gezogene Karten</span>' +
         '<h2 id="ntitle" tabindex="-1">Deine Notizen</h2>' +
         (ids.length ? '<ul class="drawer__list">' + ids.map(function (i) {
-          return '<li style="--acc:' + cat(i).farbe + '"><span class="cat">' + esc(cat(i).name) + '</span><span class="t">' + esc(CARDS[i].titel) + '</span><span class="n">' + esc(state.notes[i] || "Keine Notiz") + "</span></li>";
+          return '<li style="--acc:' + cat(i).farbe + '"><button type="button" class="drawer__item" data-idx="' + i + '"><span class="cat">' + esc(cat(i).name) + '</span><span class="t">' + esc(hy(CARDS[i].titel)) + '</span><span class="n">' + esc(state.notes[i] || "Noch keine Notiz – tippen, um etwas zu schreiben") + '</span><span class="go">Öffnen <span class="arr">→</span></span></button></li>';
         }).join("") + "</ul>" : '<p class="empty">Du hast noch keine Karte aufgedeckt. Tipp eine leuchtende Karte an, um zu starten.</p>') +
         '<p class="msg" id="msg" aria-live="polite"></p>' +
         '<div class="row"><button class="btn btn--secondary" type="button" id="dl"' + (ids.length ? "" : " disabled") + '>Notizen herunterladen</button>' +
@@ -192,6 +213,7 @@
       "</div>";
     o.hidden = false;
     $("#dl", o).addEventListener("click", function () { download($("#msg", o)); });
+    o.querySelectorAll(".drawer__item").forEach(function (b) { b.addEventListener("click", function () { openReader(+b.dataset.idx); }); });
     $("#close", o).addEventListener("click", function () { closeOverlays(); });
     $("#ntitle", o).focus();
   }
@@ -225,7 +247,6 @@
     save();
     render();
     $("#notesBtn").addEventListener("click", openNotes);
-    $("#pile").addEventListener("click", openNotes);
     $("#restartBtn").addEventListener("click", askRestart);
     $("#finishNotes").addEventListener("click", openNotes);
     $("#finishRestart").addEventListener("click", function () { state = deal(state.notes); save(); render(); });

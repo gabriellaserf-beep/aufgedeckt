@@ -28,8 +28,8 @@ window.KATEGORIEN = {
 */
 window.TRENNUNGEN = [
   "Zwischen|mensch|lich", "Lösungs|varianten", "Entgegen|kommen", "Konflikt|ursachen", "Konflikt|lösung",
-  "Konflikt|felder", "Konflikt|stile", "Selbst|reflexion", "Eskalations|prävention", "Perspektiv|wechsel",
-  "Team|zusammen|halt", "Persönlichkeits|typen", "Kommuni|kation", "Konfron|tieren", "Verein|barung",
+  "Konflikt|felder", "Konflikt|stile", "Selbst|reflexion", "Eskala|tions|prävention", "Perspek|tiv|wechsel",
+  "Team|zusammen|halt", "Persön|lichkeits|typen", "Kommuni|kation", "Konfron|tieren", "Verein|barung",
   "Wahr|nehmung", "Gemein|sames", "Fort|schritt", "Weiter|atmen", "Indivi|duell", "Koope|rieren",
   "Gewalt|freie", "Schlüssel|personen", "Einzel|gespräche", "Vernichtungs|schläge", "Zer|splitterung",
   "Gesichts|verlust", "Droh|strategien", "Verantwor|tung", "Unter|stützung", "Kooperations|wille",

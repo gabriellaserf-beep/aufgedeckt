@@ -46,10 +46,13 @@
           <button class="btn btn--outline" type="button" id="finishRestart">Noch einmal spielen</button>
         </div>
       </div>
-      <div class="pilebar">
-        <button class="pile" type="button" id="pile" aria-label="Abgelegte Karten und Notizen ansehen"></button>
-        <span id="pileText">Noch keine Karte abgelegt</span>
-      </div>
+      <section class="played" aria-labelledby="playedTitle">
+        <div class="played__head">
+          <h2 class="eyebrow" id="playedTitle">Abgelegte Karten <span id="playedCount"></span></h2>
+        </div>
+        <p class="played__empty" id="playedEmpty">Hier sammeln sich deine abgelegten Karten. Du kannst sie jederzeit wieder öffnen und an deinen Notizen weiterschreiben.</p>
+        <div class="played__grid" id="played"></div>
+      </section>
     </section>
   </main>
 </div>
