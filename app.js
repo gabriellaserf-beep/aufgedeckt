@@ -103,9 +103,10 @@
         '<article class="big" style="--acc:' + k.farbe + '">' +
           '<span class="big__no">' + (state.done.length + 1) + " / " + state.total + "</span>" +
           '<div class="big__media"><img src="' + esc(k.bild) + '" alt=""></div>' +
-          '<span class="big__cat">' + esc(k.name) + "</span>" +
+          '<span class="big__cat">' + esc(k.name) + (c.teil ? ' <span class="big__teil">· ' + esc(c.teil) + "</span>" : "") + "</span>" +
           '<h2 class="big__title" id="rtitle">' + esc(c.titel) + "</h2>" +
-          '<p class="big__text">' + esc(c.text) + "</p>" +
+          (c.text ? '<p class="big__text">' + esc(c.text) + "</p>" : "") +
+          (c.liste && c.liste.length ? '<ul class="big__list">' + c.liste.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") +
           (c.impuls ? '<p class="big__hint">' + esc(c.impuls) + "</p>" : "") +
         "</article>" +
         '<div class="notes">' +
@@ -143,7 +144,8 @@
     state.done.concat(state.up).forEach(function (i) {
       var n = (state.notes[i] || "").trim();
       lines.push("■ " + cat(i).name + " — " + CARDS[i].titel);
-      lines.push(CARDS[i].text);
+      if (CARDS[i].text) lines.push(CARDS[i].text);
+      (CARDS[i].liste || []).forEach(function (x) { lines.push("  – " + x); });
       lines.push(n ? n : "(keine Notiz)");
       lines.push("");
     });

@@ -1,46 +1,74 @@
 /*
-  Karteninhalte — BEISPIELKARTEN (Platzhalter, werden durch die echten Inhalte ersetzt).
+  Karteninhalte.
 
   So fügst du Karten hinzu oder änderst sie:
   - Jede Karte steht in geschweiften Klammern { … } und endet mit einem Komma.
   - "kategorie" muss einer der Schlüssel aus KATEGORIEN sein.
-  - "titel" ist die große Zeile, "text" die Frage oder Aufgabe, "impuls" ein kleiner Hinweis (optional).
+  - "titel"   = große Zeile
+  - "text"    = Frage, Aufgabe oder Erklärung
+  - "liste"   = (optional) Aufzählung, z. B. Bücher oder Songs
+  - "impuls"  = (optional) kleiner Hinweis unten auf der Karte
+  - "teil"    = (optional) z. B. "3 / 10", wenn ein Inhalt über mehrere Karten verteilt ist
   - Die Anzahl der Karten ist frei. Die Auslage verteilt sie automatisch auf die Spalten.
 */
 window.KATEGORIEN = {
-  wahrnehmen: { name: "Wahrnehmen", bild: "eye.webp", farbe: "#59d5dc" },
-  benennen:   { name: "Benennen",   bild: "lightbulb.webp", farbe: "#b5fd42" },
-  annehmen:   { name: "Annehmen",   bild: "hands.webp", farbe: "#9F9FF4" },
-  ausdruecken:{ name: "Ausdrücken", bild: "speaker.webp", farbe: "#F9CE1F" },
-  loslassen:  { name: "Loslassen",  bild: "wave.webp", farbe: "#0DADF2" },
-  staerken:   { name: "Stärken",    bild: "heart.webp", farbe: "#F471DE" }
+  checkliste: { name: "Checkliste",        bild: "target.webp",    farbe: "#59d5dc" },
+  uebung:     { name: "Übung",             bild: "hands.webp",     farbe: "#9F9FF4" },
+  felder:     { name: "Konfliktfelder",    bild: "gear.webp",      farbe: "#0DADF2" },
+  stile:      { name: "Konfliktstile",     bild: "heart.webp",     farbe: "#F9851F" },
+  playlist:   { name: "Playlist",          bild: "speaker.webp",   farbe: "#F471DE" },
+  buecher:    { name: "Bücher",            bild: "lightbulb.webp", farbe: "#F9CE1F" }
 };
 
 window.KARTEN = [
-  { kategorie: "wahrnehmen", titel: "Kurz innehalten", text: "Wie fühlst du dich gerade, in genau diesem Moment? Nimm dir drei Atemzüge Zeit, bevor du antwortest.", impuls: "Es gibt keine falsche Antwort." },
-  { kategorie: "wahrnehmen", titel: "Der Körper weiß es", text: "Wo in deinem Körper spürst du gerade etwas? Enge, Wärme, Unruhe, Leichtigkeit?", impuls: "Geh einmal vom Kopf bis zu den Füßen." },
-  { kategorie: "wahrnehmen", titel: "Wetterbericht", text: "Wenn deine Stimmung heute ein Wetter wäre: Welches wäre es?", impuls: "Sonnig, bewölkt, Gewitter, Nebel …" },
-  { kategorie: "wahrnehmen", titel: "Rückblick", text: "Welcher Moment heute hat etwas in dir ausgelöst? Was ist da passiert?", impuls: "Auch kleine Momente zählen." },
+  /* ---------- Checkliste für Konflikte ---------- */
+  { kategorie: "checkliste", teil: "Einstieg", titel: "Fortschritt statt Sieg", text: "„Das Ziel eines Konflikts oder einer Auseinandersetzung soll nicht der Sieg, sondern der Fortschritt sein.“", impuls: "Joseph Joubert" },
+  { kategorie: "checkliste", teil: "1 / 10", titel: "Weiteratmen und Ruhe bewahren", text: "Der erste Schritt ist am schwierigsten. Aber ohne ihn wird es noch schwerer." },
+  { kategorie: "checkliste", teil: "2 / 10", titel: "Konflikt anerkennen", text: "Leugne den Konflikt nicht. Erkenne an, dass er unter deiner Beteiligung geklärt werden muss und kann." },
+  { kategorie: "checkliste", teil: "3 / 10", titel: "Zuhören", text: "Hör den beteiligten Parteien zu und lass Emotionen zu, ohne sie zu bewerten." },
+  { kategorie: "checkliste", teil: "4 / 10", titel: "Verstehen", text: "Versuche, die Ursachen des Konflikts zu verstehen." },
+  { kategorie: "checkliste", teil: "5 / 10", titel: "Kommunikation", text: "Unterstütze und ermutige zu einem offenen und wertschätzenden Gespräch." },
+  { kategorie: "checkliste", teil: "6 / 10", titel: "Gemeinsames", text: "Erforscht alle gemeinsamen Ziele und Interessen, die eine Basis für die Lösung sein können." },
+  { kategorie: "checkliste", teil: "7 / 10", titel: "Lösungsvarianten", text: "Erarbeitet in gemeinsamer Verantwortung verschiedene Lösungswege." },
+  { kategorie: "checkliste", teil: "8 / 10", titel: "Hilfe suchen", text: "Zieht bei Bedarf eine neutrale Person zur Klärung hinzu." },
+  { kategorie: "checkliste", teil: "9 / 10", titel: "Vereinbarung", text: "Formuliert gemeinsam eine Vereinbarung, die für alle Seiten akzeptabel und tragbar ist." },
+  { kategorie: "checkliste", teil: "10 / 10", titel: "Feedback", text: "Äußere Wertschätzung für den konstruktiven Umgang und ermuntere zur gemeinsamen Reflexion." },
 
-  { kategorie: "benennen", titel: "Ein Wort dafür", text: "Finde ein Wort für das, was du gerade fühlst. Und dann ein zweites, das noch genauer passt.", impuls: "Zum Beispiel: gereizt statt schlecht." },
-  { kategorie: "benennen", titel: "Wie stark?", text: "Auf einer Skala von 1 bis 10: Wie stark ist das Gefühl gerade? Was würde es um einen Punkt verändern?", impuls: "" },
-  { kategorie: "benennen", titel: "Mischgefühle", text: "Manchmal fühlen wir zwei Dinge gleichzeitig. Gibt es gerade ein Gefühl, das ein anderes begleitet?", impuls: "Zum Beispiel Vorfreude und Nervosität." },
+  /* ---------- Problem-Lösungs-Gymnastik ---------- */
+  { kategorie: "uebung", teil: "1 / 3", titel: "Im CRASH-Zustand", text: "So fühlt sich die Problem-Trance an:", liste: ["Contracted – zusammengezogen", "Reactive – reaktiv", "Analysis – im Grübeln", "Separated – abgetrennt", "Hurting – verletzt"], impuls: "Wie stehst du da, wenn du so drauf bist?" },
+  { kategorie: "uebung", teil: "2 / 3", titel: "Im COACH-Zustand", text: "So fühlt sich die Lösungs-Trance an:", liste: ["Centered – zentriert", "Open – offen", "Aware – aufmerksam", "Connected – verbunden", "Holding – gehalten"], impuls: "Wie stehst du da, wenn du so drauf bist?" },
+  { kategorie: "uebung", teil: "3 / 3", titel: "Problem-Lösungs-Gymnastik", text: "Probier es jetzt mit deinem Körper aus:", liste: ["In den CRASH-Zustand gehen: die Problem-Haltung bewusst verstärken.", "In den COACH-Zustand gehen: die Lösungs-Haltung bewusst vergrößern.", "Drei Mal hin- und herpendeln und mit COACH beenden."], impuls: "Übung aus der hypnosystemischen Arbeit nach Gunther Schmidt" },
 
-  { kategorie: "annehmen", titel: "Darf da sein", text: "Sag dir innerlich: „Das Gefühl darf gerade da sein.“ Was verändert sich, wenn du es nicht wegschiebst?", impuls: "" },
-  { kategorie: "annehmen", titel: "Was es dir sagt", text: "Jedes Gefühl hat eine Botschaft. Was könnte dein Gefühl dir gerade mitteilen wollen?", impuls: "Ärger zeigt oft eine Grenze." },
-  { kategorie: "annehmen", titel: "Freundliche Stimme", text: "Was würdest du einer guten Freundin sagen, die sich gerade so fühlt wie du?", impuls: "Sag es dann dir selbst." },
-  { kategorie: "annehmen", titel: "Ohne Urteil", text: "Beschreibe eine Situation von heute nur mit Fakten, ganz ohne Bewertung.", impuls: "" },
+  /* ---------- Konfliktfelder ---------- */
+  { kategorie: "felder", teil: "Überblick", titel: "Wo sitzt der Konflikt?", text: "Konflikte entstehen in vier Feldern: Struktur, Inhalte, Zwischenmenschliches und Individuelles. Oft hängen mehrere zusammen.", impuls: "Zieh die anderen Karten dieser Kategorie, um die Felder kennenzulernen." },
+  { kategorie: "felder", teil: "1 / 4", titel: "Struktur", text: "Rollen, Richtlinien, Governance, Macht- und Aufgabenverteilung.", impuls: "Ist in deinem Konflikt etwas an der Struktur unklar?" },
+  { kategorie: "felder", teil: "2 / 4", titel: "Inhalte", text: "Projekte, Prioritäten, Ressourcen, operative Arbeit.", impuls: "Worum geht es in der Sache eigentlich?" },
+  { kategorie: "felder", teil: "3 / 4", titel: "Zwischenmenschlich", text: "Beziehungen, Kultur, Atmosphäre, Gruppendynamik.", impuls: "Wie ist die Stimmung zwischen den Beteiligten?" },
+  { kategorie: "felder", teil: "4 / 4", titel: "Individuell", text: "Haltung, Verhalten, Fähigkeiten, Gefühle, Tagesform.", impuls: "Was bringst du selbst heute mit?" },
 
-  { kategorie: "ausdruecken", titel: "Drei Sätze", text: "Schreib drei Sätze darüber, wie es dir geht. Niemand außer dir liest sie.", impuls: "Nutze das Notizfeld." },
-  { kategorie: "ausdruecken", titel: "Ich-Botschaft", text: "Formuliere einen Satz, der mit „Ich fühle mich …, weil …“ beginnt.", impuls: "" },
-  { kategorie: "ausdruecken", titel: "Wem erzählst du es?", text: "Mit wem könntest du über das sprechen, was dich gerade beschäftigt?", impuls: "Ein Name reicht." },
+  /* ---------- Konfliktstile ---------- */
+  { kategorie: "stile", teil: "Überblick", titel: "Wie gehst du in Konflikte?", text: "Zwei Fragen bestimmen deinen Stil: Wie sehr orientierst du dich an den Bedürfnissen der anderen (Kooperationswille)? Und wie sehr an deinen eigenen (Konfrontationsbereitschaft)?", impuls: "Daraus ergeben sich vier Stile." },
+  { kategorie: "stile", teil: "1 / 4", titel: "Vermeiden", text: "Vermeiden, Flüchten, Beenden.", impuls: "Wenig Kooperation, wenig Konfrontation. Wann ziehst du dich zurück?" },
+  { kategorie: "stile", teil: "2 / 4", titel: "Entgegenkommen", text: "Entgegenkommen, Nachgeben, Aufopfern.", impuls: "Viel Kooperation, wenig Konfrontation. Wann gibst du nach, obwohl du etwas anderes brauchst?" },
+  { kategorie: "stile", teil: "3 / 4", titel: "Konfrontieren", text: "Konfrontieren, Konkurrieren, Dominieren.", impuls: "Wenig Kooperation, viel Konfrontation. Wann willst du dich durchsetzen?" },
+  { kategorie: "stile", teil: "4 / 4", titel: "Kooperieren", text: "Verstehen, Integrieren, Kooperieren.", impuls: "Viel Kooperation, viel Konfrontation. Was brauchst du, um hierhin zu kommen?" },
 
-  { kategorie: "loslassen", titel: "Ausatmen", text: "Atme vier Sekunden ein und sechs Sekunden aus. Wiederhole das fünf Mal.", impuls: "Langes Ausatmen beruhigt." },
-  { kategorie: "loslassen", titel: "Nicht in deiner Hand", text: "Was beschäftigt dich, das du gerade nicht ändern kannst? Und was kannst du ändern?", impuls: "" },
-  { kategorie: "loslassen", titel: "Bewegung", text: "Steh kurz auf, streck dich oder geh ein paar Schritte. Wie fühlt es sich danach an?", impuls: "" },
+  /* ---------- Playlist: Wenn Konflikt(verlauf) eine Playlist wäre … ---------- */
+  { kategorie: "playlist", teil: "Phase 1 / 6", titel: "Konfliktursachen verstehen", liste: ["Herbert Grönemeyer – Bleibt alles anders (1998): Konflikte durch Veränderung, Unsicherheit akzeptieren statt bekämpfen", "Harry Styles – As It Was (2022): Veränderung, Rollenwandel, Orientierung", "Keane – Everybody's Changing (2004): Menschen entwickeln sich unterschiedlich schnell"] },
+  { kategorie: "playlist", teil: "Phase 2 / 6", titel: "Wahrnehmung & Selbstreflexion", liste: ["Alec Benjamin – Mind Is A Prison (2019): Annahmen, Gedankenfallen und innere Konflikte", "Travis – Why Does It Always Rain on Me? (1999): Projektionen und Fehlinterpretationen", "Michael Jackson – Man in the Mirror (1988): Eigenverantwortung, mein Anteil am Konflikt"] },
+  { kategorie: "playlist", teil: "Phase 3 / 6", titel: "Eskalationsprävention", liste: ["Xavier Rudd – Follow the Sun (2010): Erst reflektieren, dann reagieren", "OneRepublic – I Ain't Worried (2022): Gelassenheit statt Überreaktion", "Billie Eilish – everything i wanted (2019): Psychologische Sicherheit, Vertrauen und Unterstützung"] },
+  { kategorie: "playlist", teil: "Phase 4 / 6", titel: "Perspektivwechsel & Kommunikation", liste: ["Tim Bendzko – Wenn Worte meine Sprache wären (2011): Bedürfnisse ausdrücken, Kommunikationsbarrieren", "Cat Stevens – Father and Son (1970): Unterschiedliche Perspektiven verstehen, Generationen- und Wertekonflikte"] },
+  { kategorie: "playlist", teil: "Phase 5 / 6", titel: "Vertrauen & Teamzusammenhalt", liste: ["Coldplay – Fix You (2005): Empathie, Unterstützung statt Schuldzuweisung", "U2 – One (1991): Unterschiedlichkeit akzeptieren", "Jack Johnson – Better Together (2005): Kooperation statt Konkurrenz, Teamstärken nutzen"] },
+  { kategorie: "playlist", teil: "Phase 6 / 6", titel: "Konfliktlösung & Zukunft", liste: ["The Beatles – We Can Work It Out (1965): Harvard-Methode in Musikform – zuhören, verhandeln, Kompromiss finden, gemeinsam Lösungen entwickeln", "Kitschkrieg – Gut Genug: Selbstliebe und Mut"] },
 
-  { kategorie: "staerken", titel: "Was gut tut", text: "Nenne drei Dinge, die dir in schwierigen Momenten guttun.", impuls: "Groß oder klein." },
-  { kategorie: "staerken", titel: "Schon geschafft", text: "Denk an eine Situation, die du gut gemeistert hast. Was hat dir damals geholfen?", impuls: "" },
-  { kategorie: "staerken", titel: "Dankbar", text: "Wofür bist du heute dankbar, auch wenn es nur eine Kleinigkeit ist?", impuls: "" },
-  { kategorie: "staerken", titel: "Nächster Schritt", text: "Was ist ein kleiner Schritt, den du heute noch für dich tun kannst?", impuls: "Klein genug, dass er sicher klappt." }
+  /* ---------- Bücher ---------- */
+  { kategorie: "buecher", teil: "Gewaltfreie Kommunikation · Einsteiger", titel: "Gewaltfreie Kommunikation", liste: ["„Gewaltfreie Kommunikation“ – Marshall B. Rosenberg: Klassiker, Grundlagenwerk mit praktischen Übungen", "„Das Herz gesellschaftlicher Veränderung“ – Marshall B. Rosenberg: Anwendung der GFK in Konflikten und Führung"] },
+  { kategorie: "buecher", teil: "Gewaltfreie Kommunikation · Erfahrene", titel: "Gewaltfreie Kommunikation", liste: ["„Konflikte lösen durch Gewaltfreie Kommunikation“ – Gabriele Seils: Praktische Beispiele für den Berufsalltag", "„GFK in Organisationen“ – Ike Lasater & John Kinyon: Wie GFK in Teams und Führung funktioniert"] },
+  { kategorie: "buecher", teil: "Gewaltfreie Kommunikation · Profi", titel: "Gewaltfreie Kommunikation", liste: ["„Die Sprache des Friedens sprechen“ – Marshall B. Rosenberg: Fortgeschrittene Techniken, auch für Mediation", "„Nonviolent Communication: A Language of Life“ – Marshall B. Rosenberg: Erweiterte Konzepte, Fallstudien"] },
+  { kategorie: "buecher", teil: "DISG & Persönlichkeitstypen · Einsteiger", titel: "DISG-Modell & Persönlichkeitstypen", liste: ["„Das DISG-Modell“ – Insights Discovery (offizielles Handbuch): Grundlagen der vier Typen und ihre Anwendung", "„Erkenne dich selbst und verstehe andere“ – Thomas Erikson: Einfache Einführung in Persönlichkeitstypen, ähnlich DISG"] },
+  { kategorie: "buecher", teil: "DISG & Persönlichkeitstypen · Erfahrene", titel: "DISG-Modell & Persönlichkeitstypen", liste: ["„Surrounded by Idiots“ – Thomas Erikson: Wie man mit unterschiedlichen Typen kommuniziert, humorvoll und praxisnah", "„People Styles at Work“ – Robert Bolton & Dorothy Grover Bolton: Vertiefung in Kommunikationsstile, ähnlich DISG"] },
+  { kategorie: "buecher", teil: "DISG & Persönlichkeitstypen · Profi", titel: "DISG-Modell & Persönlichkeitstypen", liste: ["„The Platinum Rule“ – Tony Alessandra: Fortgeschrittene Anwendung von Persönlichkeitsmodellen", "„Type Talk at Work“ – Otto Kroeger & Janet M. Thuesen: MBTI in der Führung, übertragbar auf DISG"] },
+  { kategorie: "buecher", teil: "Kommunikation · Einsteiger", titel: "Kommunikation", liste: ["„Miteinander reden 1“ – Friedemann Schulz von Thun: Grundlagen des Kommunikationsquadrats", "„Die Kunst des klaren Denkens“ – Rolf Dobelli: Einfache Tipps für bessere Kommunikation"] },
+  { kategorie: "buecher", teil: "Kommunikation · Erfahrene", titel: "Kommunikation", liste: ["„Miteinander reden 2“ – Friedemann Schulz von Thun: Werte und innere Teamkonflikte", "„Die Kunst des klugen Handelns“ – Rolf Dobelli: Psychologische Fallstricke in Gesprächen"] },
+  { kategorie: "buecher", teil: "Kommunikation · Profi", titel: "Kommunikation", liste: ["„Miteinander reden 3“ – Friedemann Schulz von Thun: Kommunikation in Gruppen und Organisationen", "„Anleitung zum Unglücklichsein“ – Paul Watzlawick: Kommunikationsparadoxien und systemische Sicht"] }
 ];
