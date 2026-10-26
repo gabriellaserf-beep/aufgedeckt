@@ -5,38 +5,37 @@
 (function () {
   var INK = "#231639", PAPER = "#f6f4fb", MUTED = "#b3a8cf", LINE = "rgba(246,244,251,0.18)", AQUA = "#59d5dc", LIME = "#b5fd42";
   var F = 'font-family="Overpass, system-ui, sans-serif"';
-  function svg(inner) { return '<svg class="grafik" viewBox="0 0 320 200" role="img" aria-hidden="true" ' + F + '>' + inner + "</svg>"; }
+  function svg(inner, vb) { return '<svg class="grafik" viewBox="' + (vb || "0 0 320 200") + '" role="img" aria-hidden="true" ' + F + '>' + inner + "</svg>"; }
   function t(x, y, s, size, w, fill, anchor, extra) {
     return '<text x="' + x + '" y="' + y + '" font-size="' + size + '" font-weight="' + (w || 800) + '" fill="' + (fill || PAPER) + '" text-anchor="' + (anchor || "middle") + '" ' + (extra || "") + ">" + s + "</text>";
   }
   function lines(x, y, arr, size, w, fill, lh) { return arr.map(function (s, i) { return t(x, y + i * (lh || size * 1.15), s, size, w, fill); }).join(""); }
   function dim(on) { return on ? 1 : 0.2; }
 
-  /* Konfliktfelder: Ring mit vier Feldern, Konflikt-Stern im Zentrum */
-  function arc(cx, cy, r0, r1, a0, a1) {
-    function p(r, a) { return (cx + Math.cos(a) * r).toFixed(1) + " " + (cy + Math.sin(a) * r).toFixed(1); }
-    return "M" + p(r1, a0) + " A" + r1 + " " + r1 + " 0 0 1 " + p(r1, a1) + " L" + p(r0, a1) + " A" + r0 + " " + r0 + " 0 0 0 " + p(r0, a0) + "Z";
-  }
+  /* Konfliktfelder: vier Kacheln, in der Mitte der Konflikt */
   function felder(a) {
-    var cx = 160, cy = 102, r0 = 40, r1 = 90, gap = 0.035, PI = Math.PI;
+    var W = 134, H = 76, G = 8, x0 = 160 - W - G / 2, y0 = 18;
     var Q = [
-      { n: ["Struktur"], c: "#0DADF2", a0: PI, a1: 1.5 * PI },
-      { n: ["Inhalte"], c: "#F471DE", a0: 1.5 * PI, a1: 2 * PI },
-      { n: ["Zwischen-", "menschlich"], c: "#35B680", a0: 0.5 * PI, a1: PI },
-      { n: ["Individuell"], c: "#F9851F", a0: 0, a1: 0.5 * PI }
+      { n: "Struktur", c: "#0DADF2", x: x0, y: y0, top: true },
+      { n: "Inhalte", c: "#F471DE", x: 160 + G / 2, y: y0, top: true },
+      { n: "Zwischenmenschlich", c: "#35B680", x: x0, y: y0 + H + G, top: false },
+      { n: "Individuell", c: "#F9851F", x: 160 + G / 2, y: y0 + H + G, top: false }
     ];
     var out = '<defs><linearGradient id="fpr" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="' + LIME + '"/><stop offset="1" stop-color="' + AQUA + '"/></linearGradient>' +
-      '<filter id="fgl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter></defs>';
+      '<filter id="fgl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8"/></filter></defs>';
     Q.forEach(function (q, i) {
-      var on = !a || a === i + 1, d = arc(cx, cy, r0, r1, q.a0 + gap, q.a1 - gap), mid = (q.a0 + q.a1) / 2, lr = (r0 + r1) / 2 + 2;
-      if (on && a) out += '<path d="' + d + '" fill="' + q.c + '" opacity="0.55" filter="url(#fgl)"/>';
-      out += '<path d="' + d + '" fill="' + (on ? q.c : "#2d1e4a") + '" stroke="' + q.c + '" stroke-opacity="' + (on ? 1 : 0.6) + '" stroke-width="1.5"/>' +
-        lines(cx + Math.cos(mid) * lr, cy + Math.sin(mid) * lr + (q.n.length > 1 ? -2 : 4), q.n, 10, 900, on ? INK : q.c, 12);
+      var on = !a || a === i + 1;
+      if (on && a) out += '<rect x="' + q.x + '" y="' + q.y + '" width="' + W + '" height="' + H + '" rx="16" fill="' + q.c + '" opacity="0.45" filter="url(#fgl)"/>';
+      out += '<rect x="' + q.x + '" y="' + q.y + '" width="' + W + '" height="' + H + '" rx="16" fill="' + (on ? q.c : "#2d1e4a") + '" stroke="' + q.c + '" stroke-opacity="' + (on ? 1 : 0.55) + '" stroke-width="1.5"/>' +
+        (function () {
+          var left = q.x < 160, tx = left ? q.x + 16 : q.x + W - 16, parts = q.n === "Zwischenmenschlich" ? ["Zwischen-", "menschlich"] : [q.n];
+          var ty = q.top ? q.y + 30 : q.y + H - 16 - (parts.length - 1) * 15;
+          return parts.map(function (p, k) { return t(tx, ty + k * 15, p, 13, 900, on ? INK : q.c, left ? "start" : "end"); }).join("");
+        })();
     });
-    var pts = [];
-    for (var i = 0; i < 20; i++) { var rr = i % 2 ? 22 : 34, an = (i / 20) * PI * 2 - PI / 2; pts.push((cx + Math.cos(an) * rr).toFixed(1) + "," + (cy + Math.sin(an) * rr).toFixed(1)); }
-    out += '<polygon points="' + pts.join(" ") + '" fill="url(#fpr)" stroke="#1a1029" stroke-width="2" stroke-linejoin="round"/>' + t(cx, cy + 4, "Konflikt", 10.5, 900, INK);
-    return svg(out);
+    out += '<circle cx="160" cy="' + (y0 + H + G / 2) + '" r="34" fill="#1a1029"/>' +
+      '<circle cx="160" cy="' + (y0 + H + G / 2) + '" r="28" fill="url(#fpr)"/>' + t(160, y0 + H + G / 2 + 4, "Konflikt", 10.5, 900, INK);
+    return svg(out, "0 8 320 180");
   }
 
   /* Konfliktstile: Matrix aus Kooperationswille und Konfrontationsbereitschaft */
@@ -81,69 +80,73 @@
 
   /* Checkliste: große Ziffer mit zehn Segmenten */
   function checkliste(n) {
-    var cx = 160, cy = 100, r = 72, out = "";
-    if (!n) {
-      return svg('<text x="160" y="178" font-size="220" font-weight="900" fill="url(#pq)" text-anchor="middle">“</text>' +
-        '<defs><linearGradient id="pq" x1="0" x2="1"><stop offset="0" stop-color="' + LIME + '"/><stop offset="1" stop-color="' + AQUA + '"/></linearGradient></defs>');
-    }
+    var cx = 160, cy = 64, r = 52, out = "";
+    var defs = '<defs><linearGradient id="pr" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="' + LIME + '"/><stop offset="1" stop-color="' + AQUA + '"/></linearGradient></defs>';
+    if (!n) return svg(defs + '<text x="160" y="150" font-size="170" font-weight="900" fill="url(#pr)" text-anchor="middle">“</text>', "0 22 320 88");
     for (var i = 0; i < 10; i++) {
-      var a0 = (i / 10) * Math.PI * 2 - Math.PI / 2 + 0.06, a1 = ((i + 1) / 10) * Math.PI * 2 - Math.PI / 2 - 0.06;
+      var a0 = (i / 10) * Math.PI * 2 - Math.PI / 2 + 0.07, a1 = ((i + 1) / 10) * Math.PI * 2 - Math.PI / 2 - 0.07;
       var d = "M" + (cx + Math.cos(a0) * r).toFixed(1) + " " + (cy + Math.sin(a0) * r).toFixed(1) + " A" + r + " " + r + " 0 0 1 " + (cx + Math.cos(a1) * r).toFixed(1) + " " + (cy + Math.sin(a1) * r).toFixed(1);
-      out += '<path d="' + d + '" fill="none" stroke="' + (i < n ? "url(#pr)" : LINE) + '" stroke-width="' + (i === n - 1 ? 12 : 8) + '" stroke-linecap="round"/>';
+      out += '<path d="' + d + '" fill="none" stroke="' + (i < n ? "url(#pr)" : LINE) + '" stroke-width="' + (i === n - 1 ? 10 : 6) + '" stroke-linecap="round"/>';
     }
-    out += '<defs><linearGradient id="pr" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="' + LIME + '"/><stop offset="1" stop-color="' + AQUA + '"/></linearGradient></defs>' +
-      t(cx, cy + 22, (n < 10 ? "0" : "") + n, 62, 900, "url(#pr)") + t(cx, cy + 44, "von 10", 11, 700, MUTED);
-    return svg(out);
+    out += defs + t(cx, cy + 15, (n < 10 ? "0" : "") + n, 44, 900, "url(#pr)") + t(cx, cy + 31, "von 10", 9, 700, MUTED);
+    return svg(out, "0 4 320 120");
   }
 
-  /* Übung: CRASH sackt ab, COACH richtet sich auf, Pendel zwischen beiden */
+  /* Übung: CRASH (in sich zusammengesunken) und COACH (aufgerichtet), dazu das Pendel */
+  function figure(x, col, up) {
+    if (up) return '<g fill="none" stroke="' + col + '" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">' +
+      '<circle cx="' + x + '" cy="30" r="12" fill="' + col + '" stroke="none"/>' +
+      '<path d="M' + x + ' 48 V96"/><path d="M' + x + ' 58 L' + (x - 24) + ' 40"/><path d="M' + x + ' 58 L' + (x + 24) + ' 40"/>' +
+      '<path d="M' + x + ' 96 L' + (x - 14) + ' 132"/><path d="M' + x + ' 96 L' + (x + 14) + ' 132"/></g>';
+    return '<g fill="none" stroke="' + col + '" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">' +
+      '<circle cx="' + (x + 13) + '" cy="56" r="11" fill="' + col + '" stroke="none"/>' +
+      '<path d="M' + (x + 7) + ' 66 Q' + (x - 12) + ' 78 ' + (x - 6) + ' 100"/><path d="M' + (x + 3) + ' 72 Q' + (x + 12) + ' 90 ' + (x + 10) + ' 110"/>' +
+      '<path d="M' + (x - 6) + ' 100 L' + (x - 14) + ' 132"/><path d="M' + (x - 6) + ' 100 L' + (x + 6) + ' 132"/></g>';
+  }
   function uebung(k) {
-    var out = "";
     if (k === 1 || k === 2) {
-      var word = k === 1 ? "CRASH" : "COACH", col = k === 1 ? "#f4005e" : AQUA;
-      for (var i = 0; i < 5; i++) {
-        var x = 40 + i * 60, y = k === 1 ? 80 + i * 18 : 150 - i * 20, rot = k === 1 ? 8 + i * 4 : 0;
-        out += '<g transform="rotate(' + rot + " " + x + " " + y + ')"><rect x="' + (x - 24) + '" y="' + (y - 34) + '" width="48" height="48" rx="12" fill="' + col + '" fill-opacity="' + (k === 1 ? 0.25 + i * 0.12 : 0.9) + '"/>' +
-          t(x, y + 2, word[i], 32, 900, k === 1 ? PAPER : INK) + "</g>";
-      }
-      return svg(out);
+      var up = k === 2, col = up ? AQUA : "#f4005e", word = up ? "COACH" : "CRASH", sub = up ? "Lösungs-Trance" : "Problem-Trance";
+      var out = '<defs><filter id="ug" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter></defs>' +
+        '<ellipse cx="92" cy="80" rx="46" ry="54" fill="' + col + '" opacity="0.28" filter="url(#ug)"/>' +
+        '<path d="M44 136 H140" stroke="' + col + '" stroke-opacity="0.4" stroke-width="2" stroke-linecap="round"/>' + figure(92, col, up) +
+        t(168, 84, word, 38, 900, col, "start", 'letter-spacing="-0.5"') + t(170, 106, sub + (up ? "  ↑" : "  ↓"), 12, 800, MUTED, "start");
+      return svg(out, "0 8 320 136");
     }
-    out += '<circle cx="78" cy="100" r="52" fill="#f4005e" fill-opacity="0.22" stroke="#f4005e" stroke-width="2"/>' + t(78, 106, "CRASH", 17, 900, PAPER) +
-      '<circle cx="242" cy="100" r="52" fill="' + AQUA + '" fill-opacity="0.9"/>' + t(242, 106, "COACH", 17, 900, INK) +
-      '<path d="M128 78 Q160 52 192 78" fill="none" stroke="' + LIME + '" stroke-width="3" marker-end="url(#pa)"/>' +
-      '<path d="M192 122 Q160 148 128 122" fill="none" stroke="' + LIME + '" stroke-width="3" marker-end="url(#pa)"/>' +
+    var o = '<circle cx="78" cy="100" r="46" fill="#2d1e4a" stroke="#f4005e" stroke-width="2"/>' + t(78, 106, "CRASH", 16, 900, "#f4005e") +
+      '<circle cx="242" cy="100" r="46" fill="' + AQUA + '"/>' + t(242, 106, "COACH", 16, 900, INK) +
+      '<path d="M128 80 Q160 56 192 80" fill="none" stroke="' + LIME + '" stroke-width="3" marker-end="url(#pa)"/>' +
+      '<path d="M192 120 Q160 144 128 120" fill="none" stroke="' + LIME + '" stroke-width="3" marker-end="url(#pa)"/>' +
       '<defs><marker id="pa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="' + LIME + '"/></marker></defs>' +
       t(160, 106, "3×", 18, 900, LIME);
-    return svg(out);
+    return svg(o, "0 48 320 104");
   }
 
   /* Playlist: Schallplatte mit Phasen-Nummer */
   function playlist(n) {
-    var out = '<circle cx="120" cy="100" r="86" fill="#0c0814"/>';
-    for (var r = 30; r < 84; r += 5) out += '<circle cx="120" cy="100" r="' + r + '" fill="none" stroke="rgba(246,244,251,' + (r % 10 ? 0.06 : 0.1) + ')" stroke-width="1"/>';
-    out += '<path d="M60 40 A86 86 0 0 1 180 40" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="10" stroke-linecap="round"/>' +
-      '<circle cx="120" cy="100" r="28" fill="#F471DE"/>' +
-      t(120, 95, "PHASE", 7, 800, INK, "middle", 'letter-spacing="1"') + t(120, 114, String(n || ""), 20, 900, INK);
+    var cx = 112, cy = 62, out = '<circle cx="' + cx + '" cy="' + cy + '" r="58" fill="#0c0814"/>';
+    for (var r = 22; r < 56; r += 4) out += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="rgba(246,244,251,' + (r % 8 ? 0.06 : 0.11) + ')" stroke-width="1"/>';
+    out += '<path d="M' + (cx - 40) + ' ' + (cy - 42) + ' A58 58 0 0 1 ' + (cx + 40) + ' ' + (cy - 42) + '" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="7" stroke-linecap="round"/>' +
+      '<circle cx="' + cx + '" cy="' + cy + '" r="20" fill="#F471DE"/>' + t(cx, cy - 4, "PHASE", 6, 800, INK, "middle", 'letter-spacing="1"') + t(cx, cy + 11, String(n || ""), 16, 900, INK);
     for (var i = 0; i < 6; i++) {
-      var on = i + 1 === n, h = [22, 38, 30, 46, 26, 34][i];
-      out += '<rect x="' + (232 + i * 13) + '" y="' + (150 - h) + '" width="8" height="' + h + '" rx="4" fill="' + (on ? "#F471DE" : "rgba(244,113,222,0.25)") + '"/>';
+      var on = i + 1 === n, h = [20, 34, 26, 40, 22, 30][i];
+      out += '<rect x="' + (200 + i * 14) + '" y="' + (98 - h) + '" width="9" height="' + h + '" rx="4.5" fill="' + (on ? "#F471DE" : "#2d1e4a") + '" stroke="#F471DE" stroke-opacity="' + (on ? 1 : 0.5) + '" stroke-width="1.2"/>';
     }
-    out += t(266, 170, "6 Phasen", 10, 700, MUTED);
-    return svg(out);
+    out += t(238, 116, n + " von 6 Phasen", 10, 800, MUTED);
+    return svg(out, "0 0 320 126");
   }
 
   /* Bücher: Regal mit drei Stufen */
   function buecher(level) {
-    var out = '<rect x="30" y="168" width="260" height="6" rx="3" fill="rgba(246,244,251,0.25)"/>';
-    var names = ["Einsteiger", "Erfahrene", "Profi"], hs = [80, 108, 136], cs = ["#F9CE1F", "#F9851F", "#F471DE"];
+    var out = '<rect x="40" y="86" width="240" height="4" rx="2" fill="rgba(246,244,251,0.22)"/>';
+    var names = ["Einsteiger", "Erfahrene", "Profi"], hs = [36, 50, 64], cs = ["#F9CE1F", "#F9851F", "#F471DE"];
     for (var i = 0; i < 3; i++) {
-      var on = !level || level === i + 1, x = 52 + i * 80, h = hs[i];
-      out += '<rect x="' + x + '" y="' + (168 - h) + '" width="56" height="' + h + '" rx="6" fill="' + (on ? cs[i] : "#2d1e4a") + '" stroke="' + cs[i] + '" stroke-opacity="' + (on ? 1 : 0.6) + '" stroke-width="1.5"/>' +
-        '<rect x="' + (x + 8) + '" y="' + (168 - h + 12) + '" width="40" height="3" rx="1.5" fill="' + (on ? INK : MUTED) + '" fill-opacity="0.6"/>' +
-        '<rect x="' + (x + 8) + '" y="' + (168 - h + 20) + '" width="28" height="3" rx="1.5" fill="' + (on ? INK : MUTED) + '" fill-opacity="0.6"/>' +
-        t(x + 28, 190, names[i], 10, on ? 900 : 700, on ? PAPER : MUTED);
+      var on = !level || level === i + 1, x = 76 + i * 64, h = hs[i];
+      out += '<rect x="' + x + '" y="' + (86 - h) + '" width="40" height="' + h + '" rx="5" fill="' + (on ? cs[i] : "#2d1e4a") + '" stroke="' + cs[i] + '" stroke-opacity="' + (on ? 1 : 0.6) + '" stroke-width="1.5"/>' +
+        '<rect x="' + (x + 7) + '" y="' + (86 - h + 9) + '" width="26" height="2.5" rx="1.25" fill="' + (on ? INK : cs[i]) + '" fill-opacity="0.55"/>' +
+        '<rect x="' + (x + 7) + '" y="' + (86 - h + 15) + '" width="17" height="2.5" rx="1.25" fill="' + (on ? INK : cs[i]) + '" fill-opacity="0.55"/>' +
+        t(x + 20, 106, names[i], 10, on ? 900 : 700, on ? PAPER : MUTED);
     }
-    return svg(out);
+    return svg(out, "0 12 320 104");
   }
 
   /* Führung: zehn Schritte auf einem Weg */
@@ -169,8 +172,8 @@
         t(x, 100 - r - 8, String(i + 1), 12, 900, on ? "#b794e8" : MUTED) +
         lines(x, p.length > 1 ? 98 : 104, p, 9.5, 900, on ? INK : "#b794e8", 11);
     });
-    out += t(160, 176, "hart in der Sache · fair zu den Menschen", 11, 700, MUTED);
-    return svg(out);
+    out += t(160, 170, "hart in der Sache · fair zu den Menschen", 11, 700, MUTED);
+    return svg(out, "0 46 320 134");
   }
 
   /* BATNA: Weggabelung zwischen Einigung und Plan B */
@@ -195,7 +198,7 @@
         '<path d="M' + x + " " + (y + 40) + " V" + (y - 38) + '" stroke="' + INK + '" stroke-opacity="0.25" stroke-width="1.5"/></g>' +
         t(x, y + 8, l[0], 26, 900, INK) + t(x, 178, l[1], 9.5, 800, MUTED);
     });
-    return svg(out);
+    return svg(out, "0 26 320 162");
   }
 
   /* SAG ES: Buchstaben-Kacheln, deine Sicht und die andere Sicht */
@@ -208,7 +211,7 @@
     });
     out += '<path d="M22 130 H186" stroke="#b794e8" stroke-width="2" stroke-opacity="' + (!n || n === 1 ? 1 : 0.3) + '"/>' + t(104, 150, "meine Sicht", 11, 800, !n || n === 1 ? PAPER : MUTED) +
       '<path d="M206 130 H298" stroke="' + AQUA + '" stroke-width="2" stroke-opacity="' + (!n || n === 2 ? 1 : 0.3) + '"/>' + t(252, 150, "deine Sicht & Lösung", 11, 800, !n || n === 2 ? PAPER : MUTED);
-    return svg(out);
+    return svg(out, "0 40 320 120");
   }
 
   /* Gesprächsablauf: acht Stationen, je zwei pro Karte */
@@ -221,11 +224,18 @@
         '<path d="M' + x + " " + (i % 2 ? 103 : 81) + " V" + (i % 2 ? 112 : 72) + '" stroke="#b794e8" stroke-opacity="' + (on ? 1 : 0.3) + '" stroke-width="1.5"/>' +
         lines(x, i % 2 ? 126 : 50 - (s.indexOf("|") >= 0 ? 12 : 0), s.split("|"), 10, on ? 900 : 700, on ? PAPER : MUTED, 12);
     });
-    return svg(out);
+    return svg(out, "0 26 320 120");
   }
 
   var MAP = { felder: felder, stile: stile, eskalation: eskalation, checkliste: checkliste, uebung: uebung, playlist: playlist, buecher: buecher, fuehrung: fuehrung, harvard: harvard, batna: batna, leaf: leaf, sages: sages, ablauf: ablauf };
-  window.GRAFIK_FARBE = function (kategorie, n) { if (kategorie === "eskalation") return ["#35B680", "#F9851F", "#f4005e"][Math.min(2, Math.floor((n - 1) / 3))]; return null; };
+  window.GRAFIK_FARBE = function (c, n, i) {
+    if (c.kategorie === "eskalation" && n) return ["#35B680", "#F9851F", "#f4005e"][Math.min(2, Math.floor((n - 1) / 3))];
+    if (c.grafik === "uebung:1") return "#f4005e";
+    if (c.grafik === "uebung:2") return AQUA;
+    if (/^sages/.test(c.grafik || "") && i != null) return i < 3 ? "#b794e8" : AQUA;
+    if (/^leaf/.test(c.grafik || "")) return LIME;
+    return null;
+  };
   window.GRAFIK = function (spec) {
     if (!spec) return "";
     var p = String(spec).split(":"), fn = MAP[p[0]];

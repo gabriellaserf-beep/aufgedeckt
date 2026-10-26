@@ -106,13 +106,27 @@
     });
   }
 
-  /* Listenpunkt: "3. Titel – Text" wird zu Zahlen-Kasten + fettem Titel (Farbe wie in der Grafik) */
-  function listItem(c, x) {
-    var m = /^(\d+)\.\s+(.*)$/.exec(x);
-    if (!m) return "<li>" + esc(hy(x)) + "</li>";
-    var n = parseInt(m[1], 10), rest = m[2], col = (window.GRAFIK_FARBE && window.GRAFIK_FARBE(c.kategorie, n)) || "";
-    var cut = rest.search(/ – |: /), head = cut > 0 ? rest.slice(0, cut) : rest, tail = cut > 0 ? rest.slice(cut + (rest.charAt(cut) === ":" ? 2 : 3)) : "";
-    return '<li class="is-num"><span class="num"' + (col ? ' style="--nc:' + col + '"' : "") + ">" + n + "</span><span><strong>" + esc(hy(head)) + "</strong>" + (tail ? '<span class="num__text">' + esc(hy(tail)) + "</span>" : "") + "</span></li>";
+  /* Hervorhebung: **Wort** in cards.js wird in Black gesetzt */
+  function md(s) { return esc(hy(s)).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>"); }
+
+  /* Listenpunkte:
+     "3. Titel – Text"          → Zahlen-Kasten + Titel in Black
+     "C – Wort – Erklärung"     → Buchstaben-Kasten (CRASH, COACH, SAG ES, LEAF)
+     "„Buchtitel“ – Autor: …"   → Titel in Black, Autor, Beschreibung
+     "Stichwort: Text"          → Stichwort in Black */
+  function split2(rest) { var cut = rest.search(/ – |: /); return cut > 0 ? [rest.slice(0, cut), rest.slice(cut + (rest.charAt(cut) === ":" ? 2 : 3))] : [rest, ""]; }
+  function badgeItem(label, col, head, tail) {
+    return '<li class="is-num"><span class="num"' + (col ? ' style="--nc:' + col + '"' : "") + ">" + esc(label) + "</span><span><strong>" + md(head) + "</strong>" + (tail ? '<span class="num__text">' + md(tail) + "</span>" : "") + "</span></li>";
+  }
+  function listItem(c, x, i) {
+    var F = window.GRAFIK_FARBE || function () { return null; }, m, p;
+    if ((m = /^(\d+)\.\s+(.*)$/.exec(x))) { p = split2(m[2]); return badgeItem(m[1], F(c, parseInt(m[1], 10), i), p[0], p[1]); }
+    if ((m = /^([A-Z])\s–\s(.*)$/.exec(x))) { p = split2(m[2]); return badgeItem(m[1], F(c, 0, i), p[0], p[1]); }
+    if ((m = /^„([^“]+)“\s–\s([^:]+):\s(.*)$/.exec(x))) {
+      return '<li class="is-book"><strong>' + md(m[1]) + '</strong><span class="by">' + md(m[2]) + '</span><span class="desc">' + md(m[3]) + "</span></li>";
+    }
+    if ((m = /^([^„:]{2,70}):\s(.*)$/.exec(x))) return '<li><strong>' + md(m[1]) + "</strong> " + '<span class="li__rest">' + md(m[2]) + "</span></li>";
+    return "<li>" + md(x) + "</li>";
   }
 
   /* ---------- Aufdecken und Lesen ---------- */
@@ -137,9 +151,9 @@
           (c.grafik && window.GRAFIK ? '<div class="big__media big__media--grafik">' + window.GRAFIK(c.grafik) + '</div>' : '<div class="big__media"><img src="' + esc(k.bild) + '" alt=""></div>') +
           '<span class="big__cat">' + esc(k.name) + (c.teil ? ' <span class="big__teil">· ' + esc(c.teil) + "</span>" : "") + "</span>" +
           '<h2 class="big__title" id="rtitle">' + esc(hy(c.titel)) + "</h2>" +
-          (c.text ? '<p class="big__text">' + esc(hy(c.text)) + "</p>" : "") +
-          (c.liste && c.liste.length ? '<ul class="big__list">' + c.liste.map(function (x) { return listItem(c, x); }).join("") + "</ul>" : "") +
-          (c.impuls ? '<p class="big__hint">' + esc(hy(c.impuls)) + "</p>" : "") +
+          (c.text ? '<p class="big__text">' + md(c.text) + "</p>" : "") +
+          (c.liste && c.liste.length ? '<ul class="big__list">' + c.liste.map(function (x, i) { return listItem(c, x, i); }).join("") + "</ul>" : "") +
+          (c.impuls ? '<p class="big__hint">' + md(c.impuls) + "</p>" : "") +
         "</article>" +
         '<div class="notes">' +
           '<label class="notes__label" for="note">Deine Notizen</label>' +
@@ -178,8 +192,8 @@
     state.done.concat(state.up).forEach(function (i) {
       var n = (state.notes[i] || "").trim();
       lines.push("■ " + cat(i).name + " — " + CARDS[i].titel);
-      if (CARDS[i].text) lines.push(CARDS[i].text);
-      (CARDS[i].liste || []).forEach(function (x) { lines.push("  – " + x); });
+      if (CARDS[i].text) lines.push(CARDS[i].text.replace(/\*\*/g, ""));
+      (CARDS[i].liste || []).forEach(function (x) { lines.push("  • " + x.replace(/\*\*/g, "")); });
       lines.push(n ? n : "(keine Notiz)");
       lines.push("");
     });
