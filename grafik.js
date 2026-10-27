@@ -137,17 +137,25 @@
   }
 
   /* Bücher: Regal mit drei Stufen */
-  function buecher(level) {
-    var out = '<rect x="40" y="86" width="240" height="4" rx="2" fill="rgba(246,244,251,0.22)"/>';
-    var names = ["Einsteiger", "Erfahrene", "Profi"], hs = [36, 50, 64], cs = ["#F9CE1F", "#F9851F", "#F471DE"];
-    for (var i = 0; i < 3; i++) {
-      var on = !level || level === i + 1, x = 76 + i * 64, h = hs[i];
-      out += '<rect x="' + x + '" y="' + (86 - h) + '" width="40" height="' + h + '" rx="5" fill="' + (on ? cs[i] : "#2d1e4a") + '" stroke="' + cs[i] + '" stroke-opacity="' + (on ? 1 : 0.6) + '" stroke-width="1.5"/>' +
-        '<rect x="' + (x + 7) + '" y="' + (86 - h + 9) + '" width="26" height="2.5" rx="1.25" fill="' + (on ? INK : cs[i]) + '" fill-opacity="0.55"/>' +
-        '<rect x="' + (x + 7) + '" y="' + (86 - h + 15) + '" width="17" height="2.5" rx="1.25" fill="' + (on ? INK : cs[i]) + '" fill-opacity="0.55"/>' +
-        t(x + 20, 106, names[i], 10, on ? 900 : 700, on ? PAPER : MUTED);
+  /* Bücher: oben die drei Themen (wie die Kreise im Miro-Board), darunter die Stufe */
+  function buecher(n) {
+    var topic = Math.floor(n / 10), level = n % 10, out = "";
+    var tops = [["Gewalt-", "freie Kom-", "munikation"], ["DISG &", "Persönlich-", "keitstypen"], ["Kommuni-", "kation"]], LIL = "#c9c4f2";
+    for (var j = 0; j < 3; j++) {
+      var on = !topic || topic === j + 1, cx = 64 + j * 96, l = tops[j];
+      out += '<circle cx="' + cx + '" cy="44" r="36" fill="' + (on ? LIL : "#220736") + '" stroke="' + LIL + '" stroke-opacity="' + (on ? 1 : 0.45) + '" stroke-width="1.5"/>' +
+        lines(cx, 44 - (l.length - 1) * 5.5 + 3.5, l, 9.5, 900, on ? INK : "rgba(201,196,242,0.6)", 11);
     }
-    return svg(out, "0 12 320 104");
+    if (topic) out += '<path d="M' + (64 + (topic - 1) * 96) + ' 82 V96" stroke="' + LIL + '" stroke-width="1.5" stroke-dasharray="2 3"/>';
+    out += '<rect x="64" y="150" width="192" height="3" rx="1.5" fill="rgba(246,244,251,0.22)"/>';
+    var names = ["Einsteiger", "Erfahrene", "Profi"], hs = [26, 36, 46], cs = ["#F9CE1F", "#F9851F", "#F471DE"];
+    for (var i = 0; i < 3; i++) {
+      var on2 = !level || level === i + 1, x = 94 + i * 52, h = hs[i];
+      out += '<rect x="' + x + '" y="' + (150 - h) + '" width="28" height="' + h + '" rx="4" fill="' + (on2 ? cs[i] : "#220736") + '" stroke="' + cs[i] + '" stroke-opacity="' + (on2 ? 1 : 0.6) + '" stroke-width="1.5"/>' +
+        '<rect x="' + (x + 5) + '" y="' + (150 - h + 7) + '" width="18" height="2" rx="1" fill="' + (on2 ? INK : cs[i]) + '" fill-opacity="0.55"/>' +
+        t(x + 14, 166, names[i], 9, on2 ? 900 : 700, on2 ? PAPER : MUTED);
+    }
+    return svg(out, "0 4 320 168");
   }
 
   /* Führung: zehn Schritte auf einem Weg */
