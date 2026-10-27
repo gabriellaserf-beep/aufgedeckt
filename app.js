@@ -546,7 +546,7 @@
     /* aktive, farbige Elemente pulsieren sanft */
     var live = [];
     svgEl.querySelectorAll("rect, circle, ellipse, g").forEach(function (e) {
-      var f = e.getAttribute("fill") || ""; if (e.tagName === "g") { if (/translate|rotate/.test(e.getAttribute("transform") || "")) live.push(e); return; }
+      var f = e.getAttribute("fill") || ""; if (e.tagName === "g") { if (/translate|rotate/.test(e.getAttribute("transform") || "") && e.querySelector("rect, path, circle, ellipse")) live.push(e); return; }
       if (!f || DARK.test(f) || f === "url(#bkS)" || hasT(e)) return;
       var w = +e.getAttribute("width") || (+e.getAttribute("r") || 0) * 2; if (w >= 30) live.push(e);
     });
