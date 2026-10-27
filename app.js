@@ -497,7 +497,7 @@
     var all = CARDS.map(function (_, j) { return j; }).filter(function (j) { return groupKey(j) === groupKey(idx); });
     var open = sib.filter(function (j) { return state.done.indexOf(j) < 0 && !isUp(j); }).length;
     return '<section class="series" aria-label="Dazugehörige Karten"><h3 class="series__head">Gehört dazu<span>' +
-      (open ? '<b class="big__sep" aria-hidden="true">·</b>' + open + (open === 1 ? " Karte" : " Karten") + " noch verdeckt" : '<b class="big__sep" aria-hidden="true">·</b>alle aufgedeckt') + '</span></h3><div class="series__row">' +
+      (open ? ' <b class="big__sep" aria-hidden="true">·</b> ' + open + (open === 1 ? " Karte" : " Karten") + " noch verdeckt" : ' <b class="big__sep" aria-hidden="true">·</b> alle aufgedeckt') + '</span></h3><div class="series__row">' +
       all.map(function (j) {
         var me = j === idx, done = state.done.indexOf(j) >= 0, up = isUp(j) || done || me;
         return '<div class="sib' + (me ? " is-me" : "") + '"><button type="button" class="card sib__card' + (up ? " is-up" : "") + '" data-j="' + j + '"' + (me ? ' disabled aria-current="true"' : "") +
@@ -525,7 +525,7 @@
         '<article class="big" style="--acc:' + k.farbe + '">' +
           '<span class="big__no">' + (played ? "Abgelegt · " : "") + no + " / " + state.total + "</span>" +
           (c.prompt ? '<div class="prompt"><span class="prompt__q">' + esc(c.prompt) + '</span><span class="prompt__dots">' + (c.gruppen || []).map(function (g) { return '<i style="background:' + g.farbe + '"></i>'; }).join("") + "</span></div>" : c.grafik && window.GRAFIK ? '<div class="big__media big__media--grafik g-' + String(c.grafik).split(":")[0] + '">' + window.GRAFIK(c.grafik) + '</div>' : '<div class="big__media"><img src="' + esc(k.bild) + '" alt=""></div>') +
-          '<span class="big__cat">' + esc(k.name) + (c.teil ? '<span class="big__sep" aria-hidden="true">·</span><span class="big__teil">' + esc(c.teil).split(" · ").join('</span><span class="big__sep" aria-hidden="true">·</span><span class="big__teil">') + "</span>" : "") + "</span>" +
+          '<span class="big__cat">' + esc(k.name) + (c.teil ? ' <span class="big__sep" aria-hidden="true">·</span> <span class="big__teil">' + esc(c.teil).split(" · ").join('</span> <span class="big__sep" aria-hidden="true">·</span> <span class="big__teil">') + "</span>" : "") + "</span>" +
           '<h2 class="big__title" id="rtitle">' + esc(hy(c.titel)) + "</h2>" +
           (c.text ? '<p class="big__text">' + md(c.text) + "</p>" : "") +
           (c.liste && c.liste.length ? '<ul class="big__list">' + c.liste.map(function (x, i) { return listItem(c, x, i); }).join("") + "</ul>" : "") +

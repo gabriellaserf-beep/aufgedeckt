@@ -613,7 +613,7 @@ body { background: #1a1029; }
 /* Bücher: Regal-Grafik kompakter, die Empfehlungen sind die Hauptsache */
 .big__media--grafik.g-buecher .grafik { max-height: 260px; }
 .front { gap: 13%; } .front img { width: 66%; }
-.big__sep { display: inline-block; margin: 0 0.6em; letter-spacing: 0; color: var(--text-muted); font-weight: 700; }
+.big__sep { display: inline-block; margin: 0 0.15em 0 0; letter-spacing: 0; color: var(--text-muted); font-weight: 700; }
 
 /* ---------- Buttons wie im pub.tech Design System (Kometen-Hover am Primary) ---------- */
 @property --pt-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
