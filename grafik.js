@@ -176,14 +176,25 @@
 
   /* Führung: zehn Schritte auf einem Weg */
   function fuehrung() {
-    var out = '<path id="fw" d="M20 160 C 90 160, 70 40, 160 70 S 240 170, 300 40" fill="none" stroke="rgba(181,253,66,0.3)" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/>';
-    var P = [[20, 160], [52, 150], [78, 110], [104, 76], [140, 66], [176, 84], [206, 122], [238, 136], [270, 98], [300, 40]];
-    P.forEach(function (p, i) {
-      out += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="' + (i === 9 ? 15 : 12) + '" fill="' + (i === 9 ? LIME : "#2d1e4a") + '" stroke="' + LIME + '" stroke-width="2"/>' +
-        t(p[0], p[1] + 4, String(i + 1), 11, 900, i === 9 ? INK : PAPER);
+    /* Ein ruhig ansteigender Weg; die zehn Stationen liegen exakt auf der Kurve */
+    var B = [[30, 150], [130, 150], [170, 50], [286, 46]];
+    var at = function (u) { var v = 1 - u; return [0, 1].map(function (k) { return v * v * v * B[0][k] + 3 * v * v * u * B[1][k] + 3 * v * u * u * B[2][k] + u * u * u * B[3][k]; }); };
+    var d = "M" + B[0] + " C" + B[1] + " " + B[2] + " " + B[3];
+    var out = '<defs><linearGradient id="fwG" x1="0" x2="1"><stop offset="0" stop-color="' + LIME + '" stop-opacity="0.15"/><stop offset="1" stop-color="' + LIME + '" stop-opacity="0.9"/></linearGradient>' +
+      '<radialGradient id="fwH" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="' + LIME + '" stop-opacity="0.5"/><stop offset="1" stop-color="' + LIME + '" stop-opacity="0"/></radialGradient></defs>' +
+      '<path d="' + d + '" fill="none" stroke="url(#fwG)" stroke-width="1.6" stroke-linecap="round"/>';
+    /* Stationen gleichmäßig über die Bogenlänge verteilen */
+    var S = [], L = [0], prev = at(0); for (var k = 1; k <= 400; k++) { var q = at(k / 400); L.push(L[k - 1] + Math.hypot(q[0] - prev[0], q[1] - prev[1])); prev = q; }
+    for (var i = 0; i < 10; i++) { var tgt = L[400] * i / 9, j = 0; while (j < 400 && L[j] < tgt) j++; S.push(at(j / 400)); }
+    S.forEach(function (p, i) {
+      var last = i === 9, x = p[0].toFixed(1), y = p[1].toFixed(1);
+      if (last) out += '<circle cx="' + x + '" cy="' + y + '" r="24" fill="url(#fwH)"/>';
+      out += '<circle cx="' + x + '" cy="' + y + '" r="' + (last ? 11 : 7.5) + '" fill="' + (last ? LIME : "#220736") + '" stroke="' + LIME + '" stroke-opacity="' + (last ? 1 : 0.35 + i * 0.06) + '" stroke-width="1.2"/>' +
+        t(x, (+y + (last ? 3.6 : 2.9)).toFixed(1), String(i + 1), last ? 10 : 7.5, 900, last ? INK : PAPER);
     });
-    out += '<path d="M300 25 V8 L318 14 L300 20" fill="' + LIME + '" stroke="' + LIME + '" stroke-width="2" stroke-linejoin="round"/>';
-    return svg('<g transform="translate(-8 22) scale(0.94 0.86)">' + out + '</g>');
+    var f = S[9]; out += '<path d="M' + (f[0] + 0.5) + ' ' + (f[1] - 11) + ' V' + (f[1] - 30) + ' L' + (f[0] + 16) + ' ' + (f[1] - 25) + ' L' + (f[0] + 0.5) + ' ' + (f[1] - 20) + '" fill="' + LIME + '" stroke="' + LIME + '" stroke-width="1.2" stroke-linejoin="round"/>' +
+      t(30, 170, "Start", 8.5, 700, MUTED, "start") + t(286, 74, "Ziel", 8.5, 700, LIME, "middle");
+    return svg(out, "6 6 308 176");
   }
 
   /* Harvard-Methode: vier Prinzipien als verbundene Kreise */
