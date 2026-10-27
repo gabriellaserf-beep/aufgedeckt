@@ -33,27 +33,22 @@
   function ell(cx, cy, rx, ry, rot, n) { var c = Math.cos(rot || 0), s = Math.sin(rot || 0), a = []; n = n || 48;
     for (var i = 0; i <= n; i++) { var t = i / n * 2 * Math.PI, x = Math.cos(t) * rx, y = Math.sin(t) * ry; a.push([cx + x * c - y * s, cy + x * s + y * c]); } return a; }
   function closed(p) { return p.concat([p[0]]); }
+  /* Formen: kräftige, einfache Umrisse. FILL-Formen werden flächig mit Karten gefüllt, die anderen entlang einer Linie gelegt. */
   var SHAPES = {
-    blume: function () { var p = []; for (var i = 0; i < 5; i++) { var w = i / 5 * 2 * Math.PI - Math.PI / 2; p.push(ell(Math.cos(w) * 0.64, Math.sin(w) * 0.64, 0.38, 0.2, w)); }
-      p.push(ell(0, 0, 0.16, 0.16)); p.push([[0, 1.0], [0.04, 1.3], [0, 1.6]]); p.push(ell(0.28, 1.3, 0.26, 0.1, -0.55)); return p; },
     herz: function () { var a = []; for (var i = 0; i <= 80; i++) { var t = i / 80 * 2 * Math.PI, s = Math.sin(t);
       a.push([16 * s * s * s, -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t))]); } return [a]; },
-    stern: function () { var a = []; for (var i = 0; i < 10; i++) { var r = i % 2 ? 0.42 : 1, w = i / 10 * 2 * Math.PI - Math.PI / 2; a.push([Math.cos(w) * r, Math.sin(w) * r]); } return [closed(a)]; },
-    ente: function () { return [
-      [[-0.95, -0.15], [-0.7, 0.05], [-0.3, 0.12], [0.2, 0.1], [0.55, -0.05], [0.7, 0.2], [0.55, 0.55], [0, 0.72], [-0.55, 0.62], [-0.85, 0.35], [-0.95, -0.15]],
-      ell(0.62, -0.42, 0.27, 0.27), closed([[0.86, -0.46], [1.2, -0.38], [0.86, -0.28]]), [[-0.4, 0.3], [-0.05, 0.42], [0.3, 0.3]],
-      [[-1.1, 0.95], [-0.7, 0.85], [-0.3, 0.95], [0.1, 0.85], [0.5, 0.95], [0.9, 0.85]] ]; },
-    auto: function () { return [
-      closed([[-1, 0.3], [-1, 0], [-0.62, -0.06], [-0.36, -0.42], [0.32, -0.42], [0.6, -0.06], [1, 0.02], [1, 0.3]]),
-      [[-0.06, -0.42], [-0.06, -0.06]], ell(-0.55, 0.32, 0.2, 0.2), ell(0.56, 0.32, 0.2, 0.2) ]; },
-    fisch: function () { return [ ell(-0.1, 0, 0.7, 0.4), closed([[0.55, 0], [1.05, -0.38], [1.05, 0.38]]), ell(-0.5, -0.08, 0.06, 0.06, 0, 12) ]; },
-    haus: function () { return [ closed([[-0.6, 0], [0.6, 0], [0.6, 0.95], [-0.6, 0.95]]), [[-0.78, 0.06], [0, -0.7], [0.78, 0.06]], [[-0.15, 0.95], [-0.15, 0.5], [0.15, 0.5], [0.15, 0.95]] ]; },
-    smiley: function () { return [ ell(0, 0, 1, 1), ell(-0.36, -0.3, 0.1, 0.14, 0, 12), ell(0.36, -0.3, 0.1, 0.14, 0, 12), ell(0, 0.08, 0.58, 0.48, 0, 48).slice(4, 21) ]; },
-    kreuz: function () { return [[[-0.12, -1], [-0.12, 1]], [[0.12, 1], [0.12, -1]], [[-1, -0.12], [1, -0.12]], [[1, 0.12], [-1, 0.12]]]; },
-    spirale: function () { var a = []; for (var i = 0; i <= 160; i++) { var t = i / 160 * 3.2 * 2 * Math.PI, r = 0.06 + t * 0.047; a.push([Math.cos(t) * r, Math.sin(t) * r]); } return [a]; },
-    welle: function () { var a = [], b = []; for (var i = 0; i <= 60; i++) { var x = i / 60 * 4 - 2; a.push([x, Math.sin(x * 2.4) * 0.38 - 0.35]); b.push([x, Math.sin(x * 2.4 + 1.6) * 0.38 + 0.35]); } return [a, b]; }
+    stern: function () { var a = []; for (var i = 0; i < 10; i++) { var r = i % 2 ? 0.5 : 1, w = i / 10 * 2 * Math.PI - Math.PI / 2; a.push([Math.cos(w) * r, Math.sin(w) * r]); } return [closed(a)]; },
+    plus: function () { return [[[0, -1], [0, 1]], [[-1, 0], [1, 0]]]; },
+    raute: function () { return [closed([[0, -1], [0.72, 0], [0, 1], [-0.72, 0]])]; },
+    pfeil: function () { return [closed([[-1, -0.3], [0.15, -0.3], [0.15, -0.75], [1, 0], [0.15, 0.75], [0.15, 0.3], [-1, 0.3]])]; },
+    kreis: function () { return [ell(0, 0, 1, 1, 0, 72)]; },
+    unendlich: function () { var a = []; for (var i = 0; i <= 120; i++) { var t = i / 120 * 2 * Math.PI, d = 1 + Math.sin(t) * Math.sin(t); a.push([Math.cos(t) / d * 1.6, Math.sin(t) * Math.cos(t) / d * 1.6]); } return [a]; },
+    spirale: function () { var a = []; for (var i = 0; i <= 160; i++) { var t = i / 160 * 2.4 * 2 * Math.PI, r = 0.12 + t * 0.058; a.push([Math.cos(t) * r, Math.sin(t) * r]); } return [a]; },
+    welle: function () { var a = []; for (var i = 0; i <= 60; i++) { var x = i / 60 * 4 - 2; a.push([x, Math.sin(x * 2.2) * 0.5]); } return [a]; }
   };
-  var LAYOUTS = [["stapel", "Unordentlich"], ["verstreut", "Verstreut"], ["blume", "Blume"], ["herz", "Herz"], ["stern", "Stern"], ["ente", "Ente"], ["auto", "Auto"], ["fisch", "Fisch"], ["haus", "Haus"], ["smiley", "Smiley"], ["kreuz", "Kreuz"], ["spirale", "Spirale"], ["welle", "Welle"]];
+  var FILL = {};
+  function inPoly(x, y, P) { var c = false; for (var i = 0, j = P.length - 1; i < P.length; j = i++) { var a = P[i], b = P[j]; if ((a[1] > y) !== (b[1] > y) && x < (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; }
+  var LAYOUTS = [["stapel", "Unordentlich"], ["verstreut", "Verstreut"], ["raster", "Raster"], ["herz", "Herz"], ["stern", "Stern"], ["plus", "Plus"], ["raute", "Raute"], ["pfeil", "Pfeil"], ["kreis", "Kreis"], ["unendlich", "Unendlich"], ["spirale", "Spirale"], ["welle", "Welle"]];
 
   function shapeClass(layout) { var d = $("#board"); if (d) d.classList.toggle("is-shape", !!SHAPES[layout]); }
   function deskSize() {
@@ -68,6 +63,8 @@
   function arrange(layout, ids) {
     var n = ids.length, pos = {};
     if (!n) return pos;
+    if (layout === "raster") { var Dg = deskSize(), cols = Math.max(1, Math.round(Math.sqrt(n * (Dg.W / Dg.ch) / (Dg.H / Dg.cw) ))), rows = Math.ceil(n / cols);
+      ids.forEach(function (idx, k) { var c2 = k % cols, r2 = Math.floor(k / cols); pos[idx] = { x: cols > 1 ? c2 / (cols - 1) : 0.5, y: rows > 1 ? r2 / (rows - 1) : 0.5, r: Math.round(jit(3)), z: k + 1 }; }); return pos; }
     if (layout === "verstreut") { ids.forEach(function (idx, k) { pos[idx] = { x: Math.random(), y: Math.random(), r: Math.round(jit(70)), z: k + 1 }; }); return pos; }
     if (!SHAPES[layout]) {
       var P = Math.max(3, Math.min(8, Math.ceil(n / 10))), pc = P <= 4 ? 2 : P <= 6 ? 3 : 4, pr = Math.ceil(P / pc), centers = [];
@@ -79,8 +76,19 @@
     shapeClass(layout);
     var D = deskSize(), paths = SHAPES[layout](), x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
     paths.forEach(function (p) { p.forEach(function (q) { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); y0 = Math.min(y0, q[1]); y1 = Math.max(y1, q[1]); }); });
-    var pad = Math.min(D.W, D.H) * 0.03, aw = D.W - D.cw - 2 * pad, ah = D.H - D.ch - 2 * pad, sc = Math.min(aw / (x1 - x0), ah / (y1 - y0));
+    var pad = Math.min(D.W, D.H) * (FILL[layout] ? 0.01 : 0.03), aw = D.W - D.cw - 2 * pad, ah = D.H - D.ch - 2 * pad, sc = Math.min(aw / (x1 - x0), ah / (y1 - y0));
     var ox = pad + D.cw / 2 + (aw - (x1 - x0) * sc) / 2 - x0 * sc, oy = pad + D.ch / 2 + (ah - (y1 - y0) * sc) / 2 - y0 * sc;
+    if (FILL[layout]) {
+      var P = paths[0].map(function (q) { return [ox + q[0] * sc, oy + q[1] * sc]; }), bx0 = 1e9, by0 = 1e9, bx1 = -1e9, by1 = -1e9;
+      P.forEach(function (q) { bx0 = Math.min(bx0, q[0]); bx1 = Math.max(bx1, q[0]); by0 = Math.min(by0, q[1]); by1 = Math.max(by1, q[1]); });
+      var pts = function (st) { var out = [], row = 0; for (var y = by0 + st * 0.5; y < by1; y += st * 0.86, row++) for (var x = bx0 + st * 0.5 + (row % 2) * st * 0.5; x < bx1; x += st) if (inPoly(x, y, P)) out.push([x, y]); return out; };
+      var lo = 4, hi = Math.max(bx1 - bx0, by1 - by0), best = pts(lo);
+      for (var it = 0; it < 22; it++) { var mid = (lo + hi) / 2, pp = pts(mid); if (pp.length >= n) { lo = mid; best = pp; } else hi = mid; }
+      best = shuffle(best).slice(0, n);
+      ids.forEach(function (idx, k) { var q = best[k] || best[k % best.length];
+        pos[idx] = { x: clamp01((q[0] + jit(6) - D.cw / 2) / (D.W - D.cw)), y: clamp01((q[1] + jit(6) - D.ch / 2) / (D.H - D.ch)), r: Math.round(jit(8)), z: k + 1 }; });
+      return pos;
+    }
     var segs = [], L = 0;
     paths.forEach(function (p) { for (var i = 1; i < p.length; i++) { var a = [ox + p[i - 1][0] * sc, oy + p[i - 1][1] * sc], b = [ox + p[i][0] * sc, oy + p[i][1] * sc], l = Math.hypot(b[0] - a[0], b[1] - a[1]); if (l > 0) { segs.push({ a: a, b: b, l: l, s: L }); L += l; } } });
     var si = 0;
@@ -94,7 +102,7 @@
   }
 
   function deal(notes, layout) {
-    layout = layout || (state && state.layout) || "stapel";
+    layout = layout || (state && state.layout) || "stapel"; if (layout !== "stapel" && layout !== "verstreut" && layout !== "raster" && !SHAPES[layout]) layout = "stapel";
     var order = shuffle(CARDS.map(function (_, i) { return i; })), n = order.length;
     return { total: CARDS.length, layout: layout, pos: arrange(layout, order), top: n + 1, up: [], done: [], notes: notes || {}, picks: (state && state.picks) || {}, name: (state && state.name) || "" };
   }
@@ -117,6 +125,7 @@
   }
   function shapeIcon(id) {
     if (id === "stapel") return '<svg viewBox="0 0 24 24"><rect x="4" y="5" width="9" height="12" rx="2" transform="rotate(-14 8 11)"/><rect x="10" y="7" width="9" height="12" rx="2" transform="rotate(12 14 13)"/></svg>';
+    if (id === "raster") return '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="8" rx="1.5"/><rect x="14" y="3" width="7" height="8" rx="1.5"/><rect x="3" y="13" width="7" height="8" rx="1.5"/><rect x="14" y="13" width="7" height="8" rx="1.5"/></svg>';
     if (id === "verstreut") return '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="6" height="8" rx="1.5" transform="rotate(-20 5 7)"/><rect x="15" y="2" width="6" height="8" rx="1.5" transform="rotate(18 18 6)"/><rect x="8" y="13" width="6" height="8" rx="1.5" transform="rotate(8 11 17)"/></svg>';
     var p = SHAPES[id](), x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
     p.forEach(function (q) { q.forEach(function (v) { x0 = Math.min(x0, v[0]); x1 = Math.max(x1, v[0]); y0 = Math.min(y0, v[1]); y1 = Math.max(y1, v[1]); }); });
@@ -813,7 +822,7 @@
     document.querySelectorAll("[data-logo]").forEach(function (el) { el.innerHTML = LOGO_SVG; });
     $("#stage").insertAdjacentHTML("afterbegin", '<div class="props" aria-hidden="true"></div>');
     state = load() || deal();
-    state.layout = state.layout || "stapel";
+    state.layout = state.layout || "stapel"; if (["stapel", "verstreut", "raster"].indexOf(state.layout) < 0 && !SHAPES[state.layout]) state.layout = "stapel";
     save();
     render(); renderLayouts(); layoutProps(); applyName();
     $("#hello").addEventListener("click", function () { openWelcome(false); });
