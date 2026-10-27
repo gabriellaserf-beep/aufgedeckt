@@ -654,7 +654,7 @@
         '<span class="eyebrow">' + (first ? "Willkommen" : "Dein Profil") + '</span>' +
         '<h2 id="wtitle" tabindex="-1"><span class="prism">Aufgedeckt</span></h2>' +
         "<p>Wie dürfen wir dich nennen? Dein Name bleibt nur in diesem Browser und steht in deiner Notizen-Datei.</p>" +
-        '<label class="wfield"><span>Dein Vorname</span><input id="wname" type="text" autocomplete="given-name" maxlength="40" placeholder="z. B. Gabriella" value="' + esc(nm()) + '"></label>' +
+        '<label class="wfield"><span>Dein Vorname</span><input id="wname" type="text" autocomplete="given-name" maxlength="40" placeholder="z. B. Kim" value="' + esc(nm()) + '"></label>' +
         '<button class="btn btn--primary" type="button" id="wgo">' + (first ? "Los geht’s" : "Speichern") + ' <span class="arr">→</span></button>' +
         '<div class="wor"><span>oder</span></div>' +
         '<label class="wupload"><input id="wfile" type="file" accept=".txt,.json,text/plain,application/json">' +
