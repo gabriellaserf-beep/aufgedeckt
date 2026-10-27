@@ -773,3 +773,12 @@ body { background: #1a1029; }
 .series__head { align-items: center; column-gap: 0.55em; }
 .series__head > span { display: inline-flex; align-items: center; gap: 0.55em; }
 .series__head .big__sep { top: 0; }
+/* iOS Safari: Rückseite (Logo, Muster) schimmerte durch aufgedeckte Karten – nach dem Umdrehen ganz ausblenden */
+.face.back, .face.back > * { -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.card.is-up .face.back { visibility: hidden; transition: visibility 0s linear 0.36s; }
+.card:not(.is-up) .face.back { visibility: visible; transition: none; }
+.card:not(.is-up) .face.front { visibility: hidden; transition: visibility 0s linear 0.36s; }
+.card.is-up .face.front { visibility: visible; transition: none; }
+/* Trennpunkt: auch ohne Flex-Ausrichtung mittig */
+.big__sep { vertical-align: middle; }
+.series__head > span { line-height: 1; }
