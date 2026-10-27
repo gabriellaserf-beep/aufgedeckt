@@ -151,20 +151,90 @@
   };
   /* Kleine Impulse, die beim Drüberfahren über einen Gegenstand erscheinen */
   var PROP_TIPS = {
-    coffee:   ["Gönn dir eine Pause. Abstand bringt oft mehr als das nächste Argument.", "Kurz durchatmen. Ein Konflikt läuft dir nicht davon.", "Manchmal klärt sich bei einem Kaffee zu zweit mehr als im Meeting."],
-    keyboard: ["Bevor du auf Senden drückst: Würdest du es auch so sagen?", "Schwierige Themen lieber im Gespräch klären als im Chat."],
-    mouse:    ["Ein Klick ist schnell gemacht. Ein Gespräch dauert länger, bringt aber mehr.", "Nicht alles muss sofort beantwortet werden. Erst sortieren, dann reagieren."],
-    pen:      ["Schreib auf, was dich bewegt. Was auf Papier steht, sortiert den Kopf.", "Formulier deinen Wunsch als Ich-Botschaft, bevor du ins Gespräch gehst."],
-    notebook: ["Was hast du aus dem letzten Konflikt gelernt? Halt eine Erkenntnis fest.", "Fortschritt statt Sieg. Was ist heute ein kleines Stück besser geworden?"],
-    plant:    ["Beziehungen wachsen langsam. Ein bisschen Pflege jeden Tag reicht.", "Auch nach einem Streit kann etwas Neues wachsen."],
-    notes:    ["Halt Vereinbarungen fest. Was aufgeschrieben ist, wird seltener vergessen.", "Ein ehrliches Danke auf einem Zettel wirkt Wunder."],
-    phone:    ["Leg das Handy weg und hör richtig zu. Volle Aufmerksamkeit ist ein Geschenk.", "Lieber kurz anrufen als zehn Nachrichten hin und her."]
+    coffee: [
+      "Gönn dir eine Pause. Abstand bringt oft mehr als das nächste Argument.",
+      "Kurz durchatmen. Ein Konflikt läuft dir nicht davon.",
+      "Manchmal klärt sich bei einem Kaffee zu zweit mehr als im Meeting.",
+      "Lad die andere Person auf einen Kaffee ein. Ein neutraler Ort entspannt.",
+      "Erst runterkommen, dann reden. Mit Puls 120 hört niemand richtig zu.",
+      "Zehn Minuten Pause sind kein Rückzug, sondern Klugheit.",
+      "Wie geht es dir gerade wirklich? Nimm dir einen Schluck Zeit für die Antwort.",
+      "Gute Gespräche brauchen kein Protokoll, manchmal nur zwei Tassen."
+    ],
+    keyboard: [
+      "Bevor du auf Senden drückst: Würdest du es auch so sagen?",
+      "Schwierige Themen lieber im Gespräch klären als im Chat.",
+      "Schreib die wütende Mail. Und lösch sie dann.",
+      "Großbuchstaben wirken wie Schreien. Auch wenn du es nicht so meinst.",
+      "Ton ist im Text schwer zu lesen. Im Zweifel nachfragen, wie es gemeint war.",
+      "Eine Nacht drüber schlafen, dann antworten. Das wirkt oft Wunder.",
+      "Kurze Nachrichten wirken schnell schroff. Ein freundlicher Satz mehr hilft.",
+      "Lieber eine klare Frage stellen als eine lange Vermutung schreiben."
+    ],
+    mouse: [
+      "Ein Klick ist schnell gemacht. Ein Gespräch dauert länger, bringt aber mehr.",
+      "Nicht alles muss sofort beantwortet werden. Erst sortieren, dann reagieren.",
+      "Zoom raus: Wie wichtig ist das Thema in einem Monat noch?",
+      "Scroll mal durch die andere Perspektive, bevor du urteilst.",
+      "Rückgängig machen geht im Leben selten. Entschuldigen schon.",
+      "Klick dich nicht durch Konflikte. Nimm dir bewusst Zeit dafür.",
+      "Du musst nicht jede Diskussion gewinnen. Manchmal reicht es, sie gut zu führen."
+    ],
+    pen: [
+      "Schreib auf, was dich bewegt. Was auf Papier steht, sortiert den Kopf.",
+      "Formulier deinen Wunsch als Ich-Botschaft, bevor du ins Gespräch gehst.",
+      "Notier drei Dinge, die du an der anderen Person schätzt.",
+      "Was genau ist passiert? Schreib es ohne Bewertung auf.",
+      "Welches Bedürfnis steckt hinter deinem Ärger? Schreib es auf.",
+      "Plane deinen ersten Satz für das Gespräch. Der Anfang prägt den Rest.",
+      "Halte fest, was du vom Gegenüber gelernt hast."
+    ],
+    notebook: [
+      "Was hast du aus dem letzten Konflikt gelernt? Halt eine Erkenntnis fest.",
+      "Fortschritt statt Sieg. Was ist heute ein kleines Stück besser geworden?",
+      "Welche Situation hat dich heute getriggert? Und warum?",
+      "Notier, was gut gelaufen ist. Auch kleine Schritte zählen.",
+      "Wie würdest du die Situation aus Sicht der anderen Person beschreiben?",
+      "Welche Vereinbarung wollt ihr in zwei Wochen nochmal anschauen?",
+      "Schreib auf, was du beim nächsten Mal anders machen willst."
+    ],
+    plant: [
+      "Beziehungen wachsen langsam. Ein bisschen Pflege jeden Tag reicht.",
+      "Auch nach einem Streit kann etwas Neues wachsen.",
+      "Vertrauen braucht Zeit, Licht und regelmäßige Aufmerksamkeit.",
+      "Nicht jeder Konflikt ist Unkraut. Manche bringen das Team zum Wachsen.",
+      "Gieß die guten Momente. Lob wirkt wie Wasser.",
+      "Wurzeln sieht man nicht. Werte auch nicht. Frag nach ihnen.",
+      "Gib Veränderung Zeit. Über Nacht wächst selten etwas."
+    ],
+    notes: [
+      "Halt Vereinbarungen fest. Was aufgeschrieben ist, wird seltener vergessen.",
+      "Ein ehrliches Danke auf einem Zettel wirkt Wunder.",
+      "Wer macht was bis wann? Ein Zettel macht es verbindlich.",
+      "Sammelt Ideen erst ohne Bewertung. Aussortieren kommt später.",
+      "Ein Gedanke pro Zettel. Dann lässt sich alles neu sortieren.",
+      "Kleb dir einen Satz an den Bildschirm, der dich ruhig bleiben lässt.",
+      "Offene Punkte sichtbar machen nimmt Druck aus dem Kopf."
+    ],
+    phone: [
+      "Leg das Handy weg und hör richtig zu. Volle Aufmerksamkeit ist ein Geschenk.",
+      "Lieber kurz anrufen als zehn Nachrichten hin und her.",
+      "Benachrichtigungen aus, Gespräch an.",
+      "Wenn es emotional wird: Wechselt vom Chat ins Gespräch.",
+      "Ein Sprachanruf trägt mehr Tonfall als jede Nachricht.",
+      "Wen könntest du heute mal anrufen, einfach um nachzufragen?",
+      "Gesehen, aber nicht geantwortet? Frag nach, statt dir eine Geschichte auszudenken."
+    ]
   };
+  /* nicht zweimal hintereinander denselben Spruch zeigen */
+  var lastTip = {};
   var PROP_NAMES = { coffee: "Kaffeepause", keyboard: "Tastatur", mouse: "Maus", pen: "Stift", notebook: "Notizbuch", plant: "Pflanze", notes: "Post-its", phone: "Handy" };
   function propTip(el) {
     var t = $("#propTip"); if (!t) { t = document.createElement("div"); t.id = "propTip"; t.className = "proptip"; t.setAttribute("role", "status"); document.body.appendChild(t); }
     if (!el) { t.classList.remove("is-on"); return; }
-    var k = el.dataset.k, list = PROP_TIPS[k] || [], txt = list[Math.floor(Math.random() * list.length)] || "";
+    var k = el.dataset.k, list = PROP_TIPS[k] || [], n = Math.floor(Math.random() * list.length);
+    if (list.length > 1 && n === lastTip[k]) n = (n + 1) % list.length;
+    lastTip[k] = n; var txt = list[n] || "";
     t.innerHTML = '<span class="proptip__k">' + esc(PROP_NAMES[k] || "") + '</span><span class="proptip__t">' + esc(txt) + "</span>";
     var r = el.getBoundingClientRect(), vw = document.documentElement.clientWidth, l = Math.max(r.left, 0), rr = Math.min(r.right, vw), cx = (l + rr) / 2;
     t.style.visibility = "hidden"; t.classList.add("is-on");
@@ -318,10 +388,15 @@
       list.sort(function (x, y) { return x - y; });
       var k = CATS[key] || cat(list[0]);
       var sec = document.createElement("section");
-      sec.className = "pgrp" + (key === newCat ? " is-new" : "");
+      var openG = !!(state.openGroups && state.openGroups[key]);
+      sec.className = "pgrp" + (key === newCat ? " is-new" : "") + (openG ? " is-open" : "");
       sec.style.setProperty("--acc", k.farbe);
-      sec.innerHTML = '<header class="pgrp__head"><img src="' + esc(k.bild) + '" alt=""><span class="pgrp__name">' + esc(hy(k.name)) + '</span><span class="pgrp__count">' + list.length + "</span></header>";
-      var fan = document.createElement("div"); fan.className = "pgrp__fan";
+      sec.innerHTML = '<button type="button" class="pgrp__head" aria-expanded="' + openG + '" title="' + (openG ? "Zuklappen" : "Alle Karten anzeigen") + '"><img src="' + esc(k.bild) + '" alt=""><span class="pgrp__name">' + esc(hy(k.name)) + '</span><span class="pgrp__count">' + list.length + '</span><svg class="pgrp__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button>';
+      sec.querySelector(".pgrp__head").addEventListener("click", function () {
+        state.openGroups = state.openGroups || {}; if (state.openGroups[key]) delete state.openGroups[key]; else state.openGroups[key] = true;
+        save(); renderPlayed();
+      });
+      var fan = document.createElement("div"); fan.className = openG ? "pgrp__list" : "pgrp__fan";
       list.forEach(function (idx, n) {
         var hasNote = (state.notes[idx] || "").trim().length > 0;
         var b = document.createElement("button");

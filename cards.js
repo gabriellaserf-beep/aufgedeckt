@@ -32,7 +32,7 @@ window.KATEGORIEN = {
 */
 window.TRENNUNGEN = [
   "Zwischen|mensch|lich", "Lösungs|varianten", "Entgegen|kommen", "Konflikt|ursachen", "Konflikt|lösung",
-  "Konflikt|felder", "Konflikt|stile", "Selbst|reflexion", "Eskala|tions|prävention", "Perspek|tiv|wechsel",
+  "Konflikt|felder", "Konflikt|stile", "Check|liste", "Eska|lation", "Weiter|denken", "Bedürf|nisse", "Selbst|reflexion", "Eskala|tions|prävention", "Perspek|tiv|wechsel",
   "Team|zusammen|halt", "Persön|lichkeits|typen", "Kommuni|kation", "Konflikt|kultur", "Zusammen|arbeit", "Organi|sation", "Verbesserungs|potenzial", "Lern|erfahrung", "Entwicklungs|möglichkeit", "Experimentier|freudigkeit", "Problemlösungs|kompetenz", "Konfliktlöse|kompetenz", "Wachstums|möglichkeiten", "Kompetenz|entwicklung", "Potenzial|entfaltung", "Unternehmens|mission", "Selbst|bestimmung", "Selbst|behauptung", "Selbst|wirksamkeit", "Organisations|kultur", "Sinnhaftig|keit", "Konfron|tieren", "Verein|barung",
   "Wahr|nehmung", "Gemein|sames", "Fort|schritt", "Weiter|atmen", "Indivi|duell", "Koope|rieren",
   "Gewalt|freie", "Schlüssel|personen", "Einzel|gespräche", "Vernichtungs|schläge", "Zer|splitterung",

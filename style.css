@@ -523,3 +523,18 @@ header.top { position: relative; z-index: 15; }
 @media (max-width: 1000px) {
   .stage .played__grid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 10px; }
 }
+
+/* Themen-Stapel aufklappen */
+.pgrp__head { width: 100%; border: 0; background: none; padding: 0; color: inherit; font: inherit; cursor: pointer; text-align: left; }
+.pgrp__head:focus-visible { outline: 2px solid var(--lime); outline-offset: 4px; border-radius: 6px; }
+.pgrp__chev { width: 16px; height: 16px; flex: none; fill: none; stroke: var(--acc); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--dur-base) var(--ease-out); }
+.pgrp.is-open .pgrp__chev { transform: rotate(180deg); }
+.pgrp__head:hover .pgrp__name { text-decoration: underline; text-underline-offset: 3px; }
+.pgrp__list { display: flex; flex-direction: column; gap: 6px; animation: fade var(--dur-base) var(--ease-out); }
+.pgrp__list .mini { width: 100%; aspect-ratio: auto; transform: none; margin: 0; padding: 8px 26px 8px 12px; border-radius: 10px; flex-direction: column; gap: 2px; box-shadow: none;
+  border-left: 3px solid var(--acc); }
+.pgrp__list .mini:hover, .pgrp__list .mini:focus-visible { transform: translateX(3px); box-shadow: 0 6px 14px rgba(8,4,16,0.45); }
+.pgrp__list .mini__title { font-size: 0.75rem; hyphens: auto; -webkit-hyphens: auto; }
+.pgrp__list .mini__note { top: 50%; bottom: auto; right: 10px; transform: translateY(-50%); }
+.pgrp__list .mini + .mini { margin-left: 0; }
+.pgrp__name { overflow-wrap: normal; word-break: normal; letter-spacing: 0.08em; }
