@@ -148,7 +148,7 @@
     /* Regalbrett */
     out += '<rect x="22" y="' + shelf + '" width="276" height="6" rx="3" fill="rgba(201,196,242,0.28)"/><rect x="22" y="' + (shelf + 6) + '" width="276" height="10" fill="url(#bkF)" opacity="0"/>';
     books.forEach(function (b, j) {
-      var on = topic === j + 1, w = 72, cx = 70 + j * 90, x = cx - w / 2, y = shelf - b.h, tr = on ? ' transform="translate(0 -12) rotate(-5 ' + cx + " " + shelf + ')"' : "";
+      var on = topic === j + 1, w = 72, cx = 70 + j * 90, x = cx - w / 2, y = shelf - b.h - (on ? 0 : 5), tr = on ? ' transform="translate(0 -12) rotate(-5 ' + cx + " " + shelf + ')"' : "";
       var g = "<g" + tr + ">";
       if (on) g += '<rect x="' + (x + 6) + '" y="' + (y + 10) + '" width="' + (w - 12) + '" height="' + (b.h - 10) + '" rx="8" fill="' + O + '" opacity="0.7" filter="url(#bkG)"/>';
       g += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + b.h + '" rx="7" fill="' + (on ? "url(#bkA)" : "#220736") + '" stroke="' + (on ? "#ffe9a0" : LIL) + '" stroke-opacity="' + (on ? 1 : 0.35) + '" stroke-width="1.4"/>';
@@ -156,7 +156,7 @@
       var bc = on ? INK : LIL, bo = on ? 0.55 : 0.3;
       g += '<rect x="' + (x + 8) + '" y="' + (y + 9) + '" width="' + (w - 16) + '" height="2" rx="1" fill="' + bc + '" fill-opacity="' + bo + '"/>' +
         '<rect x="' + (x + 8) + '" y="' + (y + b.h - 11) + '" width="' + (w - 16) + '" height="2" rx="1" fill="' + bc + '" fill-opacity="' + bo + '"/>';
-      var ty = y + b.h - 19 - (b.l.length - 1) * 10.4;
+      var ty = y + b.h / 2 - (b.l.length - 1) * 5.2 + 3.2;
       g += lines(cx, ty, b.l, 9, 900, on ? INK : "rgba(201,196,242,0.6)", 10.4);
       out += g + "</g>";
     });
