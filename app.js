@@ -302,24 +302,49 @@
 
   /* ---------- Abgelegte Karten: offen sichtbar, jederzeit wieder zu öffnen ---------- */
   var justDone = null;
+  /* Abgelegte Karten: thematisch gruppiert, jede Kategorie als kleiner aufgefächerter Stapel */
   function renderPlayed() {
-    var grid = $("#played"), ids = state.done.slice().reverse();
+    var grid = $("#played"), ids = state.done.slice();
     $("#playedCount").textContent = ids.length ? "(" + ids.length + ")" : "";
     $("#playedEmpty").hidden = ids.length > 0;
     grid.innerHTML = "";
-    ids.forEach(function (idx) {
-      var k = cat(idx), hasNote = (state.notes[idx] || "").trim().length > 0;
-      var b = document.createElement("button");
-      b.type = "button";
-      b.className = "mini" + (idx === justDone ? " is-new" : "");
-      b.style.setProperty("--acc", k.farbe);
-      b.setAttribute("aria-label", CARDS[idx].titel + (hasNote ? ", mit Notiz" : "") + " — öffnen");
-      b.innerHTML = '<img src="' + esc(k.bild) + '" alt=""><span class="mini__cat">' + esc(k.name) + '</span><span class="mini__title">' + esc(hy(CARDS[idx].titel)) + "</span>" +
-        (hasNote ? '<span class="mini__note">Notiz</span>' : "");
-      b.addEventListener("click", function () { lastFocus = b; openReader(idx); });
-      grid.appendChild(b);
+    var order = Object.keys(CATS), groups = {};
+    ids.forEach(function (i) { (groups[CARDS[i].kategorie] = groups[CARDS[i].kategorie] || []).push(i); });
+    var newCat = justDone != null ? CARDS[justDone].kategorie : null;
+    order.concat(Object.keys(groups).filter(function (k) { return order.indexOf(k) < 0; })).forEach(function (key) {
+      var list = groups[key]; if (!list) return;
+      list.sort(function (x, y) { return x - y; });
+      var k = CATS[key] || cat(list[0]);
+      var sec = document.createElement("section");
+      sec.className = "pgrp" + (key === newCat ? " is-new" : "");
+      sec.style.setProperty("--acc", k.farbe);
+      sec.innerHTML = '<header class="pgrp__head"><img src="' + esc(k.bild) + '" alt=""><span class="pgrp__name">' + esc(hy(k.name)) + '</span><span class="pgrp__count">' + list.length + "</span></header>";
+      var fan = document.createElement("div"); fan.className = "pgrp__fan";
+      list.forEach(function (idx, n) {
+        var hasNote = (state.notes[idx] || "").trim().length > 0;
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "mini" + (idx === justDone ? " is-new" : "");
+        b.style.setProperty("--acc", k.farbe); b.style.setProperty("--i", n); b.style.zIndex = n + 1;
+        b.title = CARDS[idx].titel;
+        b.setAttribute("aria-label", CARDS[idx].titel + (hasNote ? ", mit Notiz" : "") + " — öffnen");
+        b.innerHTML = '<span class="mini__teil">' + esc(shortTeil(CARDS[idx].teil) || "") + '</span><span class="mini__title">' + esc(hy(CARDS[idx].titel)) + "</span>" + (hasNote ? '<span class="mini__note" aria-hidden="true"></span>' : "");
+        b.addEventListener("click", function () { lastFocus = b; openReader(idx); });
+        fan.appendChild(b);
+      });
+      sec.appendChild(fan); grid.appendChild(sec);
+    });
+    fitFans();
+  }
+  /* Überlappung so wählen, dass jeder Stapel in die Breite passt */
+  function fitFans() {
+    document.querySelectorAll(".pgrp__fan").forEach(function (f) {
+      var n = f.children.length; if (!n) return;
+      var w = f.clientWidth, cw = f.children[0].offsetWidth || 76, ov = n > 1 ? Math.min(8, (w - cw) / (n - 1) - cw) : 0;
+      f.style.setProperty("--ov", Math.max(-cw + 12, ov) + "px");
     });
   }
+  window.addEventListener("resize", function () { clearTimeout(fitFans.t); fitFans.t = setTimeout(fitFans, 120); });
 
   /* Hervorhebung: **Wort** in cards.js wird in Black gesetzt */
   function md(s) { return esc(hy(s)).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>"); }
