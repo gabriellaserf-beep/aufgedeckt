@@ -311,7 +311,9 @@
     var order = Object.keys(CATS), groups = {};
     ids.forEach(function (i) { (groups[CARDS[i].kategorie] = groups[CARDS[i].kategorie] || []).push(i); });
     var newCat = justDone != null ? CARDS[justDone].kategorie : null;
-    order.concat(Object.keys(groups).filter(function (k) { return order.indexOf(k) < 0; })).forEach(function (key) {
+    /* zuletzt benutztes Thema steht immer oben */
+    var last = {}; ids.forEach(function (i, pos) { last[CARDS[i].kategorie] = pos; });
+    Object.keys(groups).sort(function (x, y) { return last[y] - last[x]; }).forEach(function (key) {
       var list = groups[key]; if (!list) return;
       list.sort(function (x, y) { return x - y; });
       var k = CATS[key] || cat(list[0]);
