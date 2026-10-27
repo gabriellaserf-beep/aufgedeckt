@@ -137,38 +137,39 @@
   }
 
   /* Bücher: Regal mit drei Stufen */
-  /* Bücher: das Regal aus dem Board – Spalten = Themen, Reihen = Stufen. Das aktive Fach leuchtet. */
+  /* Bücher: drei Themen als Buchrücken im Regal – das aktive Buch wird herausgezogen und leuchtet.
+     Darunter die Stufe als Schalter. */
   function buecher(n) {
     var topic = Math.floor(n / 10), level = n % 10, LIL = "#c9c4f2", Y = "#F9CE1F", O = "#F9851F";
-    var heads = ["GFK", "DISG", "Kommunikation"], rows = ["Einsteiger", "Erfahrene", "Profi"];
-    var gx = 84, cw = 74, gap = 6, gy = 40, rh = 44;
-    var out = '<defs><linearGradient id="bkA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + Y + '"/><stop offset="1" stop-color="' + O + '"/></linearGradient>' +
-      '<filter id="bkG" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9"/></filter></defs>';
-    /* Spaltenköpfe */
-    heads.forEach(function (h, j) {
-      var on = topic === j + 1, x = gx + j * (cw + gap);
-      var pw = h.length > 6 ? cw : cw - 12;
-      out += '<rect x="' + (x + (cw - pw) / 2) + '" y="8" width="' + pw + '" height="22" rx="11" fill="' + (on ? LIL : "none") + '" stroke="' + LIL + '" stroke-opacity="' + (on ? 1 : 0.35) + '" stroke-width="1.2"/>' +
-        t(x + cw / 2, 22.5, h, h.length > 6 ? 8 : 10, 900, on ? INK : "rgba(201,196,242,0.65)");
+    var books = [{ l: ["Gewaltfreie", "Kommuni-", "kation"], h: 74 }, { l: ["DISG &", "Persönlich-", "keitstypen"], h: 82 }, { l: ["Kommuni-", "kation"], h: 70 }];
+    var shelf = 98, out = '<defs><linearGradient id="bkA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe27a"/><stop offset="0.45" stop-color="' + Y + '"/><stop offset="1" stop-color="' + O + '"/></linearGradient>' +
+      '<linearGradient id="bkS" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/><stop offset="0.25" stop-color="#ffffff" stop-opacity="0"/></linearGradient>' +
+      '<filter id="bkG" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10"/></filter></defs>';
+    /* Regalbrett */
+    out += '<rect x="22" y="' + shelf + '" width="276" height="6" rx="3" fill="rgba(201,196,242,0.28)"/><rect x="22" y="' + (shelf + 6) + '" width="276" height="10" fill="url(#bkF)" opacity="0"/>';
+    books.forEach(function (b, j) {
+      var on = topic === j + 1, w = 72, cx = 70 + j * 90, x = cx - w / 2, y = shelf - b.h, tr = on ? ' transform="translate(0 -12) rotate(-5 ' + cx + " " + shelf + ')"' : "";
+      var g = "<g" + tr + ">";
+      if (on) g += '<rect x="' + (x + 6) + '" y="' + (y + 10) + '" width="' + (w - 12) + '" height="' + (b.h - 10) + '" rx="8" fill="' + O + '" opacity="0.7" filter="url(#bkG)"/>';
+      g += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + b.h + '" rx="7" fill="' + (on ? "url(#bkA)" : "#220736") + '" stroke="' + (on ? "#ffe9a0" : LIL) + '" stroke-opacity="' + (on ? 1 : 0.35) + '" stroke-width="1.4"/>';
+      if (on) g += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + b.h + '" rx="7" fill="url(#bkS)"/>';
+      var bc = on ? INK : LIL, bo = on ? 0.55 : 0.3;
+      g += '<rect x="' + (x + 8) + '" y="' + (y + 9) + '" width="' + (w - 16) + '" height="2" rx="1" fill="' + bc + '" fill-opacity="' + bo + '"/>' +
+        '<rect x="' + (x + 8) + '" y="' + (y + b.h - 11) + '" width="' + (w - 16) + '" height="2" rx="1" fill="' + bc + '" fill-opacity="' + bo + '"/>';
+      var ty = y + b.h / 2 - (b.l.length - 1) * 5.2 + 3.2;
+      g += lines(cx, ty, b.l, 9, 900, on ? INK : "rgba(201,196,242,0.6)", 10.4);
+      out += g + "</g>";
     });
-    /* Reihen mit Stufen-Balken */
-    rows.forEach(function (r, i) {
-      var on = level === i + 1, y = gy + i * (rh + gap);
-      for (var k = 0; k < 3; k++) out += '<rect x="' + (6 + k * 5) + '" y="' + (y + rh / 2 + 6 - (k + 1) * 4) + '" width="3" height="' + ((k + 1) * 4) + '" rx="1" fill="' + (k <= i ? (on ? Y : "rgba(246,244,251,0.35)") : "rgba(246,244,251,0.12)") + '"/>';
-      out += t(24, y + rh / 2 + 4, r, 10, on ? 900 : 700, on ? PAPER : MUTED, "start");
-      heads.forEach(function (_, j) {
-        var act = topic === j + 1 && on, x = gx + j * (cw + gap), col = topic === j + 1, row = on;
-        if (act) out += '<rect x="' + (x + 4) + '" y="' + (y + 6) + '" width="' + (cw - 8) + '" height="' + (rh - 4) + '" rx="10" fill="' + O + '" opacity="0.75" filter="url(#bkG)"/>';
-        out += '<rect x="' + x + '" y="' + y + '" width="' + cw + '" height="' + rh + '" rx="10" fill="' + (act ? "url(#bkA)" : (col || row) ? "rgba(201,196,242,0.07)" : "#220736") + '" stroke="' + (act ? "#ffe27a" : "rgba(246,244,251,0.13)") + '" stroke-width="' + (act ? 1.5 : 1) + '"/>';
-        /* zwei Bücher pro Fach, dazu ein schräg lehnendes */
-        var bx = x + cw / 2 - 15, by = y + rh - 6, ink = act ? INK : "rgba(201,196,242," + ((col || row) ? 0.5 : 0.28) + ")";
-        var bk = function (dx, w, h, rot) { return '<rect x="' + (bx + dx) + '" y="' + (by - h) + '" width="' + w + '" height="' + h + '" rx="2" fill="' + (act ? INK : "none") + '" fill-opacity="' + (act ? 0.88 : 0) + '" stroke="' + ink + '" stroke-width="1.2"' + (rot ? ' transform="rotate(' + rot + " " + (bx + dx) + " " + by + ')"' : "") + "/>" +
-          '<rect x="' + (bx + dx + 2) + '" y="' + (by - h + 5) + '" width="' + (w - 4) + '" height="1.6" fill="' + (act ? Y : ink) + '"' + (rot ? ' transform="rotate(' + rot + " " + (bx + dx) + " " + by + ')"' : "") + "/>"; };
-        out += bk(0, 9, 26) + bk(11, 11, 31) + bk(25, 8, 24, 16);
-        if (act) out += '<rect x="' + (x + 5) + '" y="' + (by + 1) + '" width="' + (cw - 10) + '" height="2" rx="1" fill="' + INK + '" fill-opacity="0.35"/>';
-      });
+    /* Stufen-Schalter */
+    var names = ["Einsteiger", "Erfahrene", "Profi"], sx = 52, sw = 216, seg = sw / 3, sy = 116;
+    out += '<rect x="' + sx + '" y="' + sy + '" width="' + sw + '" height="20" rx="10" fill="rgba(26,16,41,0.6)" stroke="rgba(246,244,251,0.16)"/>';
+    names.forEach(function (nm, i) {
+      var on = level === i + 1, x = sx + i * seg;
+      if (on) out += '<rect x="' + (x + 2) + '" y="' + (sy + 2) + '" width="' + (seg - 4) + '" height="16" rx="8" fill="' + Y + '"/>';
+      for (var k = 0; k <= i; k++) out += '<rect x="' + (x + 12 + k * 3.6) + '" y="' + (sy + 13 - (k + 1) * 2.6) + '" width="2.2" height="' + ((k + 1) * 2.6) + '" rx="0.8" fill="' + (on ? INK : MUTED) + '"/>';
+      out += t(x + seg / 2 + 6, sy + 13.6, nm, 8.5, 900, on ? INK : MUTED);
     });
-    return svg(out, "0 0 320 190");
+    return svg(out, "0 6 320 134");
   }
 
   /* Führung: zehn Schritte auf einem Weg */

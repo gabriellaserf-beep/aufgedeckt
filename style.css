@@ -611,6 +611,4 @@ body { background: #1a1029; }
 .table { min-height: 100vh; min-height: 100dvh; padding-bottom: 40px; }
 
 /* Bücher: Regal-Grafik kompakter, die Empfehlungen sind die Hauptsache */
-.big__media--grafik.g-buecher { margin: 18px auto 22px !important; width: 100%; max-width: 330px; }
-.big__media--grafik.g-buecher .grafik { max-height: 200px; }
-@media (max-width: 760px) { .big__media--grafik.g-buecher { max-width: 270px; } }
+.big__media--grafik.g-buecher .grafik { max-height: 260px; }
