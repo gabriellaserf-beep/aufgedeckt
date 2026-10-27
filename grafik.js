@@ -201,14 +201,16 @@
 
   /* BATNA: Weggabelung zwischen Einigung und Plan B */
   function batna(n) {
-    var out = '<path d="M30 150 C 110 150, 120 100, 160 100" fill="none" stroke="' + PAPER + '" stroke-opacity="0.5" stroke-width="4" stroke-linecap="round"/>' +
-      '<path d="M160 100 C 200 100, 220 50, 290 46" fill="none" stroke="#b794e8" stroke-width="4" stroke-linecap="round"/>' +
-      '<path d="M160 100 C 200 100, 220 150, 290 154" fill="none" stroke="' + LIME + '" stroke-width="4" stroke-linecap="round" stroke-dasharray="' + (n ? "0" : "2 8") + '"/>' +
-      '<circle cx="160" cy="100" r="7" fill="' + PAPER + '"/>' +
-      '<rect x="214" y="16" width="96" height="26" rx="13" fill="#b794e8"/>' + t(262, 34, "Einigung", 12, 900, INK) +
-      '<rect x="214" y="158" width="96" height="26" rx="13" fill="' + LIME + '"/>' + t(262, 176, "Plan B = BATNA", 11, 900, INK) +
-      t(70, 186, "Verhandlung", 11, 700, MUTED);
-    return svg(out);
+    var L = "#b794e8";
+    var out = '<path d="M24 136 C 96 136, 112 100, 150 100" fill="none" stroke="' + PAPER + '" stroke-opacity="0.45" stroke-width="2.5" stroke-linecap="round"/>' +
+      '<path d="M150 100 C 186 100, 196 58, 222 56" fill="none" stroke="' + L + '" stroke-width="2.5" stroke-linecap="round"/>' +
+      '<path d="M150 100 C 186 100, 196 142, 222 144" fill="none" stroke="' + LIME + '" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="' + (n ? "0" : "2 7") + '"/>' +
+      '<circle cx="150" cy="100" r="6" fill="#220736" stroke="' + PAPER + '" stroke-width="2"/>' +
+      '<circle cx="224" cy="56" r="4.5" fill="' + L + '"/><circle cx="224" cy="144" r="4.5" fill="' + LIME + '"/>' +
+      t(240, 50, "Ziel", 8.5, 700, MUTED, "start") + t(240, 64, "Einigung", 13, 900, L, "start") +
+      t(240, 138, "Plan B", 8.5, 700, MUTED, "start") + t(240, 152, "BATNA", 13, 900, LIME, "start") +
+      t(24, 156, "Verhandlung", 9.5, 700, MUTED, "start");
+    return svg(out, "10 30 300 140");
   }
 
   /* LEAF: vier Blätter */
