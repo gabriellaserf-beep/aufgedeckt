@@ -96,7 +96,7 @@
   function deal(notes, layout) {
     layout = layout || (state && state.layout) || "stapel";
     var order = shuffle(CARDS.map(function (_, i) { return i; })), n = order.length;
-    return { total: CARDS.length, layout: layout, pos: arrange(layout, order), top: n + 1, up: [], done: [], notes: notes || {}, picks: (state && state.picks) || {} };
+    return { total: CARDS.length, layout: layout, pos: arrange(layout, order), top: n + 1, up: [], done: [], notes: notes || {}, picks: (state && state.picks) || {}, name: (state && state.name) || "" };
   }
 
   /* Auslage wechseln: offene Karten gleiten in die neue Form, Fortschritt bleibt */
@@ -537,7 +537,7 @@
         "</article>" +
         '<div class="notes">' +
           '<label class="notes__label" for="note">Deine Notizen</label>' +
-          '<textarea id="note" placeholder="Schreib auf, was dir dazu einfällt. Nur du siehst das.">' + esc(state.notes[idx] || "") + "</textarea>" +
+          '<textarea id="note" placeholder="' + esc(greet("Was fällt dir dazu ein, {n}? Nur du siehst das.")) + '">' + esc(state.notes[idx] || "") + "</textarea>" +
           '<p class="notes__meta">Wird nur in diesem Browser gespeichert.</p>' +
           '<div class="row">' +
             (played
@@ -616,12 +616,80 @@
         lines.push("");
       });
     });
+    lines.push("", "", MARK_A, "Mit dieser Datei kannst du dein Spiel auf jedem Gerät fortsetzen: Aufgedeckt öffnen und die Datei hochladen.", "Bitte die Zeile darunter nicht verändern.", packState(), MARK_B);
     return lines.join("\n");
+  }
+
+  /* ---------- Spielstand in der Datei: einlesen und wieder herstellen ---------- */
+  var MARK_A = "───── SPIELSTAND (nicht verändern) ─────", MARK_B = "───── ENDE SPIELSTAND ─────";
+  function packState() { try { return "AUFGEDECKT1:" + btoa(unescape(encodeURIComponent(JSON.stringify(state)))); } catch (e) { return ""; } }
+  function unpackState(text) {
+    var m = /AUFGEDECKT1:([A-Za-z0-9+\/=]+)/.exec(text || ""), s = null;
+    try { s = m ? JSON.parse(decodeURIComponent(escape(atob(m[1])))) : JSON.parse(text); } catch (e) { return null; }
+    if (!s || typeof s !== "object" || !s.pos || !Array.isArray(s.done)) return null;
+    if (s.total !== CARDS.length) { /* Kartenanzahl geändert: Notizen behalten, neu verteilen */
+      var keep = { notes: s.notes || {}, picks: s.picks || {}, name: s.name || "" }; state = state || {}; state.picks = keep.picks; state.name = keep.name;
+      var n = deal(keep.notes); n.picks = keep.picks; n.name = keep.name; n.done = (s.done || []).filter(function (i) { return i < CARDS.length; }); return n;
+    }
+    s.notes = s.notes || {}; s.picks = s.picks || {}; s.up = s.up || []; s.layout = s.layout || "stapel"; s.name = s.name || "";
+    return s;
+  }
+  function nm() { return (state && state.name || "").trim(); }
+  function greet(t) { return nm() ? t.replace("{n}", nm()) : t.replace(/,?\s*\{n\}/, ""); }
+  function toast(msg) {
+    var t = $("#toast"); if (!t) { t = document.createElement("div"); t.id = "toast"; t.className = "toast"; t.setAttribute("role", "status"); document.body.appendChild(t); }
+    t.textContent = msg; t.classList.remove("is-on"); void t.offsetWidth; t.classList.add("is-on");
+    clearTimeout(toast.t); toast.t = setTimeout(function () { t.classList.remove("is-on"); }, 3600);
+  }
+  function applyName() {
+    var g = $("#hello"); if (g) { g.textContent = nm() ? "Hallo, " + nm() : "Name eingeben"; g.title = nm() ? "Name ändern oder Spielstand laden" : "Name eingeben"; }
+    var f = $("#finish h2"); if (f) f.textContent = greet("Gut gemacht, {n}");
+  }
+  function openWelcome(first) {
+    lastFocus = document.activeElement;
+    var o = $("#reader");
+    o.innerHTML =
+      '<div class="confirm welcome" role="dialog" aria-modal="true" aria-labelledby="wtitle">' +
+        '<span class="logo welcome__logo">' + LOGO_SVG + "</span>" +
+        '<span class="eyebrow">' + (first ? "Willkommen" : "Dein Profil") + '</span>' +
+        '<h2 id="wtitle" tabindex="-1"><span class="prism">Aufgedeckt</span></h2>' +
+        "<p>Wie dürfen wir dich nennen? Dein Name bleibt nur in diesem Browser und steht in deiner Notizen-Datei.</p>" +
+        '<label class="wfield"><span>Dein Vorname</span><input id="wname" type="text" autocomplete="given-name" maxlength="40" placeholder="z. B. Gabriella" value="' + esc(nm()) + '"></label>' +
+        '<button class="btn btn--primary" type="button" id="wgo">' + (first ? "Los geht’s" : "Speichern") + ' <span class="arr">→</span></button>' +
+        '<div class="wor"><span>oder</span></div>' +
+        '<label class="wupload"><input id="wfile" type="file" accept=".txt,.json,text/plain,application/json">' +
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>' +
+          "<span><strong>Spielstand laden</strong><small>Die heruntergeladene Notizen-Datei auswählen. Name, Karten und Notizen kommen zurück.</small></span></label>" +
+        '<p class="msg" id="wmsg" aria-live="polite"></p>' +
+        (first ? '<button class="wskip" type="button" id="wskip">Ohne Namen weiter</button>' : '<button class="wskip" type="button" id="wskip">Abbrechen</button>') +
+      "</div>";
+    o.hidden = false; o.scrollTop = 0;
+    var inp = $("#wname", o);
+    function go() {
+      state.name = inp.value.trim(); state.welcomed = true; save(); applyName(); closeOverlays(true);
+      if (state.name) toast(first ? "Schön, dass du da bist, " + state.name + "." : "Hallo, " + state.name + ".");
+    }
+    $("#wgo", o).addEventListener("click", go);
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") go(); });
+    $("#wskip", o).addEventListener("click", function () { if (first) { state.welcomed = true; save(); } closeOverlays(true); });
+    $("#wfile", o).addEventListener("change", function (e) {
+      var f = e.target.files && e.target.files[0]; if (!f) return;
+      var r = new FileReader();
+      r.onload = function () {
+        var s = unpackState(String(r.result));
+        if (!s) { $("#wmsg", o).textContent = "In dieser Datei steckt kein Spielstand. Nimm die Datei, die du über „Notizen herunterladen“ gespeichert hast."; return; }
+        s.welcomed = true; state = s; save(); closeOverlays(true); render(); renderLayouts(); layoutProps(); applyName();
+        var nc = state.done.length, nn = Object.keys(state.notes).filter(function (k) { return (state.notes[k] || "").trim(); }).length;
+        toast(greet("Willkommen zurück, {n}.") + " " + nc + (nc === 1 ? " Karte" : " Karten") + " und " + nn + (nn === 1 ? " Notiz" : " Notizen") + " geladen.");
+      };
+      r.readAsText(f);
+    });
+    setTimeout(function () { inp.focus(); }, 60);
   }
 
   function download(msgEl, ids) {
     var text = notesText(ids);
-    var name = "aufgedeckt-notizen.txt";
+    var name = "aufgedeckt-" + (nm() ? nm().toLowerCase().replace(/[^a-z0-9äöüß]+/g, "-") + "-" : "") + "notizen.txt";
     var done = function (ok) { if (msgEl) msgEl.textContent = ok ? "Datei gespeichert." : "Speichern wurde abgebrochen."; };
     var fallback = function () {
       try {
@@ -649,7 +717,7 @@
     var cats = byCategory(all);
     o.innerHTML =
       '<div class="drawer drawer--notes" role="dialog" aria-modal="true" aria-labelledby="ntitle">' +
-        '<div class="drawer__top"><div><span class="eyebrow">Gezogene Karten</span><h2 id="ntitle" tabindex="-1">Deine Notizen</h2></div>' +
+        '<div class="drawer__top"><div><span class="eyebrow">' + esc(nm() ? nm() + "s Karten" : "Gezogene Karten") + '</span><h2 id="ntitle" tabindex="-1">Deine Notizen</h2></div>' +
         '<button class="ibtn ibtn--icon drawer__x" type="button" id="close" aria-label="Schließen" title="Schließen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>' +
         (all.length ?
         '<div class="nfilter">' +
@@ -665,6 +733,7 @@
         '<div class="nlist" id="nlist"></div>'
         : '<p class="empty">Du hast noch keine Karte aufgedeckt. Tipp eine leuchtende Karte an, um zu starten.</p>') +
         '<p class="msg" id="msg" aria-live="polite"></p>' +
+        '<button class="wskip" type="button" id="profile">' + (nm() ? "Name ändern oder anderen Spielstand laden" : "Name eingeben oder Spielstand laden") + "</button>" +
         '<div class="row"><button class="btn btn--secondary" type="button" id="dl"' + (all.length ? "" : " disabled") + '>Notizen herunterladen</button>' +
         '<button class="btn btn--outline" type="button" id="close2">Schließen</button></div>' +
       "</div>";
@@ -709,6 +778,7 @@
     $("#dl", o).addEventListener("click", function () { download($("#msg", o), all.length ? shown : []); });
     $("#close", o).addEventListener("click", function () { closeOverlays(); });
     $("#close2", o).addEventListener("click", function () { closeOverlays(); });
+    $("#profile", o).addEventListener("click", function () { openWelcome(false); });
     $("#ntitle", o).focus();
   }
 
@@ -741,7 +811,9 @@
     state = load() || deal();
     state.layout = state.layout || "stapel";
     save();
-    render(); renderLayouts(); layoutProps();
+    render(); renderLayouts(); layoutProps(); applyName();
+    $("#hello").addEventListener("click", function () { openWelcome(false); });
+    if (!state.welcomed) openWelcome(true); else if (nm()) setTimeout(function () { toast("Schön, dass du wieder da bist, " + nm() + "."); }, 500);
     var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(placeProps, 150); });
     $("#layouts").addEventListener("click", function (e) { var b = e.target.closest(".lay"); if (!b) return; if (b.dataset.l === "zufall") { $("#layRandom").click(); return; } setLayout(b.dataset.l); layPop(false); });
     $("#layBtn").addEventListener("click", function (e) { e.stopPropagation(); layPop($("#laypop").hidden); });

@@ -637,3 +637,34 @@ body { background: #1a1029; }
 .card:hover .back::before, .card:focus-visible .back::before, .card.is-picked .back::before, .card.is-lift .back::before, .sib__card:hover .back::before { opacity: 0.15; }
 .back__mark { top: 46%; width: 44%; z-index: 1; color: var(--aqua); filter: drop-shadow(0 0 calc(var(--cw) * 0.06) rgba(89,213,220,0.75)) drop-shadow(0 1px 1px rgba(8,4,16,0.8)); }
 .back::after { z-index: 1; }
+
+/* ---------- Begrüßung ---------- */
+.hello { flex: none; height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: rgba(246,244,251,0.03); color: var(--paper);
+  font: inherit; font-size: 0.75rem; font-weight: 800; cursor: pointer; white-space: nowrap; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+.hello:hover { border-color: var(--aqua); color: var(--aqua); }
+@media (max-width: 640px) { .hello { display: none; } }
+.welcome { width: min(100%, 480px); gap: 14px; text-align: left; }
+.welcome__logo svg { height: 22px; }
+.welcome h2 { font-size: clamp(2.2rem, 1.6rem + 2vw, 3rem); line-height: 1; letter-spacing: -0.02em; }
+.wfield { display: grid; gap: 6px; }
+.wfield span { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--aqua); }
+.wfield input { height: 50px; padding: 0 16px; border-radius: 14px; border: 1.5px solid var(--line); background: rgba(26,16,41,0.6); color: var(--paper); font: inherit; font-size: 1.0625rem; outline: none; }
+.wfield input:focus { border-color: var(--aqua); box-shadow: 0 0 0 4px rgba(89,213,220,0.2); }
+.welcome .btn { justify-self: start; }
+.wor { display: flex; align-items: center; gap: 10px; color: var(--text-faint); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; }
+.wor::before, .wor::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.wupload { position: relative; display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 16px; border: 1.5px dashed rgba(89,213,220,0.45); cursor: pointer; transition: border-color var(--dur-fast), background var(--dur-fast); }
+.wupload:hover, .wupload:focus-within { border-color: var(--aqua); background: rgba(89,213,220,0.06); }
+.wupload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.wupload svg { width: 26px; height: 26px; flex: none; fill: none; stroke: var(--aqua); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.wupload strong { display: block; font-weight: 900; color: var(--paper); }
+.wupload small { display: block; font-size: 0.8125rem; color: var(--text-muted); line-height: 1.4; }
+.welcome .msg { min-height: 0; margin: 0; color: #ff8fb0; font-size: 0.875rem; }
+.wskip { justify-self: start; border: 0; background: none; padding: 0; color: var(--text-muted); font: inherit; font-size: 0.8125rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.wskip:hover { color: var(--paper); }
+.toast { position: fixed; left: 50%; bottom: 28px; z-index: 60; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; max-width: calc(100vw - 32px);
+  padding: 12px 18px; border-radius: 999px; background: rgba(34,20,55,0.96); border: 1px solid rgba(181,253,66,0.5); color: var(--paper); font-weight: 700; font-size: 0.9375rem;
+  box-shadow: 0 16px 40px rgba(8,4,16,0.6), 0 0 24px rgba(181,253,66,0.2); transition: opacity 0.35s var(--ease-out), transform 0.35s var(--ease-out); }
+.toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+.toast { width: max-content; text-align: center; }
+@media (max-width: 640px) { .toast { left: 16px; right: 16px; width: auto; transform: translateY(20px); border-radius: 18px; bottom: 20px; } .toast.is-on { transform: none; } }
