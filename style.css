@@ -680,3 +680,5 @@ body { background: #1a1029; }
 .welcome__logo { position: absolute; top: 26px; right: 28px; color: var(--aqua); }
 .welcome__logo svg { height: 30px; }
 @media (max-width: 640px) { .welcome__logo { top: 22px; right: 22px; } .welcome__logo svg { height: 24px; } }
+.welcome { padding-top: 76px; }
+@media (max-width: 640px) { .welcome { padding-top: 64px; } }
