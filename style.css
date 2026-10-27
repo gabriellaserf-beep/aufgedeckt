@@ -544,3 +544,8 @@ header.top { position: relative; z-index: 15; }
   .big__media--grafik { margin: 36px -22px 30px; }
   .big__media--grafik .grafik { max-height: 440px; }
 }
+/* Überschriften der Karten immer in Aqua, und immer Luft zwischen Grafik und Text */
+.big__title { color: var(--aqua); }
+.big__media--grafik { margin-top: 30px !important; margin-bottom: 34px !important; }
+@media (max-width: 760px) { .big__media--grafik { margin-top: 22px !important; margin-bottom: 26px !important; } }
+.big__media.big__media--grafik { height: auto !important; }
