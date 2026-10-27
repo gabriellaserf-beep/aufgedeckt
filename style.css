@@ -668,3 +668,11 @@ body { background: #1a1029; }
 .toast.is-on { opacity: 1; transform: translate(-50%, 0); }
 .toast { width: max-content; text-align: center; }
 @media (max-width: 640px) { .toast { left: 16px; right: 16px; width: auto; transform: translateY(20px); border-radius: 18px; bottom: 20px; } .toast.is-on { transform: none; } }
+
+/* Kategoriezeile: gleich große Abstände um jeden Trennpunkt, egal wie breit die Laufweite ist */
+.big__cat { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.6em; row-gap: 2px; }
+.big__cname { margin-right: -0.18em; }
+.big__teil { margin-right: -0.12em; }
+.big__cat .big__sep { margin: 0; }
+.series__head { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.6em; }
+.series__head .big__sep { margin: 0; }
