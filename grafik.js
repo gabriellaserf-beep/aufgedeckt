@@ -73,7 +73,8 @@
     var labels = [["gemeinsam", "lösen"], ["gewinnen &", "verlieren"], ["alle", "verlieren"]];
     labels.forEach(function (l, k) {
       var on = !p || p === k + 1;
-      out += lines([60, 155, 255][k], [100, 168, 30][k] + (k === 2 ? 0 : 0), l, 11, 800, on ? cols[k] : "rgba(179,168,207,0.45)", 12);
+      /* Begriff direkt links unter die drei Stufen seiner Phase */
+      out += lines(42 + k * 96, 84 + k * 51, l, 11, 800, on ? cols[k] : "rgba(179,168,207,0.45)", 12);
     });
     return svg(out);
   }
