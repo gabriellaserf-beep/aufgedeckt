@@ -90,7 +90,7 @@
       out += '<path d="' + d + '" fill="none" stroke="' + (i < n ? "url(#pr)" : LINE) + '" stroke-width="' + (i === n - 1 ? 10 : 6) + '" stroke-linecap="round"/>';
     }
     out += defs + t(cx, cy + 15, (n < 10 ? "0" : "") + n, 44, 900, "url(#pr)") + t(cx, cy + 31, "von 10", 9, 700, MUTED);
-    return svg(out, "0 4 320 120");
+    return svg(out, "40 4 240 120");
   }
 
   /* Übung: CRASH (in sich zusammengesunken) und COACH (aufgerichtet), dazu das Pendel */
