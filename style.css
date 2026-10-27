@@ -765,3 +765,5 @@ body { background: #1a1029; }
 /* weiche Lichtflecken nur atmen lassen, Unschärfe-Filter nicht überschreiben */
 .ga-glow { animation: gaGlow 3.4s var(--ease-in-out) 0.8s infinite !important; }
 @keyframes gaGlow { 0%, 100% { opacity: 0.22; } 50% { opacity: 0.38; } }
+.g-batna .ga-in { animation-name: gaSoft; }
+@keyframes gaSoft { from { opacity: 0; transform: translateY(4px) scale(0.85); } to { opacity: 1; transform: none; } }

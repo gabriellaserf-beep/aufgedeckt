@@ -562,8 +562,10 @@
       /* Reihenfolge: Weg → Gabelung → zwei Wege → Endpunkte → Beschriftung */
       var P = svgEl.querySelectorAll("path"), C = svgEl.querySelectorAll("circle"), T = svgEl.querySelectorAll("text");
       var at = function (e, ms, dur) { if (!e) return; e.style.animationDelay = ms + "ms"; if (dur) e.style.animationDuration = dur; };
-      at(P[0], 0, "0.8s"); at(C[0], 750); at(P[1], 1000, "0.8s"); at(P[2], 1000, "0.8s"); at(C[1], 1750); at(C[2], 1750);
-      [].forEach.call(T, function (e, i) { at(e, i === T.length - 1 ? 500 : 2000 + Math.floor(i / 2) * 120); });
+      /* fließend: jede Phase beginnt, kurz bevor die vorige endet */
+      [].forEach.call(svgEl.querySelectorAll("*"), function (e) { e.style.animationTimingFunction = "cubic-bezier(0.45, 0, 0.2, 1)"; });
+      at(P[0], 0, "1.1s"); at(C[0], 820, "0.8s"); at(P[1], 950, "1.1s"); at(P[2], 950, "1.1s"); at(C[1], 1820, "0.8s"); at(C[2], 1820, "0.8s");
+      [].forEach.call(T, function (e, i) { at(e, i === T.length - 1 ? 300 : 1900 + (i % 2) * 90, "1s"); });
       live.forEach(function (e) { e.classList.remove("ga-pulse"); }); return;
     }
     if (type === "thermo") { svgEl.querySelectorAll("rect:not([transform])").forEach(function (e, i) { e.classList.add("ga-grow"); e.style.animationDelay = (150 + i * 40) + "ms"; }); }
