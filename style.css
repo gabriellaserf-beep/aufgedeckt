@@ -245,7 +245,7 @@ button { font: inherit; color: inherit; }
 .top .status .track { flex: 1; }
 .top .count { letter-spacing: 0.08em; }
 
-.desk { --cw: clamp(84px, 10vw, 150px); --ch: calc(var(--cw) * 1.4);
+.desk { --cw: clamp(96px, 11.5vw, 172px); --ch: calc(var(--cw) * 1.4);
   position: relative; z-index: 2; height: clamp(460px, calc(100vh - 128px), 920px); border-radius: 28px; overflow: hidden;
   background:
     repeating-linear-gradient(0deg, rgba(246,244,251,0.035) 0 1px, transparent 1px 48px),
@@ -275,8 +275,7 @@ button { font: inherit; color: inherit; }
 
 /* ---------- Overlay: immer oben anfangen, nie oben abschneiden ---------- */
 .overlay > * { margin-block: auto; }
-.overlay { align-content: start; }
-.overlay > .reader, .overlay > .drawer, .overlay > .confirm { margin-top: max(24px, 4vh); margin-bottom: 24px; }
+.overlay > .reader, .overlay > .drawer, .overlay > .confirm { margin-block: auto; }
 
 /* ---------- Schreibtisch-Gegenstände: liegen am Rand und darüber hinaus ---------- */
 .desk-zone { position: relative; }
@@ -305,7 +304,7 @@ button { font: inherit; color: inherit; }
   .layouts__list { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-block: 2px; mask-image: linear-gradient(90deg, #000 88%, transparent); }
   .layouts__list::-webkit-scrollbar { display: none; }
 }
-.desk.is-shape { --cw: clamp(60px, 7vw, 104px); }
+.desk.is-shape { --cw: clamp(64px, 7.6vw, 112px); }
 @media (max-width: 560px) { .desk.is-shape { --cw: 58px; } }
 
 /* ===================== Menü-Leiste ===================== */
@@ -384,3 +383,13 @@ button { font: inherit; color: inherit; }
 /* Ausgewählte Karte hebt sich über alle anderen, bevor sie sich umdreht */
 .desk .card.is-lift, .desk .card.is-lift.is-up, .desk .card.is-lift.is-picked { transform: rotate(0deg) scale(1.45); }
 .desk .card.is-lift .face { box-shadow: 0 0 0 1px #ffa0fa, 0 24px 50px rgba(12,8,20,0.7), 0 0 44px rgba(255,0,254,0.55) !important; }
+
+/* Geöffnete Karte: größer und mittig auf großen Bildschirmen */
+@media (min-width: 761px) {
+  .reader { width: min(100%, 1180px); grid-template-columns: minmax(0, 540px) minmax(0, 1fr); gap: 32px; }
+  .big { padding: 36px; gap: 16px; min-height: min(680px, calc(100vh - 80px)); font-size: 1.125rem; }
+  .big__media { height: 260px; }
+  .big__media--grafik { margin: 18px -6px 6px; }
+  .big__media--grafik .grafik { max-height: 340px; }
+  .big__title { font-size: clamp(2rem, 1.4rem + 1.6vw, 2.75rem); }
+}
