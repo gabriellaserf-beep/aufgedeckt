@@ -604,3 +604,8 @@ header.top { position: relative; z-index: 15; }
   .ncats { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   .ncats::-webkit-scrollbar { display: none; }
 }
+
+/* Hintergrund läuft bis ganz nach unten, ohne Kante */
+html, body { min-height: 100%; }
+body { background: #1a1029; }
+.table { min-height: 100vh; min-height: 100dvh; padding-bottom: 40px; }

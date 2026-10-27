@@ -257,7 +257,7 @@
   }
   function placeProps() {
     var z = $("#stage"), box = z && z.querySelector(".props"), dz = $("#deskZone"); if (!box || !propLay || !dz) return;
-    var W = z.clientWidth, H = dz.clientHeight, k = 1.0 * Math.max(0.7, Math.min(1.15, W / 1000)), html = "";
+    var W = z.clientWidth, H = dz.clientHeight || ($(".stage__main") && $(".stage__main").clientHeight) || 600, k = 1.0 * Math.max(0.7, Math.min(1.15, W / 1000)), html = "";
     [0, 1].forEach(function (side) {
       var all = propLay.filter(function (p) { return p.side === side; }).map(function (p) { var d = PROP_DEFS[p.k], w = d.mm * k, h = w * d.ar, r = p.rot * Math.PI / 180;
         return { p: p, w: w, h: h, vw: Math.abs(w * Math.cos(r)) + Math.abs(h * Math.sin(r)), vh: Math.abs(w * Math.sin(r)) + Math.abs(h * Math.cos(r)) }; });
@@ -322,7 +322,9 @@
     $("#randomBtn").disabled = open.filter(function (i) { return !isUp(i); }).length === 0;
     renderPlayed();
     $("#finish").hidden = done < total || total === 0;
+    var wasHidden = $("#deskZone").hidden;
     $("#deskZone").hidden = done >= total && total > 0;
+    if (wasHidden !== $("#deskZone").hidden) placeProps();
   }
 
   /* Karten lassen sich verschieben; ein kurzer Klick deckt auf */
