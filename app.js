@@ -524,6 +524,40 @@
     if (btn && !btn.classList.contains("is-up") && !reduce) { btn.classList.add("is-up"); setTimeout(go, 650); } else go();
   }
 
+  /* ---------- Animationen der Grafiken: Aufbau nacheinander, Linien zeichnen sich, aktive Teile leben ---------- */
+  function animateGrafik(box, spec) {
+    if (!box) return;
+    var svgEl = box.querySelector("svg"); if (!svgEl) return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var type = String(spec || "").split(":")[0], DARK = /^(none|#2d1e4a|#220736|#0c0814|#1a1029|#231639|rgba\(.*)$/i;
+    var kids = [].slice.call(svgEl.children).filter(function (e) { return e.tagName !== "defs"; });
+    var hasT = function (e) { return !!e.getAttribute("transform"); };
+    kids.forEach(function (e, i) { e.classList.add(hasT(e) ? "ga-fade" : "ga-in"); e.style.animationDelay = (Math.min(i, 40) * 28) + "ms"; });
+    /* Linien ohne Füllung zeichnen sich */
+    svgEl.querySelectorAll("path, polyline, line").forEach(function (e, i) {
+      var f = e.getAttribute("fill"); if (f && f !== "none") return; if (!e.getTotalLength) return;
+      var L = 0; try { L = e.getTotalLength(); } catch (x) {} if (!L || L < 20) return;
+      e.style.strokeDasharray = L; e.style.strokeDashoffset = L; e.classList.add("ga-draw"); e.style.animationDelay = (200 + i * 60) + "ms";
+      if (e.classList.contains("ga-in")) e.classList.remove("ga-in");
+    });
+    /* aktive, farbige Elemente pulsieren sanft */
+    var live = [];
+    svgEl.querySelectorAll("rect, circle, ellipse, g").forEach(function (e) {
+      var f = e.getAttribute("fill") || ""; if (e.tagName === "g") { if (/translate|rotate/.test(e.getAttribute("transform") || "")) live.push(e); return; }
+      if (!f || DARK.test(f) || f === "url(#bkS)" || hasT(e)) return;
+      var w = +e.getAttribute("width") || (+e.getAttribute("r") || 0) * 2; if (w >= 30) live.push(e);
+    });
+    var delay = kids.length * 28 + 600;
+    if (type === "playlist") {
+      var c0 = svgEl.querySelector("circle"), cx = c0 ? c0.getAttribute("cx") : 112, cy = c0 ? c0.getAttribute("cy") : 62;
+      svgEl.querySelectorAll("path").forEach(function (e) { e.style.transformOrigin = cx + "px " + cy + "px"; e.classList.add("ga-spin"); });
+      svgEl.querySelectorAll("rect").forEach(function (e, i) { e.classList.add("ga-eq"); e.style.animationDelay = delay + i * 130 + "ms"; e.style.animationDuration = (0.7 + (i % 3) * 0.18) + "s"; });
+      return;
+    }
+    if (type === "thermo") { svgEl.querySelectorAll("rect:not([transform])").forEach(function (e, i) { e.classList.add("ga-grow"); e.style.animationDelay = (150 + i * 40) + "ms"; }); }
+    live.slice(0, 4).forEach(function (e, i) { e.classList.add(e.tagName === "g" ? "ga-float" : "ga-pulse"); e.style.setProperty("--gd", delay + i * 300 + "ms"); });
+  }
+
   function openReader(idx) {
     var c = CARDS[idx], k = cat(idx);
     var played = state.done.indexOf(idx) >= 0;
@@ -558,6 +592,7 @@
         "</div>" +
       "</div>";
     o.hidden = false; o.scrollTop = 0;
+    animateGrafik(o.querySelector(".big__media--grafik"), c.grafik);
     o.querySelectorAll(".sib__card[data-j]").forEach(function (b) { if (!b.disabled) b.addEventListener("click", function () { openSibling(+b.dataset.j, b); }); });
     var ta = $("#note", o);
     ta.addEventListener("input", function () { state.notes[idx] = ta.value; save(); });

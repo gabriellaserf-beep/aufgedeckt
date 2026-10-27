@@ -741,3 +741,24 @@ body { background: #1a1029; }
 /* Ablegen-Knopf innerhalb der Karte, damit er am Tischrand nicht abgeschnitten wird */
 .card__drop { top: 8px; right: 8px; width: 28px; height: 28px; }
 .card__drop::after { right: 34px; }
+
+/* ---------- Grafik-Animationen ---------- */
+.big__media--grafik .grafik * { transform-box: fill-box; transform-origin: center; }
+.ga-in { animation: gaIn 0.6s var(--ease-out) both; }
+@keyframes gaIn { from { opacity: 0; transform: translateY(8px) scale(0.92); } to { opacity: 1; transform: none; } }
+.ga-draw { animation: gaDraw 1.1s var(--ease-out) forwards; }
+@keyframes gaDraw { to { stroke-dashoffset: 0; } }
+.ga-pulse { animation: gaIn 0.6s var(--ease-out) both, gaPulse 2.6s var(--ease-in-out) var(--gd, 1s) infinite; }
+@keyframes gaPulse { 0%, 100% { transform: scale(1); filter: none; } 50% { transform: scale(1.045); filter: drop-shadow(0 0 8px rgba(255,255,255,0.35)); } }
+.ga-float { animation: gaFloat 3.2s var(--ease-in-out) var(--gd, 1s) infinite; transform-box: view-box !important; }
+@keyframes gaFloat { 0%, 100% { translate: 0 0; } 50% { translate: 0 -4px; } }
+.ga-spin { transform-box: view-box !important; animation: gaSpin 4s linear infinite; }
+@keyframes gaSpin { to { transform: rotate(360deg); } }
+.ga-eq { transform-origin: bottom !important; animation: gaIn 0.5s var(--ease-out) both, gaEq 0.8s var(--ease-in-out) infinite alternate; }
+@keyframes gaEq { from { transform: scaleY(1); } to { transform: scaleY(0.55); } }
+.ga-grow { transform-origin: left !important; animation: gaGrow 0.7s var(--ease-out) both; }
+@keyframes gaGrow { from { transform: scaleX(0); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .big__media--grafik .grafik * { animation: none !important; } }
+.ga-fade { animation: gaFade 0.6s var(--ease-out) both; }
+@keyframes gaFade { from { opacity: 0; } to { opacity: 1; } }
+.ga-float.ga-fade { animation: gaFade 0.6s var(--ease-out) both, gaFloat 3.2s var(--ease-in-out) var(--gd, 1s) infinite; }
