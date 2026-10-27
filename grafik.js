@@ -186,17 +186,18 @@
 
   /* Harvard-Methode: vier Prinzipien als verbundene Kreise */
   function harvard(n) {
-    var P = [["Menschen", "& Problem"], ["Interessen"], ["Optionen"], ["Kriterien"]], out = "";
-    out += '<path d="M48 100 H272" stroke="rgba(183,148,232,0.35)" stroke-width="3" stroke-dasharray="3 6" stroke-linecap="round"/>';
+    var L = "#b794e8", P = [["Menschen &", "Problem trennen"], ["Interessen", "statt Positionen"], ["Optionen", "für beide"], ["Objektive", "Kriterien"]], out = "";
+    out += '<defs><radialGradient id="hvG" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="' + L + '" stop-opacity="0.55"/><stop offset="1" stop-color="' + L + '" stop-opacity="0"/></radialGradient></defs>';
+    out += '<path d="M46 84 H274" fill="none" stroke="rgba(183,148,232,0.4)" stroke-width="1.2" stroke-linecap="round"/>';
     P.forEach(function (p, i) {
-      var x = 48 + i * 74.7, on = !n || n === i + 1;
-      var r = on && n ? 37 : 34;
-      out += '<circle cx="' + x + '" cy="100" r="' + r + '" fill="' + (on ? "#b794e8" : "#2d1e4a") + '" stroke="#b794e8" stroke-opacity="' + (on ? 1 : 0.6) + '" stroke-width="1.5"/>' +
-        t(x, 100 - r - 8, String(i + 1), 12, 900, on ? "#b794e8" : MUTED) +
-        lines(x, p.length > 1 ? 98 : 104, p, 9.5, 900, on ? INK : "#b794e8", 11);
+      var x = 46 + i * 76, on = !n || n === i + 1, act = n === i + 1;
+      if (act) out += '<circle cx="' + x + '" cy="84" r="34" fill="url(#hvG)"/>';
+      out += '<circle cx="' + x + '" cy="84" r="' + (act ? 19 : 16) + '" fill="' + (act ? L : "#220736") + '" stroke="' + L + '" stroke-opacity="' + (on ? 1 : 0.5) + '" stroke-width="' + (act ? 0 : 1.2) + '"/>' +
+        t(x, 84 + (act ? 6 : 5), String(i + 1), act ? 16 : 13, 900, act ? INK : (on ? L : MUTED)) +
+        lines(x, 124, p, 8.5, act ? 900 : 700, act ? PAPER : MUTED, 10.5);
     });
-    out += t(160, 170, "hart in der Sache · fair zu den Menschen", 11, 700, MUTED);
-    return svg(out, "0 46 320 134");
+    out += t(160, 168, "hart in der Sache", 9, 700, MUTED, "end") + '<circle cx="166" cy="165" r="1.6" fill="' + MUTED + '"/>' + t(172, 168, "fair zu den Menschen", 9, 700, MUTED, "start");
+    return svg(out, "0 44 320 134");
   }
 
   /* BATNA: Weggabelung zwischen Einigung und Plan B */
