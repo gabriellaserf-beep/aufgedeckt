@@ -123,10 +123,18 @@
     var s = 18 / Math.max(x1 - x0, y1 - y0), ox = 12 - (x0 + x1) / 2 * s, oy = 12 - (y0 + y1) / 2 * s;
     return '<svg viewBox="0 0 24 24">' + p.map(function (q) { return '<polyline points="' + q.map(function (v) { return (ox + v[0] * s).toFixed(1) + "," + (oy + v[1] * s).toFixed(1); }).join(" ") + '"/>'; }).join("") + "</svg>";
   }
+  function layPop(open) {
+    var p = $("#laypop"); p.hidden = !open; $("#layBtn").setAttribute("aria-expanded", String(!!open));
+    if (open) { var on = p.querySelector(".lay.is-on") || p.querySelector(".lay"); if (on) on.focus(); }
+  }
   function renderLayouts() {
     var el = $("#layouts"); if (!el) return;
+    var cur = LAYOUTS.filter(function (l) { return l[0] === (state.layout || "stapel"); })[0] || LAYOUTS[0];
+    $("#layIcon").innerHTML = shapeIcon(cur[0]); $("#layName").textContent = cur[1];
+    $("#layBtn").setAttribute("aria-label", "Auslage: " + cur[1] + " – ändern");
     el.innerHTML = LAYOUTS.map(function (l) { var on = (state.layout || "stapel") === l[0];
-      return '<button type="button" class="lay' + (on ? " is-on" : "") + '" aria-pressed="' + on + '" data-l="' + l[0] + '">' + shapeIcon(l[0]) + "<span>" + l[1] + "</span></button>"; }).join("");
+      return '<button type="button" class="lay' + (on ? " is-on" : "") + '" aria-pressed="' + on + '" data-l="' + l[0] + '">' + shapeIcon(l[0]) + "<span>" + l[1] + "</span></button>"; }).join("") +
+      '<button type="button" class="lay lay--rand" data-l="zufall"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="8.5" cy="8.5" r="1.3" class="dot"/><circle cx="15.5" cy="8.5" r="1.3" class="dot"/><circle cx="12" cy="12" r="1.3" class="dot"/><circle cx="8.5" cy="15.5" r="1.3" class="dot"/><circle cx="15.5" cy="15.5" r="1.3" class="dot"/></svg><span>Zufall</span></button>';
   }
 
   /* ---------- Schreibtisch-Gegenstände: liegen zufällig neben dem Tisch ---------- */
@@ -514,14 +522,18 @@
     save();
     render(); renderLayouts(); layoutProps();
     var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(placeProps, 150); });
-    $("#layouts").addEventListener("click", function (e) { var b = e.target.closest(".lay"); if (b) setLayout(b.dataset.l); });
+    $("#layouts").addEventListener("click", function (e) { var b = e.target.closest(".lay"); if (!b) return; if (b.dataset.l === "zufall") { $("#layRandom").click(); return; } setLayout(b.dataset.l); layPop(false); });
+    $("#layBtn").addEventListener("click", function (e) { e.stopPropagation(); layPop($("#laypop").hidden); });
+    $("#layRandom").addEventListener("click", function () { var opts = LAYOUTS.filter(function (l) { return l[0] !== state.layout; }); setLayout(opts[Math.floor(Math.random() * opts.length)][0]); layPop(false);
+      var d = $("#layRandom"); d.classList.remove("is-roll"); void d.offsetWidth; d.classList.add("is-roll"); });
+    document.addEventListener("click", function (e) { if (!$("#laypop").hidden && !e.target.closest("#laypop")) layPop(false); });
     $("#notesBtn").addEventListener("click", openNotes);
     $("#restartBtn").addEventListener("click", askRestart);
     $("#randomBtn").addEventListener("click", drawRandom);
     $("#finishNotes").addEventListener("click", openNotes);
     $("#finishRestart").addEventListener("click", function () { state = deal(state.notes); save(); render(); });
     $("#reader").addEventListener("click", function (e) { if (e.target.id === "reader") closeOverlays(); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("#reader").hidden) closeOverlays(); });
+    document.addEventListener("keydown", function (e) { if (e.key !== "Escape") return; if (!$("#laypop").hidden) { layPop(false); $("#layBtn").focus(); } else if (!$("#reader").hidden) closeOverlays(); });
     // In einer Claude-Vorschau: Downloads über die Plattform anbieten (auf GitHub Pages gibt es das nicht, dann normaler Download).
     if (window.claude && typeof window.claude.use === "function") {
       window.claude.use("downloads").then(function (d) { if (d) window.__ptDownloads = d; }, function () {});

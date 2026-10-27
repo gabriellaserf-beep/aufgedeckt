@@ -394,3 +394,54 @@ button { font: inherit; color: inherit; }
   .big__title { font-size: clamp(2rem, 1.4rem + 1.6vw, 2.75rem); }
 }
 @media (max-width: 380px) { .brand { gap: 8px; } .brand__sub { letter-spacing: 0.1em; } .icons { gap: 4px; } }
+
+/* ===================== Auslage: dezente Auswahl im Menü ===================== */
+.bar .layouts { display: none; }
+.laypick { display: flex; gap: 6px; padding-left: 8px; margin-left: 2px; border-left: 1px solid var(--line); }
+.ibtn--lay { gap: 8px; padding: 0 10px 0 12px; text-transform: none; letter-spacing: 0; font-size: 0.8125rem; font-weight: 700; }
+.ibtn--lay #layIcon { display: inline-flex; }
+.ibtn--lay #layIcon svg { width: 18px; height: 18px; fill: none; stroke: var(--aqua); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+.ibtn .caret { width: 14px; height: 14px; stroke: var(--text-muted); stroke-width: 2; transition: transform var(--dur-base); }
+.ibtn--lay[aria-expanded="true"] { border-color: rgba(89,213,220,0.7); background: rgba(89,213,220,0.08); }
+.ibtn--lay[aria-expanded="true"] .caret { transform: rotate(180deg); }
+.ibtn--icon { width: 42px; padding: 0; justify-content: center; }
+.ibtn--icon .dot { fill: var(--lime); stroke: none; }
+.ibtn--icon.is-roll svg { animation: roll 0.6s var(--ease-out); }
+@keyframes roll { from { transform: rotate(-200deg) scale(0.7); } to { transform: none; } }
+.laypop { position: absolute; z-index: 30; top: calc(100% + 8px); right: 12px; width: min(400px, calc(100vw - 32px)); padding: 14px; border-radius: 18px; border: 1px solid var(--line);
+  background: rgba(34,20,55,0.97); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); box-shadow: 0 24px 60px rgba(8,4,16,0.6), 0 0 0 1px rgba(89,213,220,0.08); animation: fade var(--dur-base) var(--ease-out); }
+.laypop__title { display: block; margin: 2px 4px 10px; font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); }
+.laypop__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.laypop .lay { height: auto; padding: 10px 6px 8px; border-radius: 12px; flex-direction: column; gap: 6px; justify-content: center; font-size: 0.75rem; background: rgba(246,244,251,0.03); }
+.laypop .lay svg { width: 26px; height: 26px; }
+@media (max-width: 1180px) { .top .ibtn:not(.ibtn--lay):not(.ibtn--icon) { width: 42px; padding: 0; justify-content: center; } .top .ibtn:not(.ibtn--lay) span { display: none; } }
+@media (max-width: 640px) {
+  .bar__row { grid-template-columns: auto minmax(0, 1fr) auto auto; grid-template-areas: "brand brand brand icons" "lay status rand rand"; }
+  .laypick { grid-area: lay; padding-left: 0; margin-left: 0; border-left: 0; gap: 4px; }
+  .ibtn--lay { width: 38px; height: 38px; padding: 0; justify-content: center; }
+  .ibtn--lay .laybtn__name, .ibtn--lay .caret { display: none; }
+  .ibtn--icon { width: 38px; height: 38px; }
+  .top .ibtn:not(.ibtn--lay):not(.ibtn--icon) { width: 38px; }
+  .laypop { left: 12px; right: 12px; width: auto; }
+  .laypop__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .laypop .lay { font-size: 0.6875rem; padding: 8px 2px 6px; }
+}
+@media (max-width: 380px) { .laypop__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+header.top { position: relative; z-index: 15; }
+.laypop { width: min(640px, calc(100vw - 32px)); }
+.laypop__grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.laypop .lay--rand { border-color: rgba(181,253,66,0.45); color: var(--lime); }
+.laypop .lay--rand .dot { fill: var(--lime); stroke: none; }
+.laypop .lay--rand svg { stroke: var(--lime); }
+@media (max-width: 1000px) { .ibtn--lay .laybtn__name { display: none; } }
+@media (max-width: 640px) {
+  .laypop__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .laypop .lay--rand { grid-column: span 3; flex-direction: row; }
+}
+@media (max-width: 420px) { .top .status .track { display: none; } .top .status { justify-content: center; } }
+@media (max-width: 380px) {
+  .laypop__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .laypop .lay--rand { grid-column: span 2; }
+  #randomBtn { padding: 0 0.75rem; }
+}
+.laypop .lay span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: 0.71875rem; }
