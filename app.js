@@ -149,6 +149,29 @@
     notes:    { img: "obj-notizzettel.webp", ar: 660 / 700, mm: 84, rot: [-30, 30] },
     phone:    { img: "obj-handy.webp",    ar: 700 / 354,  mm: 72,  rot: [-35, 35] }
   };
+  /* Kleine Impulse, die beim Drüberfahren über einen Gegenstand erscheinen */
+  var PROP_TIPS = {
+    coffee:   ["Gönn dir eine Pause. Abstand bringt oft mehr als das nächste Argument.", "Kurz durchatmen. Ein Konflikt läuft dir nicht davon.", "Manchmal klärt sich bei einem Kaffee zu zweit mehr als im Meeting."],
+    keyboard: ["Bevor du auf Senden drückst: Würdest du es auch so sagen?", "Schwierige Themen lieber im Gespräch klären als im Chat."],
+    mouse:    ["Ein Klick ist schnell gemacht. Ein Gespräch dauert länger, bringt aber mehr.", "Nicht alles muss sofort beantwortet werden. Erst sortieren, dann reagieren."],
+    pen:      ["Schreib auf, was dich bewegt. Was auf Papier steht, sortiert den Kopf.", "Formulier deinen Wunsch als Ich-Botschaft, bevor du ins Gespräch gehst."],
+    notebook: ["Was hast du aus dem letzten Konflikt gelernt? Halt eine Erkenntnis fest.", "Fortschritt statt Sieg. Was ist heute ein kleines Stück besser geworden?"],
+    plant:    ["Beziehungen wachsen langsam. Ein bisschen Pflege jeden Tag reicht.", "Auch nach einem Streit kann etwas Neues wachsen."],
+    notes:    ["Halt Vereinbarungen fest. Was aufgeschrieben ist, wird seltener vergessen.", "Ein ehrliches Danke auf einem Zettel wirkt Wunder."],
+    phone:    ["Leg das Handy weg und hör richtig zu. Volle Aufmerksamkeit ist ein Geschenk.", "Lieber kurz anrufen als zehn Nachrichten hin und her."]
+  };
+  var PROP_NAMES = { coffee: "Kaffeepause", keyboard: "Tastatur", mouse: "Maus", pen: "Stift", notebook: "Notizbuch", plant: "Pflanze", notes: "Post-its", phone: "Handy" };
+  function propTip(el) {
+    var t = $("#propTip"); if (!t) { t = document.createElement("div"); t.id = "propTip"; t.className = "proptip"; t.setAttribute("role", "status"); document.body.appendChild(t); }
+    if (!el) { t.classList.remove("is-on"); return; }
+    var k = el.dataset.k, list = PROP_TIPS[k] || [], txt = list[Math.floor(Math.random() * list.length)] || "";
+    t.innerHTML = '<span class="proptip__k">' + esc(PROP_NAMES[k] || "") + '</span><span class="proptip__t">' + esc(txt) + "</span>";
+    var r = el.getBoundingClientRect(), vw = document.documentElement.clientWidth, l = Math.max(r.left, 0), rr = Math.min(r.right, vw), cx = (l + rr) / 2;
+    t.style.visibility = "hidden"; t.classList.add("is-on");
+    var tw = t.offsetWidth, th = t.offsetHeight, x = Math.max(12, Math.min(vw - tw - 12, cx - tw / 2)), y = r.top - th - 12;
+    if (y < 12) y = r.bottom + 12;
+    t.style.left = x + "px"; t.style.top = y + "px"; t.style.visibility = "";
+  }
   var propLay = null;
   function rnd(a, b) { return a + Math.random() * (b - a); }
   function layoutProps() {
@@ -176,10 +199,14 @@
       dims.forEach(function (d, i) {
         var cy = y + d.vh / 2, ins = Math.min(d.vw * (1 - d.p.out), 46), cx = side ? W - ins + d.vw / 2 : ins - d.vw / 2;
         y += d.vh + free * gs[i] / gt;
-        html += '<img class="prop prop--' + d.p.k + '" src="' + PROP_DEFS[d.p.k].img + '" alt="" draggable="false" style="width:' + d.w.toFixed(0) + "px;left:" + (cx - d.w / 2).toFixed(0) + "px;top:" + (cy - d.h / 2).toFixed(0) + "px;transform:rotate(" + d.p.rot.toFixed(0) + 'deg)">';
+        html += '<img class="prop prop--' + d.p.k + '" data-k="' + d.p.k + '" src="' + PROP_DEFS[d.p.k].img + '" alt="" draggable="false" style="width:' + d.w.toFixed(0) + "px;left:" + (cx - d.w / 2).toFixed(0) + "px;top:" + (cy - d.h / 2).toFixed(0) + "px;transform:rotate(" + d.p.rot.toFixed(0) + 'deg)">';
       });
     });
     box.innerHTML = html;
+    if (!box.dataset.tips) { box.dataset.tips = "1";
+      box.addEventListener("mouseover", function (e) { var el = e.target.closest(".prop"); if (el) propTip(el); });
+      box.addEventListener("mouseout", function (e) { var el = e.target.closest(".prop"); if (el && !el.contains(e.relatedTarget)) propTip(null); });
+      window.addEventListener("scroll", function () { propTip(null); }, { passive: true }); }
   }
 
   /* ---------- Hilfen ---------- */
