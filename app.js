@@ -402,7 +402,7 @@
         var b = document.createElement("button");
         b.type = "button";
         b.className = "mini" + (idx === justDone ? " is-new" : "");
-        b.style.setProperty("--acc", k.farbe); b.style.setProperty("--i", n); b.style.zIndex = n + 1;
+        b.style.setProperty("--acc", k.farbe); b.style.setProperty("--i", n); b.style.setProperty("--r", ((n % 3) - 1) * 1.5 + "deg"); b.style.zIndex = n + 1;
         b.title = CARDS[idx].titel;
         b.setAttribute("aria-label", CARDS[idx].titel + (hasNote ? ", mit Notiz" : "") + " — öffnen");
         b.innerHTML = '<span class="mini__teil">' + esc(shortTeil(CARDS[idx].teil) || "") + '</span><span class="mini__title">' + esc(hy(CARDS[idx].titel)) + "</span>" + (hasNote ? '<span class="mini__note" aria-hidden="true"></span>' : "");
@@ -418,7 +418,7 @@
     document.querySelectorAll(".pgrp__fan").forEach(function (f) {
       var n = f.children.length; if (!n) return;
       var w = f.clientWidth, cw = f.children[0].offsetWidth || 76, ov = n > 1 ? Math.min(8, (w - cw) / (n - 1) - cw) : 0;
-      f.style.setProperty("--ov", Math.max(-cw + 12, ov) + "px");
+      f.style.setProperty("--ov", Math.max(-cw + 3, ov) + "px");
     });
   }
   window.addEventListener("resize", function () { clearTimeout(fitFans.t); fitFans.t = setTimeout(fitFans, 120); });
@@ -587,7 +587,7 @@
     justDone = null;
     var pg = $("#played"); if (pg) pg.scrollTop = 0;
     var next = document.querySelector(".card.is-playable");
-    if (next) next.focus({ preventScroll: true }); else $("#finish h2") && $("#finish h2").focus();
+    if (next) next.focus({ preventScroll: true }); else if ($("#finish h2")) { $("#finish h2").focus({ preventScroll: true }); $("#finish").scrollIntoView({ block: "center", behavior: "smooth" }); }
   }
 
   /* ---------- Notizen ansehen und herunterladen ---------- */

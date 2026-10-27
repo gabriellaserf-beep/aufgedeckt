@@ -508,7 +508,7 @@ header.top { position: relative; z-index: 15; }
 .pgrp__fan { display: flex; align-items: flex-end; padding-top: 6px; min-width: 0; }
 .pgrp .mini { flex: none; width: 76px; aspect-ratio: 5 / 7; padding: 8px 7px; gap: 4px; justify-content: flex-start; align-items: flex-start; text-align: left; border-radius: 9px;
   border: 1px solid color-mix(in srgb, var(--acc) 45%, var(--line)); background: linear-gradient(160deg, color-mix(in srgb, var(--acc) 14%, #220736), #220736 70%);
-  box-shadow: -6px 0 14px -6px rgba(8,4,16,0.7); transform: rotate(calc((var(--i) - 1) * 1.2deg)); }
+  box-shadow: -6px 0 14px -6px rgba(8,4,16,0.7); transform: rotate(var(--r, 0deg)); }
 .pgrp .mini + .mini { margin-left: var(--ov, -40px); }
 .pgrp .mini:hover, .pgrp .mini:focus-visible { transform: translateY(-8px) rotate(0deg); z-index: 50 !important; border-color: var(--acc); box-shadow: 0 12px 22px rgba(8,4,16,0.6); }
 .pgrp .mini__teil { font-size: 0.5625rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--acc); line-height: 1.1; }
@@ -549,3 +549,11 @@ header.top { position: relative; z-index: 15; }
 .big__media--grafik { margin-top: 30px !important; margin-bottom: 34px !important; }
 @media (max-width: 760px) { .big__media--grafik { margin-top: 22px !important; margin-bottom: 26px !important; } }
 .big__media.big__media--grafik { height: auto !important; }
+/* Abschluss: mittig an der Stelle des Tisches */
+.stage .finish { min-height: var(--desk-h); align-content: center; padding: 40px 24px; border-radius: 28px; border: 1px solid var(--line);
+  background: radial-gradient(70% 60% at 50% 45%, rgba(181,253,66,0.08), transparent 70%), radial-gradient(80% 70% at 50% 45%, #2d1e4a 0%, #221437 70%, #1a1029 100%);
+  box-shadow: inset 0 0 80px rgba(12,8,20,0.55); }
+.stage .finish[hidden] { display: none !important; }
+.stage .finish + .hint, .stage__main:has(.finish:not([hidden])) .hint { display: none; }
+@media (max-width: 1000px) { .stage .finish { min-height: min(70vh, 560px); } }
+.pgrp__fan { overflow-x: clip; overflow-y: visible; }
