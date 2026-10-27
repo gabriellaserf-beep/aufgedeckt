@@ -506,7 +506,7 @@
     var all = CARDS.map(function (_, j) { return j; }).filter(function (j) { return groupKey(j) === groupKey(idx); });
     var open = sib.filter(function (j) { return state.done.indexOf(j) < 0 && !isUp(j); }).length;
     return '<section class="series" aria-label="Dazugehörige Karten"><h3 class="series__head">Gehört dazu<span>' +
-      (open ? ' <b class="big__sep" aria-hidden="true">·</b> ' + open + (open === 1 ? " Karte" : " Karten") + " noch verdeckt" : ' <b class="big__sep" aria-hidden="true">·</b> alle aufgedeckt') + '</span></h3><div class="series__row">' +
+      (open ? '<b class="big__sep" aria-hidden="true">·</b>' + open + (open === 1 ? " Karte" : " Karten") + " noch verdeckt" : '<b class="big__sep" aria-hidden="true">·</b>alle aufgedeckt') + '</span></h3><div class="series__row">' +
       all.map(function (j) {
         var me = j === idx, done = state.done.indexOf(j) >= 0, up = isUp(j) || done || me;
         return '<div class="sib' + (me ? " is-me" : "") + '"><button type="button" class="card sib__card' + (up ? " is-up" : "") + '" data-j="' + j + '"' + (me ? ' disabled aria-current="true"' : "") +
