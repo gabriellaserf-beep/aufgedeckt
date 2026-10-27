@@ -4,7 +4,7 @@
   color-scheme: dark;
   --purple-ink: #231639; --purple-900: #1a1029; --purple-600: #490a77; --surface-raised: #220736;
   --aqua: #59d5dc; --aqua-bright: #6ff0f7; --lime: #b5fd42; --lime-bright: #c8ff66;
-  --paper: #f6f4fb; --text-muted: #b3a8cf; --text-faint: #7d7299;
+  --paper: #f6f4fb; --text-muted: #b3a8cf; --text-faint: #9a8fb6;
   --line: rgba(246,244,251,0.14); --line-strong: rgba(246,244,251,0.28);
   --prism: linear-gradient(100deg, #b5fd42, #59d5dc);
   --bg-purple: radial-gradient(120% 120% at 15% 0%, #2d1e4a 0%, #231639 55%, #1a1029 100%);
