@@ -18,10 +18,10 @@ window.KATEGORIEN = {
   felder:     { name: "Konfliktfelder",    bild: "gear.webp",      farbe: "#0DADF2" },
   stile:      { name: "Konfliktstile",     bild: "heart.webp",     farbe: "#F9851F" },
   playlist:   { name: "Playlist",          bild: "speaker.webp",   farbe: "#F471DE" },
-  buecher:    { name: "Bücher",            bild: "lightbulb.webp", farbe: "#F9CE1F" },
+  buecher:    { name: "Bücher",            bild: "book.webp", farbe: "#F9CE1F" },
   fuehrung:   { name: "Führung",           bild: "rocket.webp",    farbe: "#b5fd42" },
   eskalation: { name: "Eskalation",        bild: "wave.webp",      farbe: "#35B680" },
-  kommunikation: { name: "Kommunikation",  bild: "eye.webp",       farbe: "#b794e8" },
+  kommunikation: { name: "Kommunikation",  bild: "talk.webp",       farbe: "#b794e8" },
   reflexion:  { name: "Weiterdenken",      bild: "crystal-ball.webp", farbe: "#f6f4fb" },
   beduerfnisse: { name: "Gefühle & Bedürfnisse", bild: "heart.webp", farbe: "#6ff0f7" }
 };
