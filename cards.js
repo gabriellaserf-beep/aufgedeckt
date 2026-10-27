@@ -14,7 +14,7 @@
 */
 window.KATEGORIEN = {
   checkliste: { name: "Checkliste",        bild: "checklist.webp",    farbe: "#59d5dc" },
-  uebung:     { name: "Übung",             bild: "hands.webp",     farbe: "#9F9FF4" },
+  uebung:     { name: "Übung",             bild: "practice.webp",     farbe: "#9F9FF4" },
   felder:     { name: "Konfliktfelder",    bild: "gear.webp",      farbe: "#0DADF2" },
   stile:      { name: "Konfliktstile",     bild: "heart.webp",     farbe: "#F9851F" },
   playlist:   { name: "Playlist",          bild: "music.webp",   farbe: "#F471DE" },
