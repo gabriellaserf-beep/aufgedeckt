@@ -13,7 +13,7 @@
   - Die Anzahl der Karten ist frei. Die Auslage verteilt sie automatisch auf die Spalten.
 */
 window.KATEGORIEN = {
-  checkliste: { name: "Checkliste",        bild: "target.webp",    farbe: "#59d5dc" },
+  checkliste: { name: "Checkliste",        bild: "checklist.webp",    farbe: "#59d5dc" },
   uebung:     { name: "Übung",             bild: "hands.webp",     farbe: "#9F9FF4" },
   felder:     { name: "Konfliktfelder",    bild: "gear.webp",      farbe: "#0DADF2" },
   stile:      { name: "Konfliktstile",     bild: "heart.webp",     farbe: "#F9851F" },
