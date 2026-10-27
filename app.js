@@ -591,23 +591,34 @@
   }
 
   /* ---------- Notizen ansehen und herunterladen ---------- */
-  function notesText() {
+  /* Karten nach Kategorie gruppieren (Reihenfolge wie in KATEGORIEN, innerhalb nach Reihe) */
+  function byCategory(ids) {
+    var g = {}; ids.forEach(function (i) { (g[CARDS[i].kategorie] = g[CARDS[i].kategorie] || []).push(i); });
+    return Object.keys(CATS).concat(Object.keys(g).filter(function (k) { return !CATS[k]; })).filter(function (k) { return g[k]; })
+      .map(function (k) { return { key: k, ids: g[k].sort(function (x, y) { return x - y; }) }; });
+  }
+  function notesText(ids) {
+    ids = ids || state.done.concat(state.up);
     var lines = ["Aufgedeckt — meine Notizen", new Date().toLocaleDateString("de-DE"), ""];
-    state.done.concat(state.up).forEach(function (i) {
-      var n = (state.notes[i] || "").trim();
-      lines.push("■ " + cat(i).name + " — " + CARDS[i].titel);
-      if (CARDS[i].text) lines.push(CARDS[i].text.replace(/\*\*/g, ""));
-      if (CARDS[i].text2) lines.push(CARDS[i].text2.replace(/\*\*/g, ""));
-      (CARDS[i].liste || []).forEach(function (x) { lines.push("  • " + x.replace(/\*\*/g, "")); });
-      if (state.picks[i] && state.picks[i].length) lines.push("Ausgewählt: " + state.picks[i].join(", "));
-      lines.push(n ? n : "(keine Notiz)");
-      lines.push("");
+    byCategory(ids).forEach(function (grp) {
+      var name = (CATS[grp.key] || cat(grp.ids[0])).name;
+      lines.push("════ " + name.toUpperCase() + " (" + grp.ids.length + ") ════", "");
+      grp.ids.forEach(function (i) {
+        var n = (state.notes[i] || "").trim(), c = CARDS[i];
+        lines.push("■ " + c.titel + (c.teil ? "  [" + c.teil + "]" : ""));
+        if (c.text) lines.push(c.text.replace(/\*\*/g, ""));
+        if (c.text2) lines.push(c.text2.replace(/\*\*/g, ""));
+        (c.liste || []).forEach(function (x) { lines.push("  • " + x.replace(/\*\*/g, "")); });
+        if (state.picks[i] && state.picks[i].length) lines.push("Ausgewählt: " + state.picks[i].join(", "));
+        lines.push(n ? "Notiz: " + n : "(keine Notiz)");
+        lines.push("");
+      });
     });
     return lines.join("\n");
   }
 
-  function download(msgEl) {
-    var text = notesText();
+  function download(msgEl, ids) {
+    var text = notesText(ids);
     var name = "aufgedeckt-notizen.txt";
     var done = function (ok) { if (msgEl) msgEl.textContent = ok ? "Datei gespeichert." : "Speichern wurde abgebrochen."; };
     var fallback = function () {
@@ -625,25 +636,77 @@
     } else fallback();
   }
 
+  /* Notizen: nach Thema gruppiert, filterbar nach Thema und Notiz, mit Suche */
+  var nf = { cat: "", mode: "alle", q: "" };
+  function hasNote(i) { return (state.notes[i] || "").trim().length > 0; }
   function openNotes() {
     lastFocus = document.activeElement;
-    var ids = state.done.concat(state.up);
+    var all = state.done.concat(state.up);
     var o = $("#reader");
+    if (nf.cat && !all.some(function (i) { return CARDS[i].kategorie === nf.cat; })) nf.cat = "";
+    var cats = byCategory(all);
     o.innerHTML =
-      '<div class="drawer" role="dialog" aria-modal="true" aria-labelledby="ntitle">' +
-        '<span class="eyebrow">Gezogene Karten</span>' +
-        '<h2 id="ntitle" tabindex="-1">Deine Notizen</h2>' +
-        (ids.length ? '<ul class="drawer__list">' + ids.map(function (i) {
-          return '<li style="--acc:' + cat(i).farbe + '"><button type="button" class="drawer__item" data-idx="' + i + '"><span class="cat">' + esc(cat(i).name) + '</span><span class="t">' + esc(hy(CARDS[i].titel)) + '</span><span class="n">' + esc(state.notes[i] || "Noch keine Notiz – tippen, um etwas zu schreiben") + '</span><span class="go">Öffnen <span class="arr">→</span></span></button></li>';
-        }).join("") + "</ul>" : '<p class="empty">Du hast noch keine Karte aufgedeckt. Tipp eine leuchtende Karte an, um zu starten.</p>') +
+      '<div class="drawer drawer--notes" role="dialog" aria-modal="true" aria-labelledby="ntitle">' +
+        '<div class="drawer__top"><div><span class="eyebrow">Gezogene Karten</span><h2 id="ntitle" tabindex="-1">Deine Notizen</h2></div>' +
+        '<button class="ibtn ibtn--icon drawer__x" type="button" id="close" aria-label="Schließen" title="Schließen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>' +
+        (all.length ?
+        '<div class="nfilter">' +
+          '<label class="nsearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input type="search" id="nq" placeholder="In Titeln und Notizen suchen" value="' + esc(nf.q) + '" aria-label="Suchen"></label>' +
+          '<div class="nseg" role="group" aria-label="Notizen filtern">' + [["alle", "Alle"], ["mit", "Mit Notiz"], ["ohne", "Ohne Notiz"]].map(function (m) {
+            var n = all.filter(function (i) { return m[0] === "alle" || (m[0] === "mit") === hasNote(i); }).length;
+            return '<button type="button" class="nseg__b' + (nf.mode === m[0] ? " is-on" : "") + '" data-m="' + m[0] + '" aria-pressed="' + (nf.mode === m[0]) + '">' + m[1] + " <span>" + n + "</span></button>"; }).join("") + "</div>" +
+          '<div class="ncats" role="group" aria-label="Nach Thema filtern"><button type="button" class="ncat' + (!nf.cat ? " is-on" : "") + '" data-c="" aria-pressed="' + !nf.cat + '">Alle Themen</button>' +
+            cats.map(function (g) { var k = CATS[g.key] || cat(g.ids[0]), on = nf.cat === g.key;
+              return '<button type="button" class="ncat' + (on ? " is-on" : "") + '" data-c="' + g.key + '" aria-pressed="' + on + '" style="--acc:' + k.farbe + '"><img src="' + esc(k.bild) + '" alt="">' + esc(k.name) + " <span>" + g.ids.length + "</span></button>"; }).join("") +
+          "</div>" +
+        "</div>" +
+        '<div class="nlist" id="nlist"></div>'
+        : '<p class="empty">Du hast noch keine Karte aufgedeckt. Tipp eine leuchtende Karte an, um zu starten.</p>') +
         '<p class="msg" id="msg" aria-live="polite"></p>' +
-        '<div class="row"><button class="btn btn--secondary" type="button" id="dl"' + (ids.length ? "" : " disabled") + '>Notizen herunterladen</button>' +
-        '<button class="btn btn--outline" type="button" id="close">Schließen</button></div>' +
+        '<div class="row"><button class="btn btn--secondary" type="button" id="dl"' + (all.length ? "" : " disabled") + '>Notizen herunterladen</button>' +
+        '<button class="btn btn--outline" type="button" id="close2">Schließen</button></div>' +
       "</div>";
     o.hidden = false; o.scrollTop = 0;
-    $("#dl", o).addEventListener("click", function () { download($("#msg", o)); });
-    o.querySelectorAll(".drawer__item").forEach(function (b) { b.addEventListener("click", function () { openReader(+b.dataset.idx); }); });
+    var shown = [];
+    function list() {
+      var q = nf.q.trim().toLowerCase();
+      shown = all.filter(function (i) {
+        if (nf.cat && CARDS[i].kategorie !== nf.cat) return false;
+        if (nf.mode === "mit" && !hasNote(i)) return false;
+        if (nf.mode === "ohne" && hasNote(i)) return false;
+        if (q && (CARDS[i].titel + " " + (CARDS[i].teil || "") + " " + (state.notes[i] || "") + " " + ((state.picks[i] || []).join(" "))).toLowerCase().indexOf(q) < 0) return false;
+        return true;
+      });
+      var el = $("#nlist", o); if (!el) return;
+      el.innerHTML = shown.length ? byCategory(shown).map(function (g) {
+        var k = CATS[g.key] || cat(g.ids[0]);
+        return '<section class="ngrp" style="--acc:' + k.farbe + '"><h3 class="ngrp__head"><img src="' + esc(k.bild) + '" alt="">' + esc(hy(k.name)) + "<span>" + g.ids.length + "</span></h3><ul>" +
+          g.ids.map(function (i) {
+            var n = (state.notes[i] || "").trim(), pk = state.picks[i] || [];
+            return '<li><button type="button" class="nitem' + (n ? "" : " is-empty") + '" data-idx="' + i + '">' +
+              '<span class="nitem__meta">' + esc(shortTeil(CARDS[i].teil) || "") + (state.done.indexOf(i) < 0 ? ' <em>noch offen</em>' : "") + "</span>" +
+              '<span class="nitem__t">' + esc(hy(CARDS[i].titel)) + "</span>" +
+              (pk.length ? '<span class="nitem__picks">' + pk.map(function (w) { return "<i>" + esc(w) + "</i>"; }).join("") + "</span>" : "") +
+              '<span class="nitem__n">' + (n ? esc(n) : "Noch keine Notiz – tippen, um etwas zu schreiben") + "</span>" +
+              '<span class="nitem__go">Öffnen <span class="arr">→</span></span></button></li>';
+          }).join("") + "</ul></section>";
+      }).join("") : '<p class="empty">Keine Karten passen zu diesem Filter.</p>';
+      el.querySelectorAll(".nitem").forEach(function (b) { b.addEventListener("click", function () { openReader(+b.dataset.idx); }); });
+      var filtered = nf.cat || nf.mode !== "alle" || q;
+      $("#dl", o).textContent = filtered ? "Auswahl herunterladen (" + shown.length + ")" : "Notizen herunterladen";
+      $("#dl", o).disabled = !shown.length;
+    }
+    if (all.length) {
+      list();
+      $("#nq", o).addEventListener("input", function (e) { nf.q = e.target.value; list(); });
+      o.querySelectorAll(".nseg__b").forEach(function (b) { b.addEventListener("click", function () {
+        nf.mode = b.dataset.m; o.querySelectorAll(".nseg__b").forEach(function (x) { var on = x === b; x.classList.toggle("is-on", on); x.setAttribute("aria-pressed", on); }); list(); }); });
+      o.querySelectorAll(".ncat").forEach(function (b) { b.addEventListener("click", function () {
+        nf.cat = b.dataset.c; o.querySelectorAll(".ncat").forEach(function (x) { var on = x === b; x.classList.toggle("is-on", on); x.setAttribute("aria-pressed", on); }); list(); }); });
+    }
+    $("#dl", o).addEventListener("click", function () { download($("#msg", o), all.length ? shown : []); });
     $("#close", o).addEventListener("click", function () { closeOverlays(); });
+    $("#close2", o).addEventListener("click", function () { closeOverlays(); });
     $("#ntitle", o).focus();
   }
 
