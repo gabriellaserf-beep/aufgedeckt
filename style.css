@@ -642,7 +642,7 @@ body { background: #1a1029; }
 .hello { flex: none; height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: rgba(246,244,251,0.03); color: var(--paper);
   font: inherit; font-size: 0.75rem; font-weight: 800; cursor: pointer; white-space: nowrap; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
 .hello:hover { border-color: var(--aqua); color: var(--aqua); }
-@media (max-width: 640px) { .hello { display: none; } }
+
 .welcome { width: min(100%, 480px); gap: 14px; text-align: left; }
 .welcome__logo svg { height: 22px; }
 .welcome h2 { font-size: clamp(2.2rem, 1.6rem + 2vw, 3rem); line-height: 1; letter-spacing: -0.02em; }
@@ -682,3 +682,27 @@ body { background: #1a1029; }
 @media (max-width: 640px) { .welcome__logo { top: 22px; right: 22px; } .welcome__logo svg { height: 24px; } }
 .welcome { padding-top: 76px; }
 @media (max-width: 640px) { .welcome { padding-top: 64px; } }
+/* Menü: Name-Chip darf den Platz nicht sprengen */
+.bar__row { grid-template-columns: auto minmax(0, 1fr) auto; }
+.top .status { min-width: 0; }
+.top .status .track { min-width: 24px; }
+.top .count { flex: none; }
+.hello { flex: 0 1 auto; min-width: 0; }
+.top .status { overflow: hidden; gap: 10px; }
+.hello { max-width: 150px; }
+
+/* Name als runder Avatar mit Initiale – spart Platz im Menü */
+.hello { flex: none; width: 42px; height: 42px; max-width: none; padding: 0; border-radius: 50%; display: grid; place-items: center;
+  border: 1px solid var(--line); background: rgba(246,244,251,0.03); color: var(--aqua); font: inherit; font-size: 1rem; font-weight: 900; cursor: pointer; }
+.hello svg { width: 20px; height: 20px; fill: none; stroke: var(--aqua); stroke-width: 1.8; stroke-linecap: round; }
+.hello.is-named { border: 0; background: var(--prism); color: var(--purple-ink); }
+.hello:hover { box-shadow: 0 0 0 2px rgba(89,213,220,0.5); }
+.hello:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+@media (max-width: 640px) { .hello { width: 38px; height: 38px; } }
+/* Menü entlasten: Notizen und Mischen als runde Symbol-Knöpfe, Fortschritt bekommt Platz */
+.top .ibtn:not(.ibtn--lay):not(.ibtn--icon) { width: 42px; padding: 0; justify-content: center; }
+.top .ibtn:not(.ibtn--lay) span { display: none; }
+.top .status { overflow: visible; min-width: 90px; }
+@media (max-width: 1180px) { .ibtn--lay .laybtn__name { display: none; } .ibtn--lay { width: auto; padding: 0 10px; } }
+@media (max-width: 640px) { .top .ibtn:not(.ibtn--lay):not(.ibtn--icon) { width: 38px; } .top .status { min-width: 0; } }
+@media (max-width: 640px) { #layRandom { display: none; } .icons { gap: 6px; } }

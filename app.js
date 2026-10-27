@@ -642,7 +642,11 @@
     clearTimeout(toast.t); toast.t = setTimeout(function () { t.classList.remove("is-on"); }, 3600);
   }
   function applyName() {
-    var g = $("#hello"); if (g) { g.textContent = nm() ? "Hallo, " + nm() : "Name eingeben"; g.title = nm() ? "Name ändern oder Spielstand laden" : "Name eingeben"; }
+    var g = $("#hello"); if (g) {
+      g.innerHTML = nm() ? esc(nm().charAt(0).toUpperCase()) : '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="3.6"/><path d="M5 20c1.2-3.6 4-5.4 7-5.4s5.8 1.8 7 5.4"/></svg>';
+      g.classList.toggle("is-named", !!nm());
+      g.title = nm() ? "Hallo, " + nm() + " – Name ändern oder Spielstand laden" : "Name eingeben oder Spielstand laden";
+      g.setAttribute("aria-label", g.title); }
     var f = $("#finish h2"); if (f) f.textContent = greet("Gut gemacht, {n}");
   }
   function openWelcome(first) {
@@ -813,6 +817,10 @@
     save();
     render(); renderLayouts(); layoutProps(); applyName();
     $("#hello").addEventListener("click", function () { openWelcome(false); });
+    /* Handy: „Mischen“ wandert in die zweite Zeile, damit oben Platz für den Namen bleibt */
+    var mq = window.matchMedia("(max-width: 640px)"), placeMix = function () {
+      var r = $("#restartBtn"); if (mq.matches) $(".laypick").appendChild(r); else $(".icons").appendChild(r); };
+    placeMix(); if (mq.addEventListener) mq.addEventListener("change", placeMix); else mq.addListener(placeMix);
     if (!state.welcomed) openWelcome(true); else if (nm()) setTimeout(function () { toast("Schön, dass du wieder da bist, " + nm() + "."); }, 500);
     var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(placeProps, 150); });
     $("#layouts").addEventListener("click", function (e) { var b = e.target.closest(".lay"); if (!b) return; if (b.dataset.l === "zufall") { $("#layRandom").click(); return; } setLayout(b.dataset.l); layPop(false); });
