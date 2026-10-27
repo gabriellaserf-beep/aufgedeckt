@@ -237,7 +237,11 @@
       b.style.top = "calc(" + p.y + " * (100% - var(--ch)))";
       b.style.zIndex = up ? 5000 + p.z : p.z;
       b.style.setProperty("--rot", p.r + "deg");
-      b.innerHTML = '<span class="card__inner">' + backHTML() + frontHTML(idx) + "</span>";
+      b.innerHTML = '<span class="card__inner">' + backHTML() + frontHTML(idx) + "</span>" +
+        (up ? '<span class="card__drop" role="button" tabindex="0" aria-label="Karte ablegen" title="Karte ablegen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>' : "");
+      if (up) { var dr = b.querySelector(".card__drop"), drop = function (e) { e.preventDefault(); e.stopPropagation(); dropCard(idx, b); };
+        dr.addEventListener("click", drop); dr.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") drop(e); });
+        dr.addEventListener("pointerdown", function (e) { e.stopPropagation(); }); }
       b.setAttribute("aria-label", up ? "Aufgedeckte Karte: " + CARDS[idx].titel + " — öffnen" : "Verdeckte Karte aufdecken");
       dragable(b, idx);
       desk.appendChild(b);
@@ -466,6 +470,11 @@
     setTimeout(function () { ta.focus({ preventScroll: true }); ta.setSelectionRange(ta.value.length, ta.value.length); }, 50);
   }
 
+  /* Aufgedeckte Karte direkt vom Tisch ablegen, ohne sie zu öffnen */
+  function dropCard(idx, el) {
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (el && !reduce) { el.classList.add("is-dropping"); setTimeout(function () { finishCard(idx); }, 380); } else finishCard(idx);
+  }
   function finishCard(idx) {
     state.up = state.up.filter(function (i) { return i !== idx; });
     state.done.push(idx);
