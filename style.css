@@ -676,3 +676,7 @@ body { background: #1a1029; }
 .big__cat .big__sep { margin: 0; }
 .series__head { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.6em; }
 .series__head .big__sep { margin: 0; }
+.welcome { position: relative; }
+.welcome__logo { position: absolute; top: 26px; right: 28px; color: var(--aqua); }
+.welcome__logo svg { height: 30px; }
+@media (max-width: 640px) { .welcome__logo { top: 22px; right: 22px; } .welcome__logo svg { height: 24px; } }
