@@ -2,7 +2,7 @@
    Layout: ein Purple-Spieltisch, Patience-Auslage in Spalten, Lesekarte als Overlay. */
 :root {
   color-scheme: dark;
-  --purple-ink: #231639; --purple-900: #1a1029; --purple-600: #490a77; --surface-raised: #2d1e4a;
+  --purple-ink: #231639; --purple-900: #1a1029; --purple-600: #490a77; --surface-raised: #220736;
   --aqua: #59d5dc; --aqua-bright: #6ff0f7; --lime: #b5fd42; --lime-bright: #c8ff66;
   --paper: #f6f4fb; --text-muted: #b3a8cf; --text-faint: #7d7299;
   --line: rgba(246,244,251,0.14); --line-strong: rgba(246,244,251,0.28);
@@ -108,7 +108,7 @@ button { font: inherit; color: inherit; }
 .finish .row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
 /* ---------- Wortkarten ---------- */
-.prompt { margin: 22px 0 4px; padding: 18px 20px 16px; border-radius: 22px; background: linear-gradient(#2d1e4a, #2d1e4a) padding-box, var(--prism) border-box; border: 1.5px solid transparent; display: grid; gap: 10px; justify-items: start; }
+.prompt { margin: 22px 0 4px; padding: 18px 20px 16px; border-radius: 22px; background: linear-gradient(#220736, #220736) padding-box, var(--prism) border-box; border: 1.5px solid transparent; display: grid; gap: 10px; justify-items: start; }
 .prompt__q { font-weight: 900; font-size: clamp(1.25rem, 1rem + 1vw, 1.6rem); line-height: 1.15; letter-spacing: -0.01em; color: var(--paper); }
 .prompt__dots { display: flex; gap: 6px; }
 .prompt__dots i { width: 10px; height: 10px; border-radius: 50%; display: block; }
@@ -507,7 +507,7 @@ header.top { position: relative; z-index: 15; }
 .pgrp__count { flex: none; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; display: grid; place-items: center; font-size: 0.6875rem; font-weight: 900; color: var(--purple-ink); background: var(--acc); }
 .pgrp__fan { display: flex; align-items: flex-end; padding-top: 6px; min-width: 0; }
 .pgrp .mini { flex: none; width: 76px; aspect-ratio: 5 / 7; padding: 8px 7px; gap: 4px; justify-content: flex-start; align-items: flex-start; text-align: left; border-radius: 9px;
-  border: 1px solid color-mix(in srgb, var(--acc) 45%, var(--line)); background: linear-gradient(160deg, color-mix(in srgb, var(--acc) 14%, #2a1d45), #241638 70%);
+  border: 1px solid color-mix(in srgb, var(--acc) 45%, var(--line)); background: linear-gradient(160deg, color-mix(in srgb, var(--acc) 14%, #220736), #220736 70%);
   box-shadow: -6px 0 14px -6px rgba(8,4,16,0.7); transform: rotate(calc((var(--i) - 1) * 1.2deg)); }
 .pgrp .mini + .mini { margin-left: var(--ov, -40px); }
 .pgrp .mini:hover, .pgrp .mini:focus-visible { transform: translateY(-8px) rotate(0deg); z-index: 50 !important; border-color: var(--acc); box-shadow: 0 12px 22px rgba(8,4,16,0.6); }
