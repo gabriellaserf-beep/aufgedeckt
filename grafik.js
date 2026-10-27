@@ -156,7 +156,7 @@
       var bc = on ? INK : LIL, bo = on ? 0.55 : 0.3;
       g += '<rect x="' + (x + 8) + '" y="' + (y + 9) + '" width="' + (w - 16) + '" height="2" rx="1" fill="' + bc + '" fill-opacity="' + bo + '"/>' +
         '<rect x="' + (x + 8) + '" y="' + (y + b.h - 11) + '" width="' + (w - 16) + '" height="2" rx="1" fill="' + bc + '" fill-opacity="' + bo + '"/>';
-      var ty = y + b.h / 2 - (b.l.length - 1) * 5.2 + 3.2;
+      var ty = y + b.h - 19 - (b.l.length - 1) * 10.4;
       g += lines(cx, ty, b.l, 9, 900, on ? INK : "rgba(201,196,242,0.6)", 10.4);
       out += g + "</g>";
     });
