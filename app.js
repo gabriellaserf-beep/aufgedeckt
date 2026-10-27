@@ -538,6 +538,9 @@
       var f = e.getAttribute("fill"); if (f && f !== "none") return; if (!e.getTotalLength) return;
       var L = 0; try { L = e.getTotalLength(); } catch (x) {} if (!L || L < 20) return;
       e.style.strokeDasharray = L; e.style.strokeDashoffset = L; e.classList.add("ga-draw"); e.style.animationDelay = (200 + i * 60) + "ms";
+      /* Pfeilspitze erst zeigen, wenn die Linie fertig gezeichnet ist */
+      var mk = e.getAttribute("marker-end");
+      if (mk) { e.removeAttribute("marker-end"); e.addEventListener("animationend", function () { e.setAttribute("marker-end", mk); e.classList.add("ga-tip"); }, { once: true }); }
       if (e.classList.contains("ga-in")) e.classList.remove("ga-in");
     });
     /* aktive, farbige Elemente pulsieren sanft */
