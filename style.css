@@ -245,7 +245,7 @@ button { font: inherit; color: inherit; }
 .top .status .track { flex: 1; }
 .top .count { letter-spacing: 0.08em; }
 
-.desk { --cw: clamp(64px, 7.5vw, 112px); --ch: calc(var(--cw) * 1.4);
+.desk { --cw: clamp(84px, 10vw, 150px); --ch: calc(var(--cw) * 1.4);
   position: relative; z-index: 2; height: clamp(460px, calc(100vh - 128px), 920px); border-radius: 28px; overflow: hidden;
   background:
     repeating-linear-gradient(0deg, rgba(246,244,251,0.035) 0 1px, transparent 1px 48px),
@@ -268,7 +268,7 @@ button { font: inherit; color: inherit; }
 @media (max-width: 900px) {
 }
 @media (max-width: 560px) {
-  .desk { --cw: 62px; height: clamp(440px, 66vh, 620px); border-radius: 20px; }
+  .desk { --cw: 80px; height: clamp(440px, 66vh, 620px); border-radius: 20px; }
   .desk::before { inset: 8px; border-radius: 14px; }
 }
 @media (prefers-reduced-motion: reduce) { .desk .card { transition: none; } }
@@ -305,8 +305,8 @@ button { font: inherit; color: inherit; }
   .layouts__list { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-block: 2px; mask-image: linear-gradient(90deg, #000 88%, transparent); }
   .layouts__list::-webkit-scrollbar { display: none; }
 }
-.desk.is-shape { --cw: clamp(46px, 5.4vw, 80px); }
-@media (max-width: 560px) { .desk.is-shape { --cw: 46px; } }
+.desk.is-shape { --cw: clamp(60px, 7vw, 104px); }
+@media (max-width: 560px) { .desk.is-shape { --cw: 58px; } }
 
 /* ===================== Menü-Leiste ===================== */
 .top { display: block; padding-block: 14px 14px; }
