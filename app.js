@@ -558,6 +558,14 @@
       svgEl.querySelectorAll("rect").forEach(function (e, i) { e.classList.add("ga-eq"); e.style.animationDelay = delay + i * 130 + "ms"; e.style.animationDuration = (0.7 + (i % 3) * 0.18) + "s"; });
       return;
     }
+    if (type === "batna") {
+      /* Reihenfolge: Weg → Gabelung → zwei Wege → Endpunkte → Beschriftung */
+      var P = svgEl.querySelectorAll("path"), C = svgEl.querySelectorAll("circle"), T = svgEl.querySelectorAll("text");
+      var at = function (e, ms, dur) { if (!e) return; e.style.animationDelay = ms + "ms"; if (dur) e.style.animationDuration = dur; };
+      at(P[0], 0, "0.8s"); at(C[0], 750); at(P[1], 1000, "0.8s"); at(P[2], 1000, "0.8s"); at(C[1], 1750); at(C[2], 1750);
+      [].forEach.call(T, function (e, i) { at(e, i === T.length - 1 ? 500 : 2000 + Math.floor(i / 2) * 120); });
+      live.forEach(function (e) { e.classList.remove("ga-pulse"); }); return;
+    }
     if (type === "thermo") { svgEl.querySelectorAll("rect:not([transform])").forEach(function (e, i) { e.classList.add("ga-grow"); e.style.animationDelay = (150 + i * 40) + "ms"; }); }
     live.slice(0, 4).forEach(function (e, i) { e.classList.add(e.tagName === "g" ? "ga-float" : "ga-pulse"); e.style.setProperty("--gd", delay + i * 300 + "ms"); });
   }
