@@ -767,3 +767,6 @@ body { background: #1a1029; }
 @keyframes gaGlow { 0%, 100% { opacity: 0.22; } 50% { opacity: 0.38; } }
 .g-batna .ga-in { animation-name: gaSoft; }
 @keyframes gaSoft { from { opacity: 0; transform: translateY(4px) scale(0.85); } to { opacity: 1; transform: none; } }
+/* Trennpunkt als gezeichneter Punkt: exakt mittig, unabhängig von der Schrift */
+.big__sep { font-size: 0 !important; width: 4px; height: 4px; border-radius: 50%; background: currentColor; align-self: center; flex: none; display: inline-block; position: relative; top: -0.05em; color: var(--text-muted); }
+.series__head .big__sep { width: 4px; height: 4px; }

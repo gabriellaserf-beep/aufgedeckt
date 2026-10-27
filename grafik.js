@@ -186,7 +186,7 @@
 
   /* Harvard-Methode: vier Prinzipien als verbundene Kreise */
   function harvard(n) {
-    var L = "#b794e8", P = [["Menschen &", "Problem trennen"], ["Interessen", "statt Positionen"], ["Optionen", "für beide"], ["Objektive", "Kriterien"]], out = "";
+    var L = "#b794e8", P = [["Menschen"], ["Interessen"], ["Optionen"], ["Kriterien"]], out = "";
     out += '<defs><radialGradient id="hvG" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="' + L + '" stop-opacity="0.55"/><stop offset="1" stop-color="' + L + '" stop-opacity="0"/></radialGradient></defs>';
     out += '<path d="M46 84 H274" fill="none" stroke="rgba(183,148,232,0.4)" stroke-width="1.2" stroke-linecap="round"/>';
     P.forEach(function (p, i) {
@@ -194,10 +194,9 @@
       if (act) out += '<circle cx="' + x + '" cy="84" r="34" fill="url(#hvG)"/>';
       out += '<circle cx="' + x + '" cy="84" r="' + (act ? 19 : 16) + '" fill="' + (act ? L : "#220736") + '" stroke="' + L + '" stroke-opacity="' + (on ? 1 : 0.5) + '" stroke-width="' + (act ? 0 : 1.2) + '"/>' +
         t(x, 84 + (act ? 6 : 5), String(i + 1), act ? 16 : 13, 900, act ? INK : (on ? L : MUTED)) +
-        lines(x, 124, p, 8.5, act ? 900 : 700, act ? PAPER : MUTED, 10.5);
+        lines(x, 124, p, 9.5, act ? 900 : 700, act ? PAPER : MUTED, 11);
     });
-    out += t(160, 168, "hart in der Sache", 9, 700, MUTED, "end") + '<circle cx="166" cy="165" r="1.6" fill="' + MUTED + '"/>' + t(172, 168, "fair zu den Menschen", 9, 700, MUTED, "start");
-    return svg(out, "0 44 320 134");
+    return svg(out, "0 40 320 100");
   }
 
   /* BATNA: Weggabelung zwischen Einigung und Plan B */
