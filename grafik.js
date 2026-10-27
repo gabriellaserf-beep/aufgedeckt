@@ -40,7 +40,7 @@
 
   /* Konfliktstile: Matrix aus Kooperationswille und Konfrontationsbereitschaft */
   function stile(a) {
-    var x0 = 84, y0 = 12, w = 104, h = 76, g = 4;
+    var x0 = 104, y0 = 16, w = 84, h = 54, g = 7;
     var Q = [
       { k: 1, n: ["Vermeiden"], c: "#3e768a", x: x0, y: y0 + h + g },
       { k: 2, n: ["Entgegen-", "kommen"], c: "#9F9FF4", x: x0, y: y0 },
@@ -49,16 +49,16 @@
     ];
     var out = Q.map(function (q) {
       var on = !a || a === q.k;
-      return '<rect x="' + q.x + '" y="' + q.y + '" width="' + w + '" height="' + h + '" rx="10" fill="' + (on ? q.c : "#2d1e4a") + '" stroke="' + q.c + '" stroke-opacity="' + (on ? 1 : 0.6) + '" stroke-width="1.5"/>' +
-        lines(q.x + w / 2, q.y + h / 2 + (q.n.length > 1 ? -2 : 5), q.n, 13, 900, on ? INK : q.c, 14);
+      return '<rect x="' + q.x + '" y="' + q.y + '" width="' + w + '" height="' + h + '" rx="8" fill="' + (on ? q.c : "#220736") + '" stroke="' + q.c + '" stroke-opacity="' + (on ? 1 : 0.5) + '" stroke-width="1"/>' +
+        lines(q.x + w / 2, q.y + h / 2 + (q.n.length > 1 ? -1.5 : 4), q.n, 10.5, 900, on ? INK : q.c, 11.5);
     }).join("");
-    var axX = x0 - 12, axY = y0 + 2 * h + g + 12;
-    out += '<path d="M' + axX + " " + (axY) + " V" + (y0 - 2) + '" stroke="' + AQUA + '" stroke-width="2" marker-end="url(#ar)"/>' +
-      '<path d="M' + axX + " " + axY + " H" + (x0 + 2 * w + g + 10) + '" stroke="' + AQUA + '" stroke-width="2" marker-end="url(#ar)"/>' +
+    var axX = x0 - 12, axY = y0 + 2 * h + g + 10, my = y0 + h + g / 2;
+    out += '<path d="M' + axX + " " + axY + " V" + (y0 - 4) + '" stroke="' + AQUA + '" stroke-width="1.4" marker-end="url(#ar)"/>' +
+      '<path d="M' + axX + " " + axY + " H" + (x0 + 2 * w + g + 12) + '" stroke="' + AQUA + '" stroke-width="1.4" marker-end="url(#ar)"/>' +
       '<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="' + AQUA + '"/></marker></defs>' +
-      t(axX - 10, y0 + h + g / 2, "Kooperation", 10, 700, MUTED, "middle", 'transform="rotate(-90 ' + (axX - 10) + " " + (y0 + h + g / 2) + ')"') +
-      t(x0 + w + g / 2, axY + 16, "Konfrontation", 10, 700, MUTED);
-    return svg(out);
+      '<g transform="translate(' + (axX - 9) + " " + my + ') rotate(-90)">' + t(0, 0, "Kooperation", 9, 700, MUTED) + "</g>" +
+      t(x0 + w + g / 2, axY + 15, "Konfrontation", 9, 700, MUTED);
+    return svg(out, "60 4 260 156");
   }
 
   /* Eskalation: neun Stufen abwärts, drei Phasen */
