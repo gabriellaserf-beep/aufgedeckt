@@ -17,13 +17,13 @@ window.KATEGORIEN = {
   uebung:     { name: "Übung",             bild: "hands.webp",     farbe: "#9F9FF4" },
   felder:     { name: "Konfliktfelder",    bild: "gear.webp",      farbe: "#0DADF2" },
   stile:      { name: "Konfliktstile",     bild: "heart.webp",     farbe: "#F9851F" },
-  playlist:   { name: "Playlist",          bild: "speaker.webp",   farbe: "#F471DE" },
+  playlist:   { name: "Playlist",          bild: "music.webp",   farbe: "#F471DE" },
   buecher:    { name: "Bücher",            bild: "book.webp", farbe: "#F9CE1F" },
-  fuehrung:   { name: "Führung",           bild: "rocket.webp",    farbe: "#b5fd42" },
-  eskalation: { name: "Eskalation",        bild: "wave.webp",      farbe: "#35B680" },
+  fuehrung:   { name: "Führung",           bild: "lead.webp",    farbe: "#b5fd42" },
+  eskalation: { name: "Eskalation",        bild: "escalate.webp",      farbe: "#35B680" },
   kommunikation: { name: "Kommunikation",  bild: "talk.webp",       farbe: "#b794e8" },
-  reflexion:  { name: "Weiterdenken",      bild: "crystal-ball.webp", farbe: "#f6f4fb" },
-  beduerfnisse: { name: "Gefühle & Bedürfnisse", bild: "heart.webp", farbe: "#6ff0f7" }
+  reflexion:  { name: "Weiterdenken",      bild: "think.webp", farbe: "#f6f4fb" },
+  beduerfnisse: { name: "Gefühle & Bedürfnisse", bild: "feelings.webp", farbe: "#6ff0f7" }
 };
 
 /*
