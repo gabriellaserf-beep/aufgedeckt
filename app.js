@@ -375,6 +375,38 @@
     setTimeout(function () { render(); openReader(idx); }, reduce ? 0 : 950);
   }
 
+  /* Karten einer Reihe (z. B. „Harvard-Methode“, „1 / 3 … 3 / 3“) gehören zusammen */
+  function groupKey(i) {
+    var c = CARDS[i], t = c.teil || "";
+    if (t.indexOf(" · ") > 0) return c.kategorie + "|" + t.split(" · ")[0];
+    if (c.kategorie === "fuehrung" || (c.kategorie === "uebung" && !/\d\s*\/\s*\d/.test(t))) return "solo|" + i;
+    return c.kategorie;
+  }
+  function siblings(i) { var g = groupKey(i); return CARDS.map(function (_, j) { return j; }).filter(function (j) { return j !== i && groupKey(j) === g; }); }
+  function shortTeil(t) { t = t || ""; return t.indexOf(" · ") > 0 ? t.split(" · ").slice(1).join(" · ") : t; }
+  function seriesHTML(idx) {
+    var sib = siblings(idx); if (!sib.length) return "";
+    var all = CARDS.map(function (_, j) { return j; }).filter(function (j) { return groupKey(j) === groupKey(idx); });
+    var open = sib.filter(function (j) { return state.done.indexOf(j) < 0 && !isUp(j); }).length;
+    return '<section class="series" aria-label="Dazugehörige Karten"><h3 class="series__head">Gehört dazu <span>' +
+      (open ? "· " + open + (open === 1 ? " Karte" : " Karten") + " noch verdeckt" : "· alle aufgedeckt") + '</span></h3><div class="series__row">' +
+      all.map(function (j) {
+        var me = j === idx, done = state.done.indexOf(j) >= 0, up = isUp(j) || done || me;
+        return '<div class="sib' + (me ? " is-me" : "") + '"><button type="button" class="card sib__card' + (up ? " is-up" : "") + '" data-j="' + j + '"' + (me ? ' disabled aria-current="true"' : "") +
+          ' aria-label="' + esc(up ? CARDS[j].titel + (me ? " (diese Karte)" : " öffnen") : "Dazugehörige Karte aufdecken") + '"><span class="card__inner">' + backHTML() + frontHTML(j) + "</span></button>" +
+          '<span class="sib__teil">' + esc(shortTeil(CARDS[j].teil) || String(all.indexOf(j) + 1)) + (done && !me ? " ✓" : "") + "</span></div>";
+      }).join("") + "</div></section>";
+  }
+  function openSibling(j, btn) {
+    var go = function () {
+      if (state.done.indexOf(j) < 0 && !isUp(j)) state.up.push(j);
+      state.top++; if (state.pos[j]) state.pos[j].z = state.top;
+      save(); render(); openReader(j);
+    };
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (btn && !btn.classList.contains("is-up") && !reduce) { btn.classList.add("is-up"); setTimeout(go, 650); } else go();
+  }
+
   function openReader(idx) {
     var c = CARDS[idx], k = cat(idx);
     var played = state.done.indexOf(idx) >= 0;
@@ -405,9 +437,11 @@
               : '<button class="btn btn--primary" type="button" id="done">Karte ablegen <span class="arr">→</span></button>' +
                 '<button class="btn btn--outline" type="button" id="later">Später weiter</button>') +
           "</div>" +
+          seriesHTML(idx) +
         "</div>" +
       "</div>";
     o.hidden = false; o.scrollTop = 0;
+    o.querySelectorAll(".sib__card[data-j]").forEach(function (b) { if (!b.disabled) b.addEventListener("click", function () { openSibling(+b.dataset.j, b); }); });
     var ta = $("#note", o);
     ta.addEventListener("input", function () { state.notes[idx] = ta.value; save(); });
     o.querySelectorAll(".scale__n").forEach(function (b) {

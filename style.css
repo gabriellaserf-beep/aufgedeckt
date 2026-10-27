@@ -458,3 +458,21 @@ header.top { position: relative; z-index: 15; }
 .proptip__k { font-size: 0.625rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--lime); }
 .proptip__t { font-size: 0.875rem; line-height: 1.4; font-weight: 600; color: var(--paper); }
 @media (max-width: 860px) { .proptip { display: none; } }
+
+/* ---------- Dazugehörige Karten einer Reihe ---------- */
+.series { margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px; }
+.series__head { margin: 0; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--aqua); }
+.series__head span { color: var(--text-muted); letter-spacing: 0.06em; text-transform: none; font-weight: 600; }
+.series__row { display: flex; flex-wrap: wrap; gap: 12px 10px; }
+.sib { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 64px; }
+.sib__card.card { --cw: 60px; --ch: 84px; position: relative; display: block; cursor: pointer; transition: transform var(--dur-base) var(--ease-out); }
+.sib__card .front img { width: 62%; }
+.sib__card .front__cat { font-size: 6px; letter-spacing: 0.06em; }
+.sib__card:not(.is-up) .face.back { box-shadow: 0 0 0 1px rgba(255,122,248,0.5), 0 8px 18px -6px rgba(255,0,254,0.5); }
+.sib__card:not([disabled]):hover { transform: translateY(-4px); }
+.sib__card:not([disabled]):hover .face { box-shadow: 0 0 0 1px #ffa0fa, 0 0 22px rgba(255,0,254,0.5); }
+.sib__card:focus-visible .face { outline: 2px solid var(--lime); outline-offset: 3px; }
+.sib.is-me .sib__card { cursor: default; }
+.sib.is-me .face { box-shadow: 0 0 0 2px var(--lime); }
+.sib__teil { font-size: 0.6875rem; font-weight: 700; line-height: 1.2; text-align: center; color: var(--text-muted); max-width: 100%; overflow-wrap: anywhere; }
+.sib.is-me .sib__teil { color: var(--lime); }
