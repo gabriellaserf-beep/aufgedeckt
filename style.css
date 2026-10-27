@@ -445,3 +445,4 @@ header.top { position: relative; z-index: 15; }
   #randomBtn { padding: 0 0.75rem; }
 }
 .laypop .lay span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: 0.71875rem; }
+.prop { height: auto; display: block; user-select: none; filter: drop-shadow(0 18px 22px rgba(8,4,16,0.55)) drop-shadow(0 3px 4px rgba(8,4,16,0.45)); }

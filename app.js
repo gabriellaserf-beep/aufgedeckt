@@ -138,61 +138,45 @@
   }
 
   /* ---------- Schreibtisch-Gegenstände: liegen zufällig neben dem Tisch ---------- */
-  var PROP_DEFS = (function () {
-    var kb = '<svg viewBox="0 0 460 170"><defs><linearGradient id="pkb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d2a63"/><stop offset="1" stop-color="#25173d"/></linearGradient><linearGradient id="pkk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#55408a"/><stop offset="1" stop-color="#3a2862"/></linearGradient></defs>' +
-      '<rect x="2" y="2" width="456" height="166" rx="18" fill="url(#pkb)" stroke="rgba(89,213,220,0.45)" stroke-width="2"/>';
-    var rows = [[14, 0], [14, 10], [13, 16], [12, 24]], y = 16;
-    rows.forEach(function (r, ri) { var n = r[0], x0 = 16 + r[1], kw = (428 - r[1] - (n - 1) * 5) / n;
-      for (var i = 0; i < n; i++) { var x = x0 + i * (kw + 5), col = (ri === 0 && i === 0) ? "#ff00fe" : (ri === 2 && i === n - 1) ? "#b5fd42" : "url(#pkk)";
-        kb += '<rect x="' + x.toFixed(1) + '" y="' + y + '" width="' + kw.toFixed(1) + '" height="28" rx="5" fill="' + col + '"' + (col.charAt(0) === "#" ? ' fill-opacity="0.85"' : "") + '/><rect x="' + (x + 3).toFixed(1) + '" y="' + (y + 2) + '" width="' + (kw - 6).toFixed(1) + '" height="3" rx="1.5" fill="#ffffff" fill-opacity="0.12"/>'; }
-      y += 33; });
-    kb += '<rect x="120" y="' + y + '" width="220" height="26" rx="5" fill="url(#pkk)"/><rect x="124" y="' + (y + 2) + '" width="212" height="3" rx="1.5" fill="#ffffff" fill-opacity="0.12"/></svg>';
-    return {
-      keyboard: { w: 400, ar: 170 / 460, rot: [80, 100], svg: kb },
-      mouse: { w: 66, ar: 1.75, rot: [-25, 25], svg: '<svg viewBox="0 0 80 140"><defs><radialGradient id="pms" cx="0.38" cy="0.3" r="0.8"><stop offset="0" stop-color="#6a52a6"/><stop offset="1" stop-color="#2a1a44"/></radialGradient></defs><path d="M40 4 C 64 4, 76 24, 76 60 L 76 92 C 76 120, 62 136, 40 136 C 18 136, 4 120, 4 92 L 4 60 C 4 24, 16 4, 40 4 Z" fill="url(#pms)" stroke="rgba(89,213,220,0.5)" stroke-width="2"/><path d="M40 6 V 52 M5 52 H 75" stroke="rgba(246,244,251,0.18)" stroke-width="1.5"/><rect x="35" y="16" width="10" height="22" rx="5" fill="#59d5dc"/><ellipse cx="26" cy="34" rx="8" ry="16" fill="#ffffff" fill-opacity="0.08"/></svg>' },
-      coffee: { w: 150, ar: 1, rot: [-40, 40], svg: '<svg viewBox="0 0 200 200"><defs><radialGradient id="pcm" cx="0.35" cy="0.3" r="0.8"><stop offset="0" stop-color="#e4d4fb"/><stop offset="1" stop-color="#9a78d6"/></radialGradient><radialGradient id="pcc" cx="0.45" cy="0.45" r="0.6"><stop offset="0" stop-color="#9a6238"/><stop offset="0.75" stop-color="#5a3219"/><stop offset="1" stop-color="#2e170a"/></radialGradient></defs>' +
-        '<circle cx="96" cy="100" r="92" fill="#3b2760" stroke="rgba(246,244,251,0.2)" stroke-width="2"/><circle cx="96" cy="100" r="70" fill="none" stroke="rgba(246,244,251,0.12)" stroke-width="2"/>' +
-        '<path d="M150 88 C 186 84, 186 116, 150 112" fill="none" stroke="#a987e0" stroke-width="14" stroke-linecap="round"/>' +
-        '<circle cx="96" cy="100" r="60" fill="url(#pcm)"/><circle cx="96" cy="100" r="51" fill="#2a160c"/><circle cx="96" cy="100" r="48" fill="url(#pcc)"/><circle cx="96" cy="100" r="44" fill="none" stroke="#c89060" stroke-opacity="0.55" stroke-width="3"/>' +
-        '<path d="M96 122 C 70 104, 74 82, 88 84 C 94 85, 96 90, 96 93 C 96 90, 98 85, 104 84 C 118 82, 122 104, 96 122 Z" fill="#f3dcc0" fill-opacity="0.92"/>' +
-        '<path d="M52 78 A 52 52 0 0 1 80 50" fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="4" stroke-linecap="round"/>' +
-        '<g transform="rotate(-38 40 160)"><ellipse cx="40" cy="160" rx="9" ry="14" fill="#59d5dc"/><rect x="36" y="172" width="8" height="40" rx="4" fill="#59d5dc"/></g></svg>' },
-      pen: { w: 190, ar: 0.14, rot: [-70, 70], svg: '<svg viewBox="0 0 240 34"><defs><linearGradient id="ppn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a357a"/><stop offset="1" stop-color="#22143a"/></linearGradient></defs><rect x="4" y="7" width="182" height="20" rx="10" fill="url(#ppn)" stroke="rgba(89,213,220,0.5)" stroke-width="1.5"/><rect x="10" y="9" width="170" height="4" rx="2" fill="#ffffff" fill-opacity="0.14"/><path d="M186 8 L 226 17 L 186 26 Z" fill="#b5fd42"/><path d="M220 15.5 L 236 17 L 220 18.5 Z" fill="#f6f4fb"/><rect x="26" y="2" width="70" height="8" rx="4" fill="#59d5dc"/></svg>' },
-      notebook: { w: 250, ar: 0.72, rot: [-30, 30], svg: (function () { var s = '<svg viewBox="0 0 300 216"><rect x="4" y="8" width="292" height="204" rx="10" fill="#3b2760"/><rect x="10" y="4" width="136" height="200" rx="6" fill="#ece6f7"/><rect x="154" y="4" width="136" height="200" rx="6" fill="#f6f4fb"/>';
-        for (var i = 0; i < 10; i++) { var yy = 30 + i * 17; s += '<line x1="22" y1="' + yy + '" x2="136" y2="' + yy + '" stroke="#59d5dc" stroke-opacity="0.35" stroke-width="1.2"/><line x1="166" y1="' + yy + '" x2="280" y2="' + yy + '" stroke="#59d5dc" stroke-opacity="0.35" stroke-width="1.2"/>'; }
-        s += '<path d="M26 44 c10 -8 20 6 30 -2 s 18 6 28 -2 s 14 4 22 0" fill="none" stroke="#6b4fb0" stroke-width="2.2" stroke-linecap="round"/><path d="M26 61 c12 -6 22 4 34 -2 s 16 4 26 -1" fill="none" stroke="#6b4fb0" stroke-width="2.2" stroke-linecap="round"/><path d="M26 95 c10 -6 18 4 26 -1" fill="none" stroke="#ff00fe" stroke-width="2.2" stroke-linecap="round"/><rect x="172" y="40" width="60" height="44" rx="4" fill="#b5fd42" fill-opacity="0.8" transform="rotate(-6 200 60)"/>';
-        for (var j = 0; j < 9; j++) s += '<rect x="141" y="' + (16 + j * 21) + '" width="18" height="9" rx="4.5" fill="none" stroke="#9a8cb8" stroke-width="3"/>';
-        return s + '</svg>'; })() },
-      phone: { w: 84, ar: 2, rot: [-35, 35], svg: '<svg viewBox="0 0 110 220"><defs><linearGradient id="pph" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a1f66"/><stop offset="0.6" stop-color="#7a1f8f"/><stop offset="1" stop-color="#ff00fe"/></linearGradient></defs><rect x="3" y="3" width="104" height="214" rx="18" fill="#120a1e" stroke="rgba(89,213,220,0.5)" stroke-width="2"/><rect x="9" y="9" width="92" height="202" rx="13" fill="url(#pph)"/><rect x="40" y="15" width="30" height="8" rx="4" fill="#120a1e"/><circle cx="55" cy="96" r="20" fill="none" stroke="#59d5dc" stroke-width="3"/><path d="M47 96 l6 6 l11 -12" fill="none" stroke="#b5fd42" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="25" y="138" width="60" height="6" rx="3" fill="#f6f4fb" fill-opacity="0.55"/><rect x="33" y="152" width="44" height="5" rx="2.5" fill="#f6f4fb" fill-opacity="0.3"/></svg>' },
-      plant: { w: 150, ar: 1, rot: [0, 360], svg: (function () { var s = '<svg viewBox="0 0 200 200"><defs><linearGradient id="plf" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3fb7a0"/><stop offset="1" stop-color="#b5fd42"/></linearGradient></defs><circle cx="100" cy="100" r="62" fill="#3b2760" stroke="rgba(246,244,251,0.2)" stroke-width="2"/><circle cx="100" cy="100" r="52" fill="#24150f"/>';
-        for (var i = 0; i < 9; i++) { var a = i * 40 + (i % 2) * 12, l = 62 + (i % 3) * 12; s += '<g transform="rotate(' + a + ' 100 100)"><ellipse cx="' + (100 + l / 2) + '" cy="100" rx="' + (l / 2) + '" ry="15" fill="url(#plf)" stroke="#1f6b5c" stroke-opacity="0.6" stroke-width="1.5"/><line x1="102" y1="100" x2="' + (100 + l - 6) + '" y2="100" stroke="#1f6b5c" stroke-opacity="0.5" stroke-width="1.5"/></g>'; }
-        for (var k = 0; k < 6; k++) { var b = k * 60 + 30; s += '<g transform="rotate(' + b + ' 100 100)"><ellipse cx="118" cy="100" rx="18" ry="8" fill="#b5fd42"/></g>'; }
-        return s + '</svg>'; })() },
-      notes: { w: 104, ar: 1, rot: [-25, 25], svg: '<svg viewBox="0 0 120 120"><rect x="14" y="10" width="96" height="96" rx="4" fill="#59d5dc" transform="rotate(8 62 58)"/><rect x="8" y="12" width="96" height="96" rx="4" fill="#b5fd42"/><rect x="8" y="12" width="96" height="14" fill="#000" fill-opacity="0.06"/><path d="M20 46 h60 M20 62 h70 M20 78 h44" stroke="#2a1a44" stroke-opacity="0.55" stroke-width="3.5" stroke-linecap="round"/></svg>' }
-    };
-  })();
+  /* Echte Maße (mm) der Gegenstände – so stimmen die Größen untereinander */
+  var PROP_DEFS = {
+    keyboard: { img: "obj-tastatur.webp", ar: 420 / 1100, mm: 440, rot: [82, 98] },
+    mouse:    { img: "obj-maus.webp",     ar: 700 / 404,  mm: 64,  rot: [-22, 22] },
+    pen:      { img: "obj-stift.webp",    ar: 637 / 700,  mm: 108, rot: [-45, 45] },
+    coffee:   { img: "obj-kaffee.webp",   ar: 644 / 700,  mm: 165, rot: [0, 360] },
+    notebook: { img: "obj-notizbuch.webp", ar: 604 / 700, mm: 300, rot: [-24, 24] },
+    plant:    { img: "obj-pflanze.webp",  ar: 675 / 700,  mm: 230, rot: [0, 360] },
+    notes:    { img: "obj-notizzettel.webp", ar: 660 / 700, mm: 84, rot: [-30, 30] },
+    phone:    { img: "obj-handy.webp",    ar: 700 / 354,  mm: 72,  rot: [-35, 35] }
+  };
   var propLay = null;
   function rnd(a, b) { return a + Math.random() * (b - a); }
   function layoutProps() {
-    var A = shuffle(["keyboard", "mouse", "pen"]), B = shuffle(["coffee", "notebook", "plant", "phone", "notes"]), flip = Math.random() < 0.5;
+    var A = ["keyboard", "mouse"].concat(Math.random() < 0.5 ? ["pen"] : []), B = shuffle(["coffee", "notebook", "plant", "notes", "phone"]);
+    if (A.length === 2) B.push("pen");
+    if (Math.random() < 0.5) A.reverse();
+    var flip = Math.random() < 0.5;
     propLay = [];
     [[A, flip ? 1 : 0], [B, flip ? 0 : 1]].forEach(function (g) {
-      g[0].forEach(function (k, j) { var d = PROP_DEFS[k]; propLay.push({ k: k, side: g[1], slot: j, n: g[0].length, out: rnd(0.8, 1.08), rot: rnd(d.rot[0], d.rot[1]), gap: Math.random() }); });
+      g[0].forEach(function (k, j) { var d = PROP_DEFS[k]; propLay.push({ k: k, side: g[1], slot: j, out: rnd(0.55, 0.9), rot: rnd(d.rot[0], d.rot[1]), gap: Math.random(), prio: k === "keyboard" || k === "coffee" ? 0 : k === "mouse" ? 0.05 : Math.random() + 0.1 }); });
     });
     placeProps();
   }
   function placeProps() {
     var z = $("#stage"), box = z && z.querySelector(".props"), dz = $("#deskZone"); if (!box || !propLay || !dz) return;
-    var W = z.clientWidth, H = dz.clientHeight, s = Math.max(0.65, Math.min(1.1, W / 1000)), html = "";
+    var W = z.clientWidth, H = dz.clientHeight, k = 1.0 * Math.max(0.7, Math.min(1.15, W / 1000)), html = "";
     [0, 1].forEach(function (side) {
-      var items = propLay.filter(function (p) { return p.side === side; }).sort(function (a, b) { return a.slot - b.slot; });
-      var dims = items.map(function (p) { var d = PROP_DEFS[p.k], w = d.w * s, h = w * d.ar, r = p.rot * Math.PI / 180;
+      var all = propLay.filter(function (p) { return p.side === side; }).map(function (p) { var d = PROP_DEFS[p.k], w = d.mm * k, h = w * d.ar, r = p.rot * Math.PI / 180;
         return { p: p, w: w, h: h, vw: Math.abs(w * Math.cos(r)) + Math.abs(h * Math.sin(r)), vh: Math.abs(w * Math.sin(r)) + Math.abs(h * Math.cos(r)) }; });
-      var sum = dims.reduce(function (t, d) { return t + d.vh; }, 0), free = Math.max(0, H - sum), gs = dims.map(function (d) { return 0.4 + d.p.gap; }), gt = gs.reduce(function (t, v) { return t + v; }, 0) + 0.7, y = free * 0.35 / gt;
+      /* nur so viele Gegenstände, wie realistisch neben den Tisch passen */
+      var used = 0, keep = [];
+      all.slice().sort(function (a, b) { return a.p.prio - b.p.prio; }).forEach(function (d) { if (used + d.vh <= H * 1.02 || !keep.length) { keep.push(d); used += d.vh; } });
+      var dims = all.filter(function (d) { return keep.indexOf(d) >= 0; });
+      var free = Math.max(0, H - used), gs = dims.map(function (d) { return 0.3 + d.p.gap; }), gt = gs.reduce(function (t, v) { return t + v; }, 0) + 0.4, y = free * 0.2 / gt;
       dims.forEach(function (d, i) {
-        var cy = y + d.vh / 2, cx = side ? W - d.vw * (1 - d.p.out) + d.vw / 2 : -d.vw * d.p.out + d.vw / 2;
+        var cy = y + d.vh / 2, ins = Math.min(d.vw * (1 - d.p.out), 46), cx = side ? W - ins + d.vw / 2 : ins - d.vw / 2;
         y += d.vh + free * gs[i] / gt;
-        html += '<div class="prop prop--' + d.p.k + '" style="width:' + d.w.toFixed(0) + "px;left:" + (cx - d.w / 2).toFixed(0) + "px;top:" + (cy - d.h / 2).toFixed(0) + "px;transform:rotate(" + d.p.rot.toFixed(0) + 'deg)">' + PROP_DEFS[d.p.k].svg + "</div>";
+        html += '<img class="prop prop--' + d.p.k + '" src="' + PROP_DEFS[d.p.k].img + '" alt="" draggable="false" style="width:' + d.w.toFixed(0) + "px;left:" + (cx - d.w / 2).toFixed(0) + "px;top:" + (cy - d.h / 2).toFixed(0) + "px;transform:rotate(" + d.p.rot.toFixed(0) + 'deg)">';
       });
     });
     box.innerHTML = html;
