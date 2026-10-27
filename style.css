@@ -446,3 +446,7 @@ header.top { position: relative; z-index: 15; }
 }
 .laypop .lay span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: 0.71875rem; }
 .prop { height: auto; display: block; user-select: none; filter: drop-shadow(0 18px 22px rgba(8,4,16,0.55)) drop-shadow(0 3px 4px rgba(8,4,16,0.45)); }
+/* Gegenstände: abgedunkelt, beim Drüberfahren in vollem Glanz */
+.prop { pointer-events: auto; cursor: default; transition: filter 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  filter: brightness(0.42) saturate(0.55) drop-shadow(0 18px 22px rgba(8,4,16,0.55)) drop-shadow(0 3px 4px rgba(8,4,16,0.45)); }
+.prop:hover { transition-duration: 0.35s; filter: brightness(1.08) saturate(1.15) drop-shadow(0 22px 28px rgba(8,4,16,0.6)) drop-shadow(0 0 26px rgba(255,0,254,0.35)); }
