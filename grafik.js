@@ -13,29 +13,31 @@
   function dim(on) { return on ? 1 : 0.2; }
 
   /* Konfliktfelder: vier Kacheln, in der Mitte der Konflikt */
+  /* Konfliktfelder: Ring aus vier Segmenten um den Konflikt, wie ein Kompass */
   function felder(a) {
-    var W = 134, H = 76, G = 8, x0 = 160 - W - G / 2, y0 = 18;
-    var Q = [
-      { n: "Struktur", c: "#0DADF2", x: x0, y: y0, top: true },
-      { n: "Inhalte", c: "#F471DE", x: 160 + G / 2, y: y0, top: true },
-      { n: "Zwischenmenschlich", c: "#35B680", x: x0, y: y0 + H + G, top: false },
-      { n: "Individuell", c: "#F9851F", x: 160 + G / 2, y: y0 + H + G, top: false }
+    var cx = 160, cy = 92, R = 54, Q = [
+      { n: ["Struktur"], c: "#0DADF2", a0: 180, a1: 270, lx: 62, ly: 34, an: "end" },
+      { n: ["Inhalte"], c: "#F471DE", a0: 270, a1: 360, lx: 258, ly: 34, an: "start" },
+      { n: ["Zwischen-", "menschlich"], c: "#35B680", a0: 90, a1: 180, lx: 62, ly: 148, an: "end" },
+      { n: ["Individuell"], c: "#F9851F", a0: 0, a1: 90, lx: 258, ly: 152, an: "start" }
     ];
+    var P = function (r, d) { var w = d * Math.PI / 180; return [cx + Math.cos(w) * r, cy + Math.sin(w) * r]; };
+    var arc = function (r, d0, d1) { var p0 = P(r, d0), p1 = P(r, d1); return "M" + p0[0].toFixed(1) + " " + p0[1].toFixed(1) + " A" + r + " " + r + " 0 0 1 " + p1[0].toFixed(1) + " " + p1[1].toFixed(1); };
     var out = '<defs><linearGradient id="fpr" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="' + LIME + '"/><stop offset="1" stop-color="' + AQUA + '"/></linearGradient>' +
-      '<filter id="fgl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8"/></filter></defs>';
+      '<filter id="fgl" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="6"/></filter></defs>';
+    out += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R + 20) + '" fill="none" stroke="rgba(246,244,251,0.12)" stroke-width="1" stroke-dasharray="1 5" stroke-linecap="round"/>';
     Q.forEach(function (q, i) {
-      var on = !a || a === i + 1;
-      if (on && a) out += '<rect x="' + q.x + '" y="' + q.y + '" width="' + W + '" height="' + H + '" rx="16" fill="' + q.c + '" opacity="0.45" filter="url(#fgl)"/>';
-      out += '<rect x="' + q.x + '" y="' + q.y + '" width="' + W + '" height="' + H + '" rx="16" fill="' + (on ? q.c : "#2d1e4a") + '" stroke="' + q.c + '" stroke-opacity="' + (on ? 1 : 0.55) + '" stroke-width="1.5"/>' +
-        (function () {
-          var left = q.x < 160, tx = left ? q.x + 16 : q.x + W - 16, parts = q.n === "Zwischenmenschlich" ? ["Zwischen-", "menschlich"] : [q.n];
-          var ty = q.top ? q.y + 30 : q.y + H - 16 - (parts.length - 1) * 15;
-          return parts.map(function (p, k) { return t(tx, ty + k * 15, p, 13, 900, on ? INK : q.c, left ? "start" : "end"); }).join("");
-        })();
+      var on = !a || a === i + 1, act = a === i + 1, m = (q.a0 + q.a1) / 2, pm = P(R + (act ? 13 : 10), m), po = P(R + 24, m);
+      if (act) out += '<path d="' + arc(R, q.a0 + 6, q.a1 - 6) + '" fill="none" stroke="' + q.c + '" stroke-width="18" opacity="0.55" filter="url(#fgl)"/>';
+      out += '<path d="' + arc(R, q.a0 + 6, q.a1 - 6) + '" fill="none" stroke="' + q.c + '" stroke-opacity="' + (on ? 1 : 0.45) + '" stroke-width="' + (act ? 14 : on && !a ? 8 : 3) + '" stroke-linecap="round"/>';
+      var lx = q.lx, ly = q.ly, edgeX = q.an === "end" ? lx + 6 : lx - 6;
+      out += '<path d="M' + po[0].toFixed(1) + " " + po[1].toFixed(1) + " L" + edgeX + " " + (ly - 4 + (q.n.length - 1) * 6) + '" fill="none" stroke="' + q.c + '" stroke-opacity="' + (on ? 0.6 : 0.25) + '" stroke-width="1"/>' +
+        '<circle cx="' + po[0].toFixed(1) + '" cy="' + po[1].toFixed(1) + '" r="2.4" fill="' + q.c + '" fill-opacity="' + (on ? 1 : 0.5) + '"/>' +
+        lines(lx, ly, q.n, act ? 12 : 10.5, act ? 900 : 800, on ? (act ? PAPER : q.c) : "rgba(179,168,207,0.6)", 12).replace(/text-anchor="middle"/g, 'text-anchor="' + q.an + '"');
     });
-    out += '<circle cx="160" cy="' + (y0 + H + G / 2) + '" r="34" fill="#1a1029"/>' +
-      '<circle cx="160" cy="' + (y0 + H + G / 2) + '" r="28" fill="url(#fpr)"/>' + t(160, y0 + H + G / 2 + 4, "Konflikt", 10.5, 900, INK);
-    return svg(out, "0 8 320 180");
+    out += '<circle cx="' + cx + '" cy="' + cy + '" r="31" fill="#220736" stroke="rgba(246,244,251,0.12)"/>' +
+      '<circle cx="' + cx + '" cy="' + cy + '" r="25" fill="url(#fpr)"/>' + t(cx, cy + 3.5, "Konflikt", 9.5, 900, INK);
+    return svg(out, "-24 12 368 166");
   }
 
   /* Konfliktstile: Matrix aus Kooperationswille und Konfrontationsbereitschaft */
