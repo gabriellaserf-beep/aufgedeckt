@@ -147,7 +147,7 @@
     notebook: { img: "obj-notizbuch.webp", ar: 604 / 700, mm: 300, rot: [-24, 24] },
     plant:    { img: "obj-pflanze.webp",  ar: 675 / 700,  mm: 230, rot: [0, 360] },
     notes:    { img: "obj-notizzettel.webp", ar: 660 / 700, mm: 84, rot: [-30, 30] },
-    phone:    { img: "obj-handy.webp",    ar: 700 / 354,  mm: 72,  rot: [-35, 35] }
+    phone:    { img: "obj-handy.webp",    ar: 700 / 354,  mm: 92,  rot: [-35, 35] }
   };
   /* Kleine Impulse, die beim Drüberfahren über einen Gegenstand erscheinen */
   var PROP_TIPS = {
