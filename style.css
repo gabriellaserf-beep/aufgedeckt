@@ -783,3 +783,4 @@ body { background: #1a1029; }
 .big__sep { vertical-align: middle; }
 .series__head > span { line-height: 1; }
 .series__all { justify-self: start; align-self: flex-start; margin-top: 4px; height: 40px; font-size: 0.875rem; }
+.series__hint { margin: 2px 0 0; font-size: 0.8125rem; color: var(--text-muted); }

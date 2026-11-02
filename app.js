@@ -513,7 +513,12 @@
           ' aria-label="' + esc(up ? CARDS[j].titel + (me ? " (diese Karte)" : " öffnen") : "Dazugehörige Karte aufdecken") + '"><span class="card__inner">' + backHTML() + frontHTML(j) + "</span></button>" +
           '<span class="sib__teil">' + esc(shortTeil(CARDS[j].teil) || String(all.indexOf(j) + 1)) + (done && !me ? " ✓" : "") + "</span></div>";
       }).join("") + "</div>" +
-      (all.filter(function (j) { return state.done.indexOf(j) < 0; }).length > 1 ? '<button type="button" class="btn btn--secondary series__all" id="dropAll">Alle ' + all.filter(function (j) { return state.done.indexOf(j) < 0; }).length + ' Karten der Reihe ablegen</button>' : "") +
+      (function () {
+        var rest = all.filter(function (j) { return state.done.indexOf(j) < 0; }), hidden = rest.filter(function (j) { return j !== idx && !isUp(j); }).length;
+        if (rest.length < 2) return "";
+        return hidden ? '<p class="series__hint">Deck alle Karten der Reihe auf, dann kannst du sie gemeinsam ablegen.</p>'
+          : '<button type="button" class="btn btn--secondary series__all" id="dropAll">Alle ' + rest.length + ' Karten der Reihe ablegen</button>';
+      })() +
       "</section>";
   }
   function openSibling(j, btn) {
