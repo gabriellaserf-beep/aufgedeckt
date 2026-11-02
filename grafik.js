@@ -168,9 +168,10 @@
     names.forEach(function (nm, i) {
       var on = level === i + 1, x = sx + i * seg;
       if (on) out += '<rect x="' + (x + 2) + '" y="' + (sy + 2) + '" width="' + (seg - 4) + '" height="16" rx="8" fill="' + Y + '"/>';
-      var iw = i * 3.6 + 2.2, tw = nm.length * 4.75, gx = x + seg / 2 - (iw + 4 + tw) / 2;
-      for (var k = 0; k <= i; k++) out += '<rect x="' + (gx + k * 3.6) + '" y="' + (sy + 13 - (k + 1) * 2.6) + '" width="2.2" height="' + ((k + 1) * 2.6) + '" rx="0.8" fill="' + (on ? INK : MUTED) + '"/>';
-      out += t(gx + iw + 4, sy + 13.6, nm, 8.5, 900, on ? INK : MUTED, "start");
+      var iw = i * 3.6 + 2.2, tw = nm.length * 4.2, gx = x + seg / 2 - (iw + 4 + tw) / 2, base = sy + 13.1;
+      out += '<g data-cx="' + (x + seg / 2) + '">';
+      for (var k = 0; k <= i; k++) out += '<rect x="' + (gx + k * 3.6) + '" y="' + (base - (k + 1) * 2.4) + '" width="2.2" height="' + ((k + 1) * 2.4) + '" rx="0.8" fill="' + (on ? INK : MUTED) + '"/>';
+      out += t(gx + iw + 4, base, nm, 8.5, 900, on ? INK : MUTED, "start") + '</g>';
     });
     return svg(out, "0 6 320 134");
   }

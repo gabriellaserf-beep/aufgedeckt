@@ -37,6 +37,17 @@
     s.top = (s.top || 100) + CARDS.length; s.total = CARDS.length;
     return s;
   }
+  /* Gruppen mit data-cx exakt horizontal mittig setzen (echte Schriftbreite messen) */
+  function centerSegs(root) {
+    if (!root) return;
+    function run() {
+      root.querySelectorAll("g[data-cx]").forEach(function (g) {
+        try { g.removeAttribute("transform"); var bb = g.getBBox(); if (!bb.width) return;
+          g.setAttribute("transform", "translate(" + (parseFloat(g.getAttribute("data-cx")) - (bb.x + bb.width / 2)).toFixed(2) + " 0)"); } catch (e) {}
+      });
+    }
+    run(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(run);
+  }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 
   /* ---------- Neues Spiel: Karten lose auf dem Schreibtisch verteilen ---------- */
@@ -626,6 +637,7 @@
       "</div>";
     o.hidden = false; o.scrollTop = 0;
     animateGrafik(o.querySelector(".big__media--grafik"), c.grafik);
+    centerSegs(o.querySelector(".big__media--grafik"));
     var da = $("#dropAll", o); if (da) da.addEventListener("click", function () {
       var all = CARDS.map(function (_, j) { return j; }).filter(function (j) { return groupKey(j) === groupKey(idx) && state.done.indexOf(j) < 0; });
       all.forEach(function (j) { state.up = state.up.filter(function (i) { return i !== j; }); state.done.push(j); });
