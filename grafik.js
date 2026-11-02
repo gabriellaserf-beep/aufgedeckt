@@ -291,17 +291,51 @@
   }
 
 
-  /* Eisbergmodell: kleine Spitze über der Wasserlinie, großer Teil darunter */
+  /* Eisbergmodell: facettierter Eisberg, kleine Spitze über Wasser, großer Teil darunter */
   function eisberg() {
-    var I = "#c9f4f7", out = '<defs><linearGradient id="isT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="' + AQUA + '"/></linearGradient>' +
-      '<linearGradient id="isB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + AQUA + '" stop-opacity="0.55"/><stop offset="1" stop-color="#b794e8" stop-opacity="0.15"/></linearGradient></defs>';
-    out += '<path d="M128 62 L146 34 L158 44 L170 28 L192 62 Z" fill="url(#isT)"/>' +
-      '<path d="M128 62 L192 62 L222 92 L236 128 L214 162 L160 176 L108 160 L88 120 L102 86 Z" fill="url(#isB)" stroke="' + AQUA + '" stroke-opacity="0.5" stroke-width="1"/>' +
-      '<path d="M20 62 H300" fill="none" stroke="' + AQUA + '" stroke-width="1.4" stroke-dasharray="6 4" stroke-linecap="round"/>' +
-      t(24, 54, "sichtbar", 9.5, 800, PAPER, "start") + t(24, 76, "weniger sichtbar", 9.5, 800, AQUA, "start") +
-      t(262, 46, "Aussagen", 8.5, 700, MUTED, "middle") + t(262, 57, "Forderungen", 8.5, 700, MUTED, "middle") +
-      t(272, 104, "Interessen", 8.5, 700, PAPER, "middle") + t(272, 118, "Bedürfnisse", 8.5, 700, PAPER, "middle") + t(272, 132, "Werte", 8.5, 700, PAPER, "middle") + t(272, 146, "Motive", 8.5, 700, PAPER, "middle");
-    return svg(out, "10 20 300 166");
+    var W = 70, L = "#b794e8", defs =
+      '<linearGradient id="ebSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + AQUA + '" stop-opacity="0.32"/><stop offset="0.5" stop-color="#6b3fa8" stop-opacity="0.18"/><stop offset="1" stop-color="#1a1029" stop-opacity="0"/></linearGradient>' +
+      '<linearGradient id="ebHi" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d9fbfd"/></linearGradient>' +
+      '<linearGradient id="ebSh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + AQUA + '"/><stop offset="1" stop-color="#3a9aa3"/></linearGradient>' +
+      '<linearGradient id="ebU1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + AQUA + '" stop-opacity="0.7"/><stop offset="1" stop-color="' + L + '" stop-opacity="0.18"/></linearGradient>' +
+      '<linearGradient id="ebU2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + AQUA + '" stop-opacity="0.45"/><stop offset="1" stop-color="' + L + '" stop-opacity="0.1"/></linearGradient>' +
+      '<clipPath id="ebClip"><rect x="8" y="' + W + '" width="304" height="130"/></clipPath>';
+    var out = '<rect x="8" y="' + W + '" width="304" height="124" fill="url(#ebSea)"/>';
+    /* Unterwasser-Teil: Facetten */
+    out += '<g style="filter:drop-shadow(0 0 10px ' + AQUA + '55)">' +
+      '<path d="M126 ' + W + ' L198 ' + W + ' L230 98 L244 136 L222 170 L166 186 L110 172 L86 132 L100 96 Z" fill="url(#ebU2)"/>' +
+      '<path d="M126 ' + W + ' L162 ' + W + ' L150 118 L100 96 Z" fill="url(#ebU1)"/>' +
+      '<path d="M162 ' + W + ' L198 ' + W + ' L230 98 L190 124 Z" fill="url(#ebU1)" fill-opacity="0.8"/>' +
+      '<path d="M150 118 L190 124 L222 170 L166 186 Z" fill="url(#ebU1)" fill-opacity="0.55"/>' +
+      '<path d="M100 96 L150 118 L110 172 L86 132 Z" fill="url(#ebU2)"/>' +
+      '<path d="M126 ' + W + ' L198 ' + W + ' L230 98 L244 136 L222 170 L166 186 L110 172 L86 132 L100 96 Z M150 118 L190 124 M100 96 L150 118 L162 ' + W + ' M190 124 L230 98 M150 118 L110 172 M190 124 L222 170 M150 118 L166 186" fill="none" stroke="' + AQUA + '" stroke-opacity="0.45" stroke-width="0.8" stroke-linejoin="round"/></g>';
+    /* Spitze über Wasser: hell, facettiert */
+    out += '<g style="filter:drop-shadow(0 0 8px rgba(255,255,255,0.45))">' +
+      '<path d="M130 ' + W + ' L148 40 L158 48 L170 26 L184 50 L194 ' + W + ' Z" fill="url(#ebSh)"/>' +
+      '<path d="M130 ' + W + ' L148 40 L158 48 L170 26 L164 ' + W + ' Z" fill="url(#ebHi)"/>' +
+      '<path d="M158 48 L170 26 L176 56 Z" fill="#ffffff" fill-opacity="0.6"/></g>';
+    /* Wasserlinie mit Welle */
+    var wave = "M8 " + W;
+    for (var x = 8; x < 312; x += 16) wave += " q4 -3 8 0 t8 0";
+    out += '<path d="' + wave + '" fill="none" stroke="' + AQUA + '" stroke-width="1.6" stroke-linecap="round" style="filter:drop-shadow(0 0 4px ' + AQUA + ')"/>';
+    /* Blasen */
+    [[112, 150, 1.6], [236, 112, 2], [208, 182, 1.4], [94, 112, 1.2], [252, 160, 1.3]].forEach(function (b) {
+      out += '<circle cx="' + b[0] + '" cy="' + b[1] + '" r="' + b[2] + '" fill="none" stroke="' + AQUA + '" stroke-opacity="0.6" stroke-width="0.8"/>';
+    });
+    /* Ebenen-Titel */
+    out += t(14, W - 10, "sichtbare Ebene", 9, 900, PAPER, "start") + t(14, W + 16, "weniger sichtbare Ebene", 9, 900, AQUA, "start");
+    /* Beschriftungen mit Punkt + Linie */
+    function lab(ax, ay, lx, ly, txt, col) {
+      var left = lx < 160, ex = lx + (left ? 6 : -6);
+      return '<path d="M' + ax + ' ' + ay + ' L' + ex + ' ' + ly + '" fill="none" stroke="' + col + '" stroke-opacity="0.7" stroke-width="0.9"/>' +
+        '<circle cx="' + ax + '" cy="' + ay + '" r="2.4" fill="' + INK + '" stroke="#fff" stroke-width="1.1"/>' +
+        '<circle cx="' + ex + '" cy="' + ly + '" r="1.5" fill="' + col + '"/>' +
+        t(lx + (left ? 0 : 4), ly + 3.5, txt, 9.5, 800, col, left ? "end" : "start");
+    }
+    out += lab(178, 46, 236, 34, "Aussagen,", PAPER) + t(240, 49, "Forderungen", 9.5, 800, PAPER, "start") +
+      lab(124, 106, 70, 120, "Interessen", AQUA) + lab(118, 146, 70, 158, "Bedürfnisse", AQUA) +
+      lab(206, 108, 252, 104, "Werte", L) + lab(200, 162, 252, 168, "Motive", L);
+    return svg('<defs>' + defs + '</defs>' + out, "6 18 308 176");
   }
 
   /* Empathie: drei Symbole – Gehirn (kognitiv), Herz (emotional), Kompass (intentional) */
