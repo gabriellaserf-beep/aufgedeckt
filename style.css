@@ -784,3 +784,6 @@ body { background: #1a1029; }
 .series__head > span { line-height: 1; }
 .series__all { justify-self: start; align-self: flex-start; margin-top: 4px; height: 40px; font-size: 0.875rem; }
 .series__hint { margin: 2px 0 0; font-size: 0.8125rem; color: var(--text-muted); }
+/* Reihe: Hervorhebung in Aqua statt Magenta */
+.sib__card:not(.is-up) .face.back { box-shadow: 0 0 0 1px rgba(89,213,220,0.55), 0 8px 18px -6px rgba(89,213,220,0.45); }
+.sib__card:not([disabled]):hover .face { box-shadow: 0 0 0 1px #8ee8ee, 0 0 22px rgba(89,213,220,0.5); }
