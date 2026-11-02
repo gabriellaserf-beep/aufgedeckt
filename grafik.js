@@ -361,16 +361,35 @@
     return svg(out, "40 22 240 162");
   }
 
-  /* Persönlichkeit: eine Figur aus fünf Teilen – Motive, Annahmen, Schemata, Normen, Regeln */
+  /* Persönlichkeit: Silhouette, in fünf Splitter zerlegt – Motive, Annahmen, Schemata, Normen, Regeln */
   function persoenlichkeit() {
-    var P = [["Motive", "#ff7af8", "M160 30 a20 20 0 1 1 0.1 0 Z", 160, 52, 214, 40], ["Annahmen", "#b794e8", "M136 76 L160 72 L160 112 L130 112 Z", 145, 92, 74, 80], ["Schemata", AQUA, "M164 72 L188 76 L194 112 L164 112 Z", 178, 92, 244, 84], ["Normen", LIME, "M132 118 L158 118 L156 168 L138 168 Z", 146, 140, 76, 150], ["Regeln", "#F9CE1F", "M166 118 L190 118 L184 168 L166 168 Z", 176, 140, 244, 154]], out = "";
+    var BUST = "M98 172 C98 130 122 112 160 112 C198 112 222 130 222 172 Z",
+      P = [
+        { n: "Motive",   c: "#ff7af8", dx: 0,  dy: -6, head: true, ax: 182, ay: 62,  lx: 244, ly: 52 },
+        { n: "Annahmen", c: "#b794e8", dx: -6, dy: -3, clip: "90,100 160,100 160,143 90,149",  ax: 128, ay: 130, lx: 76, ly: 112 },
+        { n: "Schemata", c: AQUA,      dx: 6,  dy: -3, clip: "160,100 230,100 230,137 160,143", ax: 192, ay: 128, lx: 244, ly: 112 },
+        { n: "Normen",   c: LIME,      dx: -6, dy: 4,  clip: "90,149 160,143 160,180 90,180",  ax: 124, ay: 160, lx: 76, ly: 168 },
+        { n: "Regeln",   c: "#F9CE1F", dx: 6,  dy: 4,  clip: "160,143 230,137 230,180 160,180", ax: 196, ay: 158, lx: 244, ly: 168 }
+      ], defs = "", out = "";
+    out += '<circle cx="160" cy="110" r="78" fill="none" stroke="rgba(246,244,251,0.12)" stroke-width="1" stroke-dasharray="2 5"/>' +
+      '<circle cx="160" cy="110" r="62" fill="url(#psAura)"/>';
+    defs += '<radialGradient id="psAura"><stop offset="0" stop-color="#b794e8" stop-opacity="0.28"/><stop offset="1" stop-color="#b794e8" stop-opacity="0"/></radialGradient>';
     P.forEach(function (p, i) {
-      var dx = [0, -6, 6, -9, 9][i], dy = [-4, 0, 0, 4, 4][i];
-      out += '<g transform="translate(' + dx + ' ' + dy + ')"><path d="' + p[2] + '" fill="' + p[1] + '" fill-opacity="0.85" stroke="' + p[1] + '" stroke-width="1"/></g>' +
-        '<path d="M' + (p[3] + dx) + ' ' + (p[4] + dy) + ' L' + (p[5] + (p[5] < 160 ? 26 : -26)) + ' ' + (p[6] - 3) + '" fill="none" stroke="' + p[1] + '" stroke-opacity="0.5" stroke-width="0.8"/>' +
-        t(p[5], p[6], p[0], 9.5, 800, p[1], p[5] < 160 ? "middle" : "middle");
+      defs += '<linearGradient id="psG' + i + '" x1="0" y1="0" x2="0.6" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/><stop offset="0.35" stop-color="' + p.c + '"/><stop offset="1" stop-color="' + p.c + '" stop-opacity="0.55"/></linearGradient>';
+      var shape;
+      if (p.head) shape = '<circle cx="160" cy="76" r="27" fill="url(#psG' + i + ')" stroke="' + p.c + '" stroke-width="1.2"/>';
+      else {
+        defs += '<clipPath id="psC' + i + '"><polygon points="' + p.clip + '"/></clipPath>';
+        shape = '<g clip-path="url(#psC' + i + ')"><path d="' + BUST + '" fill="url(#psG' + i + ')" stroke="' + p.c + '" stroke-width="2.4"/></g>';
+      }
+      out += '<g transform="translate(' + p.dx + ' ' + p.dy + ')" style="filter:drop-shadow(0 0 6px ' + p.c + '66)">' + shape + '</g>';
+      var ax = p.ax + p.dx, ay = p.ay + p.dy, left = p.lx < 160, ex = p.lx + (left ? 6 : -6);
+      out += '<path d="M' + ax + ' ' + ay + ' L' + ex + ' ' + p.ly + '" fill="none" stroke="' + p.c + '" stroke-opacity="0.7" stroke-width="0.9"/>' +
+        '<circle cx="' + ax + '" cy="' + ay + '" r="2.6" fill="' + INK + '" stroke="#fff" stroke-width="1.2"/>' +
+        '<circle cx="' + ex + '" cy="' + p.ly + '" r="1.6" fill="' + p.c + '"/>' +
+        t(p.lx + (left ? 0 : 4), p.ly + 3.5, p.n, 10, 900, p.c, left ? "end" : "start");
     });
-    return svg(out, "30 14 260 166");
+    return svg('<defs>' + defs + '</defs>' + out, "6 28 308 156");
   }
 
   var MAP = { felder: felder, stile: stile, eskalation: eskalation, checkliste: checkliste, uebung: uebung, playlist: playlist, buecher: buecher, fuehrung: fuehrung, harvard: harvard, batna: batna, leaf: leaf, sages: sages, ablauf: ablauf, reflexion: reflexion, thermo: thermo, eisberg: eisberg, empathie: empathie, bus: bus, puzzle: puzzle, persoenlichkeit: persoenlichkeit };
