@@ -319,18 +319,46 @@
     return svg(out, "10 30 300 126");
   }
 
-  /* Emotionsregulation: Irritation → Bus → Reaktion */
+  /* Emotionsregulation: Irritation → Bus mit Passagieren → Reaktion (gezeichnet) */
   function bus() {
-    var out = '<defs><marker id="bsA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="' + LIME + '"/></marker></defs>' +
-      '<path d="M14 104 H62" fill="none" stroke="' + LIME + '" stroke-width="1.6" marker-end="url(#bsA)"/>' + t(38, 94, "Irritation", 9.5, 800, LIME) +
-      '<image href="bus.webp" x="70" y="38" width="180" height="116" preserveAspectRatio="xMidYMid meet"/>' +
-      '<path d="M258 104 H306" fill="none" stroke="' + LIME + '" stroke-width="1.6" marker-end="url(#bsA)"/>' + t(282, 94, "Reaktion", 9.5, 800, LIME);
-    return svg(out, "6 30 308 132");
+    var Y = "#F9CE1F", out = '<defs><marker id="bsA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="' + LIME + '"/></marker></defs>' +
+      '<path d="M14 104 H66" fill="none" stroke="' + LIME + '" stroke-width="1.6" marker-end="url(#bsA)"/>' + t(40, 94, "Irritation", 9.5, 800, LIME) +
+      '<path d="M254 104 H306" fill="none" stroke="' + LIME + '" stroke-width="1.6" marker-end="url(#bsA)"/>' + t(280, 94, "Reaktion", 9.5, 800, LIME) +
+      /* Karosserie */
+      '<path d="M78 128 V70 Q78 58 90 58 H222 Q236 58 240 72 L246 96 V128 Z" fill="#220736" stroke="' + Y + '" stroke-width="1.8" stroke-linejoin="round"/>' +
+      '<path d="M78 112 H246" stroke="' + Y + '" stroke-opacity="0.45" stroke-width="1"/>';
+    /* Fenster mit Passagieren: Farben = verschiedene Anteile */
+    var P = ["#b794e8", AQUA, "#ff7af8"];
+    for (var i = 0; i < 3; i++) {
+      var x = 88 + i * 34;
+      out += '<rect x="' + x + '" y="66" width="28" height="30" rx="5" fill="none" stroke="' + Y + '" stroke-opacity="0.7" stroke-width="1.2"/>' +
+        '<circle cx="' + (x + 14) + '" cy="78" r="5" fill="' + P[i] + '"/><path d="M' + (x + 6) + ' 96 Q' + (x + 14) + ' 84 ' + (x + 22) + ' 96" fill="' + P[i] + '" fill-opacity="0.8"/>';
+    }
+    /* Fahrerfenster + Fahrer:in (du) mit Lenkrad */
+    out += '<path d="M192 66 H226 L234 96 H192 Z" fill="none" stroke="' + Y + '" stroke-opacity="0.7" stroke-width="1.2" stroke-linejoin="round"/>' +
+      '<circle cx="206" cy="78" r="5" fill="' + LIME + '"/><path d="M198 96 Q206 84 214 96" fill="' + LIME + '" fill-opacity="0.85"/>' +
+      '<circle cx="219" cy="88" r="4.5" fill="none" stroke="' + LIME + '" stroke-width="1.2"/>' +
+      /* Räder */
+      '<circle cx="108" cy="130" r="11" fill="#1a1029" stroke="' + Y + '" stroke-width="1.8"/><circle cx="108" cy="130" r="3.5" fill="' + Y + '"/>' +
+      '<circle cx="216" cy="130" r="11" fill="#1a1029" stroke="' + Y + '" stroke-width="1.8"/><circle cx="216" cy="130" r="3.5" fill="' + Y + '"/>' +
+      '<rect x="242" y="102" width="6" height="6" rx="1.5" fill="' + Y + '"/>' +
+      t(212, 152, "du am Steuer", 8.5, 700, MUTED);
+    return svg(out, "6 44 308 118");
   }
 
-  /* Systemtheorie: Schiebepuzzle (Chrom-Bild) */
+  /* Systemtheorie: Schiebepuzzle, ein Feld fehlt, ein Teil ist in Bewegung */
   function puzzle() {
-    return svg('<image href="puzzle.webp" x="80" y="16" width="160" height="160" preserveAspectRatio="xMidYMid meet"/>', "40 12 240 168");
+    var cols = [AQUA, "#b794e8", "#ff7af8", LIME, AQUA, "#b794e8", "#ff7af8", LIME], out = "", k = 0, sz = 40, g = 4, x0 = 98, y0 = 34;
+    for (var r = 0; r < 3; r++) for (var c = 0; c < 3; c++) {
+      if (r === 2 && c === 2) continue;
+      var mov = r === 2 && c === 1, x = x0 + c * (sz + g) + (mov ? 14 : 0), y = y0 + r * (sz + g), col = cols[k++];
+      out += '<rect x="' + x + '" y="' + y + '" width="' + sz + '" height="' + sz + '" rx="7" fill="' + (mov ? col : "#220736") + '" fill-opacity="' + (mov ? 0.9 : 1) + '" stroke="' + col + '" stroke-opacity="' + (mov ? 1 : 0.55) + '" stroke-width="1.2"/>' +
+        '<circle cx="' + (x + sz / 2) + '" cy="' + (y + sz / 2) + '" r="5" fill="' + (mov ? INK : col) + '" fill-opacity="' + (mov ? 0.5 : 0.6) + '"/>';
+    }
+    out += '<defs><marker id="pzA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="' + LIME + '"/></marker></defs>' +
+      '<rect x="' + (x0 - 6) + '" y="' + (y0 - 6) + '" width="' + (3 * sz + 2 * g + 12) + '" height="' + (3 * sz + 2 * g + 12) + '" rx="12" fill="none" stroke="rgba(246,244,251,0.25)" stroke-width="1"/>' +
+      '<path d="M' + (x0 + sz + g + 6) + ' ' + (y0 + 2 * (sz + g) + sz + 16) + ' h16" stroke="' + LIME + '" stroke-width="1.4" stroke-linecap="round" marker-end="url(#pzA)"/>';
+    return svg(out, "40 22 240 162");
   }
 
   /* Persönlichkeit: eine Figur aus fünf Teilen – Motive, Annahmen, Schemata, Normen, Regeln */
