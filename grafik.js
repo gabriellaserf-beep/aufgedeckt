@@ -318,10 +318,6 @@
     var wave = "M8 " + W;
     for (var x = 8; x < 312; x += 16) wave += " q4 -3 8 0 t8 0";
     out += '<path d="' + wave + '" fill="none" stroke="' + AQUA + '" stroke-width="1.6" stroke-linecap="round" style="filter:drop-shadow(0 0 4px ' + AQUA + ')"/>';
-    /* Blasen */
-    [[112, 150, 1.6], [236, 112, 2], [208, 182, 1.4], [94, 112, 1.2], [252, 160, 1.3]].forEach(function (b) {
-      out += '<circle cx="' + b[0] + '" cy="' + b[1] + '" r="' + b[2] + '" fill="none" stroke="' + AQUA + '" stroke-opacity="0.6" stroke-width="0.8"/>';
-    });
     /* Ebenen-Titel */
     out += t(14, W - 10, "sichtbare Ebene", 9, 900, PAPER, "start") + t(14, W + 16, "weniger sichtbare Ebene", 9, 900, AQUA, "start");
     /* Beschriftungen mit Punkt + Linie */
