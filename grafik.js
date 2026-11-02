@@ -328,19 +328,9 @@
     return svg(out, "6 30 308 132");
   }
 
-  /* Systemtheorie: Schiebepuzzle, ein Feld fehlt, ein Teil ist in Bewegung */
+  /* Systemtheorie: Schiebepuzzle (Chrom-Bild) */
   function puzzle() {
-    var cols = [AQUA, "#b794e8", "#ff7af8", LIME, AQUA, "#b794e8", "#ff7af8", LIME], out = "", k = 0, sz = 40, g = 4, x0 = 98, y0 = 34;
-    for (var r = 0; r < 3; r++) for (var c = 0; c < 3; c++) {
-      if (r === 2 && c === 2) continue;
-      var mov = r === 2 && c === 1, x = x0 + c * (sz + g) + (mov ? 14 : 0), y = y0 + r * (sz + g), col = cols[k++];
-      out += '<rect x="' + x + '" y="' + y + '" width="' + sz + '" height="' + sz + '" rx="7" fill="' + (mov ? col : "#220736") + '" fill-opacity="' + (mov ? 0.9 : 1) + '" stroke="' + col + '" stroke-opacity="' + (mov ? 1 : 0.55) + '" stroke-width="1.2"/>' +
-        '<circle cx="' + (x + sz / 2) + '" cy="' + (y + sz / 2) + '" r="5" fill="' + (mov ? INK : col) + '" fill-opacity="' + (mov ? 0.5 : 0.6) + '"/>';
-    }
-    out += '<rect x="' + (x0 - 6) + '" y="' + (y0 - 6) + '" width="' + (3 * sz + 2 * g + 12) + '" height="' + (3 * sz + 2 * g + 12) + '" rx="12" fill="none" stroke="rgba(246,244,251,0.25)" stroke-width="1"/>' +
-      '<path d="M' + (x0 + sz + g + 6) + ' ' + (y0 + 2 * (sz + g) + sz + 16) + ' h16" stroke="' + LIME + '" stroke-width="1.4" stroke-linecap="round" marker-end="url(#pzA)"/>' +
-      '<defs><marker id="pzA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="' + LIME + '"/></marker></defs>';
-    return svg(out, "40 22 240 162");
+    return svg('<image href="puzzle.webp" x="80" y="16" width="160" height="160" preserveAspectRatio="xMidYMid meet"/>', "40 12 240 168");
   }
 
   /* Persönlichkeit: eine Figur aus fünf Teilen – Motive, Annahmen, Schemata, Normen, Regeln */
