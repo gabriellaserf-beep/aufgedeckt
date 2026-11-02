@@ -334,19 +334,45 @@
     return svg('<defs>' + defs + '</defs>' + out, "6 18 308 176");
   }
 
-  /* Empathie: drei Symbole – Gehirn (kognitiv), Herz (emotional), Kompass (intentional) */
+  /* Empathie: Gehirn (kognitiv), Herz (emotional), Zielscheibe mit Pfeil (intentional) */
   function empathie() {
-    var C = [["#b794e8", "kognitiv", "denken"], ["#ff7af8", "emotional", "fühlen"], [AQUA, "intentional", "wollen"]], out = "";
+    var C = [["#b794e8", "kognitiv", "denken"], ["#ff7af8", "emotional", "fühlen"], [AQUA, "intentional", "wollen"]], defs = "", out = "";
     C.forEach(function (c, i) {
-      var x = 62 + i * 98, y = 74, s = c[0];
-      out += '<circle cx="' + x + '" cy="' + y + '" r="34" fill="#220736" stroke="' + s + '" stroke-width="1.3"/>';
-      if (i === 0) out += '<path d="M' + (x - 2) + ' ' + (y - 18) + ' C' + (x - 22) + ' ' + (y - 20) + ' ' + (x - 24) + ' ' + (y - 2) + ' ' + (x - 16) + ' ' + (y + 4) + ' C' + (x - 22) + ' ' + (y + 16) + ' ' + (x - 8) + ' ' + (y + 22) + ' ' + (x - 2) + ' ' + (y + 16) + ' V' + (y - 18) + ' M' + (x + 2) + ' ' + (y - 18) + ' C' + (x + 22) + ' ' + (y - 20) + ' ' + (x + 24) + ' ' + (y - 2) + ' ' + (x + 16) + ' ' + (y + 4) + ' C' + (x + 22) + ' ' + (y + 16) + ' ' + (x + 8) + ' ' + (y + 22) + ' ' + (x + 2) + ' ' + (y + 16) + ' V' + (y - 18) + ' M' + (x - 14) + ' ' + (y - 6) + ' q6 4 12 0 M' + (x + 2) + ' ' + (y + 6) + ' q6 -4 12 0" fill="none" stroke="' + s + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
-      if (i === 1) out += '<path d="M' + x + ' ' + (y + 18) + ' C' + (x - 30) + ' ' + y + ' ' + (x - 18) + ' ' + (y - 24) + ' ' + x + ' ' + (y - 9) + ' C' + (x + 18) + ' ' + (y - 24) + ' ' + (x + 30) + ' ' + y + ' ' + x + ' ' + (y + 18) + ' Z" fill="' + s + '" fill-opacity="0.85"/>';
-      if (i === 2) out += '<circle cx="' + x + '" cy="' + y + '" r="20" fill="none" stroke="' + s + '" stroke-width="1.8"/><circle cx="' + x + '" cy="' + y + '" r="11" fill="none" stroke="' + s + '" stroke-width="1.8"/><circle cx="' + x + '" cy="' + y + '" r="3.5" fill="' + s + '"/>';
-      out += t(x, y + 54, c[1], 10, 900, s) + t(x, y + 67, c[2], 8.5, 700, MUTED);
+      var s = c[0];
+      defs += '<linearGradient id="emG' + i + '" x1="0" y1="0" x2="0.5" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity="0.7"/><stop offset="0.35" stop-color="' + s + '"/><stop offset="1" stop-color="' + s + '" stop-opacity="0.6"/></linearGradient>' +
+        '<radialGradient id="emB' + i + '" cx="0.5" cy="0.35" r="0.7"><stop offset="0" stop-color="' + s + '" stop-opacity="0.28"/><stop offset="1" stop-color="#1a1029" stop-opacity="0.95"/></radialGradient>';
     });
-    out += '<path d="M100 74 H122 M198 74 H220" stroke="rgba(246,244,251,0.25)" stroke-width="1" stroke-dasharray="2 3"/>';
-    return svg(out, "10 30 300 126");
+    defs += '<marker id="emA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#ffffff"/></marker>';
+    /* Verbindungen */
+    out += '<path d="M100 74 H122 M198 74 H220" stroke="rgba(246,244,251,0.35)" stroke-width="1.2" stroke-dasharray="1 4" stroke-linecap="round"/>';
+    C.forEach(function (c, i) {
+      var x = 62 + i * 98, y = 74, s = c[0], g = 'url(#emG' + i + ')', icon = "";
+      if (i === 0) {
+        /* Gehirn in Seitenansicht mit Windungen und Stamm */
+        icon = '<path d="M2 14 C2 20 4 24 7 27" fill="none" stroke="' + s + '" stroke-width="4.5" stroke-linecap="round"/>' +
+          '<path d="M8 12 C12 8 24 8 25 15 C25 21 15 23 9 19 Z" fill="' + g + '"/><path d="M11 14 Q17 12 23 14 M11 18 Q17 16 22 18" fill="none" stroke="#2a0f45" stroke-opacity="0.55" stroke-width="1.2" stroke-linecap="round"/>' +
+          '<path d="M-21 4 C-27 -2 -25 -14 -15 -16 C-13 -24 -1 -26 5 -20 C11 -26 23 -22 23 -12 C31 -9 30 3 24 7 C26 15 16 20 8 16 C4 22 -6 22 -8 16 C-16 20 -26 13 -21 4 Z" fill="' + g + '"/>' +
+          '<path d="M-15 -16 C-11 -10 -14 -4 -8 -2 M5 -20 C3 -12 9 -8 5 -2 M23 -12 C17 -8 19 -2 12 2 M-21 4 C-14 4 -11 8 -6 4 M24 7 C18 6 14 10 8 9 M-8 -2 C-2 0 0 6 6 4 M-8 16 C-6 10 -1 10 0 13" fill="none" stroke="#2a0f45" stroke-opacity="0.55" stroke-width="1.6" stroke-linecap="round"/>';
+      }
+      if (i === 1) {
+        /* Herz mit Glanz und Pulslinie */
+        icon = '<path d="M0 20 C-30 2 -20 -24 0 -10 C20 -24 30 2 0 20 Z" fill="' + g + '"/>' +
+          '<ellipse cx="-10" cy="-8" rx="5" ry="3" transform="rotate(-35 -10 -8)" fill="#ffffff" fill-opacity="0.55"/>' +
+          '<path d="M-18 2 H-8 L-4 -6 L1 9 L5 -2 H18" fill="none" stroke="#2a0f45" stroke-opacity="0.6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
+      }
+      if (i === 2) {
+        /* Zielscheibe mit Pfeil */
+        icon = '<circle r="21" fill="none" stroke="' + s + '" stroke-opacity="0.45" stroke-width="1.2"/>' +
+          '<circle r="16" fill="' + g + '" fill-opacity="0.35"/><circle r="16" fill="none" stroke="' + s + '" stroke-width="1.6"/>' +
+          '<circle r="9" fill="' + g + '"/><circle r="3.5" fill="#ffffff"/>' +
+          '<path d="M22 -22 L3 -3" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" marker-end="url(#emA)"/>' +
+          '<path d="M22 -22 l2 -6 M22 -22 l6 -2 M18 -18 l2 -6 M18 -18 l6 -2" stroke="' + s + '" stroke-width="1.6" stroke-linecap="round"/>';
+      }
+      out += '<g style="filter:drop-shadow(0 0 10px ' + s + '55)"><circle cx="' + x + '" cy="' + y + '" r="34" fill="url(#emB' + i + ')" stroke="' + s + '" stroke-width="1.4"/></g>' +
+        '<g transform="translate(' + x + ' ' + y + ')" style="filter:drop-shadow(0 0 5px ' + s + '88)">' + icon + '</g>' +
+        t(x, y + 54, c[1], 10, 900, s) + t(x, y + 67, c[2], 8.5, 700, MUTED);
+    });
+    return svg('<defs>' + defs + '</defs>' + out, "10 30 300 126");
   }
 
   /* Emotionsregulation: Irritation → Bus mit Passagieren → Reaktion (gezeichnet) */
