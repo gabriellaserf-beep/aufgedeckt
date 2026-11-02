@@ -290,7 +290,72 @@
     return svg(out, "0 26 320 82");
   }
 
-  var MAP = { felder: felder, stile: stile, eskalation: eskalation, checkliste: checkliste, uebung: uebung, playlist: playlist, buecher: buecher, fuehrung: fuehrung, harvard: harvard, batna: batna, leaf: leaf, sages: sages, ablauf: ablauf, reflexion: reflexion, thermo: thermo };
+
+  /* Eisbergmodell: kleine Spitze über der Wasserlinie, großer Teil darunter */
+  function eisberg() {
+    var I = "#c9f4f7", out = '<defs><linearGradient id="isT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="' + AQUA + '"/></linearGradient>' +
+      '<linearGradient id="isB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + AQUA + '" stop-opacity="0.55"/><stop offset="1" stop-color="#b794e8" stop-opacity="0.15"/></linearGradient></defs>';
+    out += '<path d="M128 62 L146 34 L158 44 L170 28 L192 62 Z" fill="url(#isT)"/>' +
+      '<path d="M128 62 L192 62 L222 92 L236 128 L214 162 L160 176 L108 160 L88 120 L102 86 Z" fill="url(#isB)" stroke="' + AQUA + '" stroke-opacity="0.5" stroke-width="1"/>' +
+      '<path d="M20 62 H300" fill="none" stroke="' + AQUA + '" stroke-width="1.4" stroke-dasharray="6 4" stroke-linecap="round"/>' +
+      t(24, 54, "sichtbar", 9.5, 800, PAPER, "start") + t(24, 76, "weniger sichtbar", 9.5, 800, AQUA, "start") +
+      t(262, 46, "Aussagen", 8.5, 700, MUTED, "middle") + t(262, 57, "Forderungen", 8.5, 700, MUTED, "middle") +
+      t(272, 104, "Interessen", 8.5, 700, PAPER, "middle") + t(272, 118, "Bedürfnisse", 8.5, 700, PAPER, "middle") + t(272, 132, "Werte", 8.5, 700, PAPER, "middle") + t(272, 146, "Motive", 8.5, 700, PAPER, "middle");
+    return svg(out, "10 20 300 166");
+  }
+
+  /* Empathie: drei Symbole – Gehirn (kognitiv), Herz (emotional), Kompass (intentional) */
+  function empathie() {
+    var C = [["#b794e8", "kognitiv", "denken"], ["#ff7af8", "emotional", "fühlen"], [AQUA, "intentional", "wollen"]], out = "";
+    C.forEach(function (c, i) {
+      var x = 62 + i * 98, y = 74, s = c[0];
+      out += '<circle cx="' + x + '" cy="' + y + '" r="34" fill="#220736" stroke="' + s + '" stroke-width="1.3"/>';
+      if (i === 0) out += '<path d="M' + (x - 2) + ' ' + (y - 18) + ' C' + (x - 22) + ' ' + (y - 20) + ' ' + (x - 24) + ' ' + (y - 2) + ' ' + (x - 16) + ' ' + (y + 4) + ' C' + (x - 22) + ' ' + (y + 16) + ' ' + (x - 8) + ' ' + (y + 22) + ' ' + (x - 2) + ' ' + (y + 16) + ' V' + (y - 18) + ' M' + (x + 2) + ' ' + (y - 18) + ' C' + (x + 22) + ' ' + (y - 20) + ' ' + (x + 24) + ' ' + (y - 2) + ' ' + (x + 16) + ' ' + (y + 4) + ' C' + (x + 22) + ' ' + (y + 16) + ' ' + (x + 8) + ' ' + (y + 22) + ' ' + (x + 2) + ' ' + (y + 16) + ' V' + (y - 18) + ' M' + (x - 14) + ' ' + (y - 6) + ' q6 4 12 0 M' + (x + 2) + ' ' + (y + 6) + ' q6 -4 12 0" fill="none" stroke="' + s + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
+      if (i === 1) out += '<path d="M' + x + ' ' + (y + 18) + ' C' + (x - 30) + ' ' + y + ' ' + (x - 18) + ' ' + (y - 24) + ' ' + x + ' ' + (y - 9) + ' C' + (x + 18) + ' ' + (y - 24) + ' ' + (x + 30) + ' ' + y + ' ' + x + ' ' + (y + 18) + ' Z" fill="' + s + '" fill-opacity="0.85"/>';
+      if (i === 2) out += '<circle cx="' + x + '" cy="' + y + '" r="20" fill="none" stroke="' + s + '" stroke-width="1.8"/><circle cx="' + x + '" cy="' + y + '" r="11" fill="none" stroke="' + s + '" stroke-width="1.8"/><circle cx="' + x + '" cy="' + y + '" r="3.5" fill="' + s + '"/>';
+      out += t(x, y + 54, c[1], 10, 900, s) + t(x, y + 67, c[2], 8.5, 700, MUTED);
+    });
+    out += '<path d="M100 74 H122 M198 74 H220" stroke="rgba(246,244,251,0.25)" stroke-width="1" stroke-dasharray="2 3"/>';
+    return svg(out, "10 30 300 126");
+  }
+
+  /* Emotionsregulation: Irritation → Bus → Reaktion */
+  function bus() {
+    var out = '<defs><marker id="bsA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="' + LIME + '"/></marker></defs>' +
+      '<path d="M14 104 H62" fill="none" stroke="' + LIME + '" stroke-width="1.6" marker-end="url(#bsA)"/>' + t(38, 94, "Irritation", 9.5, 800, LIME) +
+      '<image href="bus.webp" x="70" y="38" width="180" height="116" preserveAspectRatio="xMidYMid meet"/>' +
+      '<path d="M258 104 H306" fill="none" stroke="' + LIME + '" stroke-width="1.6" marker-end="url(#bsA)"/>' + t(282, 94, "Reaktion", 9.5, 800, LIME);
+    return svg(out, "6 30 308 132");
+  }
+
+  /* Systemtheorie: Schiebepuzzle, ein Feld fehlt, ein Teil ist in Bewegung */
+  function puzzle() {
+    var cols = [AQUA, "#b794e8", "#ff7af8", LIME, AQUA, "#b794e8", "#ff7af8", LIME], out = "", k = 0, sz = 40, g = 4, x0 = 98, y0 = 34;
+    for (var r = 0; r < 3; r++) for (var c = 0; c < 3; c++) {
+      if (r === 2 && c === 2) continue;
+      var mov = r === 2 && c === 1, x = x0 + c * (sz + g) + (mov ? 14 : 0), y = y0 + r * (sz + g), col = cols[k++];
+      out += '<rect x="' + x + '" y="' + y + '" width="' + sz + '" height="' + sz + '" rx="7" fill="' + (mov ? col : "#220736") + '" fill-opacity="' + (mov ? 0.9 : 1) + '" stroke="' + col + '" stroke-opacity="' + (mov ? 1 : 0.55) + '" stroke-width="1.2"/>' +
+        '<circle cx="' + (x + sz / 2) + '" cy="' + (y + sz / 2) + '" r="5" fill="' + (mov ? INK : col) + '" fill-opacity="' + (mov ? 0.5 : 0.6) + '"/>';
+    }
+    out += '<rect x="' + (x0 - 6) + '" y="' + (y0 - 6) + '" width="' + (3 * sz + 2 * g + 12) + '" height="' + (3 * sz + 2 * g + 12) + '" rx="12" fill="none" stroke="rgba(246,244,251,0.25)" stroke-width="1"/>' +
+      '<path d="M' + (x0 + sz + g + 6) + ' ' + (y0 + 2 * (sz + g) + sz + 16) + ' h16" stroke="' + LIME + '" stroke-width="1.4" stroke-linecap="round" marker-end="url(#pzA)"/>' +
+      '<defs><marker id="pzA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="' + LIME + '"/></marker></defs>';
+    return svg(out, "40 22 240 162");
+  }
+
+  /* Persönlichkeit: eine Figur aus fünf Teilen – Motive, Annahmen, Schemata, Normen, Regeln */
+  function persoenlichkeit() {
+    var P = [["Motive", "#ff7af8", "M160 30 a20 20 0 1 1 0.1 0 Z", 160, 52, 214, 40], ["Annahmen", "#b794e8", "M136 76 L160 72 L160 112 L130 112 Z", 145, 92, 74, 80], ["Schemata", AQUA, "M164 72 L188 76 L194 112 L164 112 Z", 178, 92, 244, 84], ["Normen", LIME, "M132 118 L158 118 L156 168 L138 168 Z", 146, 140, 76, 150], ["Regeln", "#F9CE1F", "M166 118 L190 118 L184 168 L166 168 Z", 176, 140, 244, 154]], out = "";
+    P.forEach(function (p, i) {
+      var dx = [0, -6, 6, -9, 9][i], dy = [-4, 0, 0, 4, 4][i];
+      out += '<g transform="translate(' + dx + ' ' + dy + ')"><path d="' + p[2] + '" fill="' + p[1] + '" fill-opacity="0.85" stroke="' + p[1] + '" stroke-width="1"/></g>' +
+        '<path d="M' + (p[3] + dx) + ' ' + (p[4] + dy) + ' L' + (p[5] + (p[5] < 160 ? 26 : -26)) + ' ' + (p[6] - 3) + '" fill="none" stroke="' + p[1] + '" stroke-opacity="0.5" stroke-width="0.8"/>' +
+        t(p[5], p[6], p[0], 9.5, 800, p[1], p[5] < 160 ? "middle" : "middle");
+    });
+    return svg(out, "30 14 260 166");
+  }
+
+  var MAP = { felder: felder, stile: stile, eskalation: eskalation, checkliste: checkliste, uebung: uebung, playlist: playlist, buecher: buecher, fuehrung: fuehrung, harvard: harvard, batna: batna, leaf: leaf, sages: sages, ablauf: ablauf, reflexion: reflexion, thermo: thermo, eisberg: eisberg, empathie: empathie, bus: bus, puzzle: puzzle, persoenlichkeit: persoenlichkeit };
   window.GRAFIK_FARBE = function (c, n, i) {
     if (c.kategorie === "eskalation" && n) return ["#35B680", "#F9851F", "#f4005e"][Math.min(2, Math.floor((n - 1) / 3))];
     if (c.grafik === "uebung:1") return "#f4005e";

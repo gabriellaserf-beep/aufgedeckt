@@ -18,12 +18,24 @@
 
   /* ---------- Speichern ---------- */
   function load() {
-    try { var raw = localStorage.getItem(KEY); if (raw) { var s = JSON.parse(raw); if (s && s.total === CARDS.length) {
+    try { var raw = localStorage.getItem(KEY); if (raw) { var s = migrate(JSON.parse(raw)); if (s && s.total === CARDS.length) {
       s.picks = s.picks || {}; s.notes = s.notes || {}; s.done = s.done || []; s.up = s.up || [];
       if (!s.pos) { var n = deal(s.notes); n.done = s.done; n.up = s.up.filter(function (i) { return s.done.indexOf(i) < 0; }); n.picks = s.picks; return n; }
       return s;
     } } } catch (e) {}
     return null;
+  }
+  /* Spielstände aus älteren Versionen übernehmen: neue Karten kommen verdeckt dazu, entfernte Karten fallen raus */
+  var REMOVED = { 72: [60] };
+  function migrate(s) {
+    if (!s || !s.pos || !s.total || s.total >= CARDS.length) return s;
+    (REMOVED[s.total] || []).forEach(function (i) {
+      s.done = (s.done || []).filter(function (j) { return j !== i; }); s.up = (s.up || []).filter(function (j) { return j !== i; });
+      if (s.notes) delete s.notes[i]; if (s.picks) delete s.picks[i]; s.pos[i] = { x: Math.random(), y: Math.random(), r: Math.round((Math.random() - 0.5) * 50), z: 1 };
+    });
+    for (var i = s.total; i < CARDS.length; i++) s.pos[i] = { x: Math.random(), y: Math.random(), r: Math.round((Math.random() - 0.5) * 50), z: (s.top || 100) + i };
+    s.top = (s.top || 100) + CARDS.length; s.total = CARDS.length;
+    return s;
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 
@@ -462,7 +474,7 @@
   /* Wortkarten: Gruppen mit antippbaren Wörtern */
   function pickedHTML(idx) {
     var l = state.picks[idx] || [];
-    return l.length ? "<strong>Deine Auswahl:</strong> " + l.map(esc).join(" · ") : "Tipp die Wörter an, die gerade auf dich zutreffen.";
+    return l.length ? "<strong>Deine Auswahl:</strong> " + l.map(esc).join(" · ") : "Tippe die Wörter an, die gerade auf dich zutreffen, und vervollständige so den Satz.";
   }
   function renderScale(c, idx) {
     var v = (state.picks[idx] || [])[0], out = '<div class="scale" role="group" aria-label="Skala von 1 bis 10">';
@@ -588,7 +600,7 @@
       '<div class="reader" role="dialog" aria-modal="true" aria-labelledby="rtitle">' +
         '<article class="big" style="--acc:' + k.farbe + '">' +
           '<span class="big__no">' + (played ? "Abgelegt · " : "") + no + " / " + state.total + "</span>" +
-          (c.prompt ? '<div class="prompt"><span class="prompt__q">' + esc(c.prompt) + '</span><span class="prompt__dots">' + (c.gruppen || []).map(function (g) { return '<i style="background:' + g.farbe + '"></i>'; }).join("") + "</span></div>" : c.grafik && window.GRAFIK ? '<div class="big__media big__media--grafik g-' + String(c.grafik).split(":")[0] + '">' + window.GRAFIK(c.grafik) + '</div>' : '<div class="big__media"><img src="' + esc(k.bild) + '" alt=""></div>') +
+          (c.grafik === "bus" ? '<div class="big__media big__media--grafik g-bus">' + window.GRAFIK("bus") + '</div>' : c.prompt ? '<div class="prompt"><span class="prompt__q">' + esc(c.prompt) + '</span><span class="prompt__dots">' + (c.gruppen || []).map(function (g) { return '<i style="background:' + g.farbe + '"></i>'; }).join("") + "</span></div>" : c.grafik && window.GRAFIK ? '<div class="big__media big__media--grafik g-' + String(c.grafik).split(":")[0] + '">' + window.GRAFIK(c.grafik) + '</div>' : '<div class="big__media"><img src="' + esc(k.bild) + '" alt=""></div>') +
           '<span class="big__cat"><span class="big__cname">' + esc(k.name) + "</span>" + (c.teil ? ' <span class="big__sep" aria-hidden="true">·</span> <span class="big__teil">' + esc(c.teil).split(" · ").join('</span> <span class="big__sep" aria-hidden="true">·</span> <span class="big__teil">') + "</span>" : "") + "</span>" +
           '<h2 class="big__title" id="rtitle">' + esc(hy(c.titel)) + "</h2>" +
           (c.text ? '<p class="big__text">' + md(c.text) + "</p>" : "") +
@@ -699,6 +711,7 @@
     var m = /AUFGEDECKT1:([A-Za-z0-9+\/=]+)/.exec(text || ""), s = null;
     try { s = m ? JSON.parse(decodeURIComponent(escape(atob(m[1])))) : JSON.parse(text); } catch (e) { return null; }
     if (!s || typeof s !== "object" || !s.pos || !Array.isArray(s.done)) return null;
+    s = migrate(s);
     if (s.total !== CARDS.length) { /* Kartenanzahl geändert: Notizen behalten, neu verteilen */
       var keep = { notes: s.notes || {}, picks: s.picks || {}, name: s.name || "" }; state = state || {}; state.picks = keep.picks; state.name = keep.name;
       var n = deal(keep.notes); n.picks = keep.picks; n.name = keep.name; n.done = (s.done || []).filter(function (i) { return i < CARDS.length; }); return n;
