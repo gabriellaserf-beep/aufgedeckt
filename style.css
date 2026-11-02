@@ -87,8 +87,8 @@ button { font: inherit; color: inherit; }
 .back__pills { display: none; }
 
 /* Magenta-Schatten: eng an der obersten Karte, keine freistehenden Flecken */
-.card.is-playable:not(.is-up) .face.back { box-shadow: 0 0 0 1px rgba(255,122,248,0.55), 0 calc(var(--cw) * 0.1) calc(var(--cw) * 0.22) calc(var(--cw) * -0.06) rgba(255,0,254,0.45), 0 calc(var(--cw) * 0.04) calc(var(--cw) * 0.1) rgba(12,8,20,0.6); }
-.card.is-playable:not(.is-up):hover .face.back, .card.is-playable:not(.is-up):focus-visible .face.back { box-shadow: 0 0 0 1px rgba(255,160,250,0.9), 0 calc(var(--cw) * 0.14) calc(var(--cw) * 0.28) calc(var(--cw) * -0.06) rgba(255,0,254,0.6), 0 calc(var(--cw) * 0.05) calc(var(--cw) * 0.12) rgba(12,8,20,0.6); }
+.card.is-playable:not(.is-up) .face.back { box-shadow: 0 0 0 1px rgba(89,213,220,0.55), 0 calc(var(--cw) * 0.1) calc(var(--cw) * 0.22) calc(var(--cw) * -0.06) rgba(89,213,220,0.45), 0 calc(var(--cw) * 0.04) calc(var(--cw) * 0.1) rgba(12,8,20,0.6); }
+.card.is-playable:not(.is-up):hover .face.back, .card.is-playable:not(.is-up):focus-visible .face.back { box-shadow: 0 0 0 1px rgba(142,232,238,0.9), 0 calc(var(--cw) * 0.14) calc(var(--cw) * 0.28) calc(var(--cw) * -0.06) rgba(89,213,220,0.6), 0 calc(var(--cw) * 0.05) calc(var(--cw) * 0.12) rgba(12,8,20,0.6); }
 
 /* Vorderseite in der Auslage */
 .front { transform: rotateY(180deg); background: var(--surface-raised); border: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6%; padding: 8%; }
@@ -255,13 +255,13 @@ button { font: inherit; color: inherit; }
 .desk::before { content: ""; position: absolute; inset: 14px; border-radius: 20px; border: 1px dashed rgba(89,213,220,0.12); pointer-events: none; }
 .desk .card { transform: rotate(var(--rot, 0deg)); transition: transform var(--dur-slow) var(--ease-out), filter var(--dur-base); touch-action: none; }
 .desk .card .card__inner { translate: none !important; }
-.desk .card.is-playable:not(.is-up) .face.back { box-shadow: 0 0 0 1px rgba(255,122,248,0.35), 0 calc(var(--cw) * 0.05) calc(var(--cw) * 0.12) rgba(12,8,20,0.65); }
+.desk .card.is-playable:not(.is-up) .face.back { box-shadow: 0 0 0 1px rgba(89,213,220,0.35), 0 calc(var(--cw) * 0.05) calc(var(--cw) * 0.12) rgba(12,8,20,0.65); }
 .desk .card:hover, .desk .card:focus-visible { filter: brightness(1.12); }
-.desk .card:hover .face.back, .desk .card:focus-visible .face.back { box-shadow: 0 0 0 1px rgba(255,160,250,0.9), 0 calc(var(--cw) * 0.14) calc(var(--cw) * 0.3) calc(var(--cw) * -0.04) rgba(255,0,254,0.55) !important; }
+.desk .card:hover .face.back, .desk .card:focus-visible .face.back { box-shadow: 0 0 0 1px rgba(142,232,238,0.9), 0 calc(var(--cw) * 0.14) calc(var(--cw) * 0.3) calc(var(--cw) * -0.04) rgba(89,213,220,0.55) !important; }
 .desk .card.is-drag { transform: rotate(calc(var(--rot, 0deg) * 0.5)) scale(1.1); transition: none; cursor: grabbing; filter: drop-shadow(0 24px 30px rgba(12,8,20,0.6)); }
 .desk .card.is-up { transform: rotate(0deg) scale(1.08); }
 .desk .card.is-picked { transform: rotate(0deg) scale(1.35); }
-.desk .card.is-picked .face.back { box-shadow: 0 0 0 1px #ffa0fa, 0 0 40px rgba(255,0,254,0.6) !important; }
+.desk .card.is-picked .face.back { box-shadow: 0 0 0 1px #8ee8ee, 0 0 40px rgba(89,213,220,0.6) !important; }
 .hint { margin: 10px 0 0; color: var(--text-faint); font-size: 0.875rem; text-align: center; }
 .played { margin-top: 24px; }
 
@@ -347,9 +347,9 @@ button { font: inherit; color: inherit; }
 .stage .mini__title { font-size: 0.6875rem; }
 .stage .mini__cat { font-size: 0.5rem; letter-spacing: 0.05em; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mini.is-new { animation: landed 1.4s var(--ease-out); }
-@keyframes landed { 0% { transform: scale(0.4) rotate(-12deg); opacity: 0; box-shadow: 0 0 0 0 rgba(255,0,254,0); }
-  40% { transform: scale(1.08) rotate(2deg); opacity: 1; box-shadow: 0 0 0 2px #ff7af8, 0 0 30px rgba(255,0,254,0.7); }
-  100% { transform: none; box-shadow: 0 0 0 0 rgba(255,0,254,0); } }
+@keyframes landed { 0% { transform: scale(0.4) rotate(-12deg); opacity: 0; box-shadow: 0 0 0 0 rgba(89,213,220,0); }
+  40% { transform: scale(1.08) rotate(2deg); opacity: 1; box-shadow: 0 0 0 2px #59d5dc, 0 0 30px rgba(89,213,220,0.7); }
+  100% { transform: none; box-shadow: 0 0 0 0 rgba(89,213,220,0); } }
 
 @media (max-width: 1000px) {
   .bar__row { grid-template-columns: auto auto; justify-content: space-between; }
@@ -382,7 +382,7 @@ button { font: inherit; color: inherit; }
 
 /* Ausgewählte Karte hebt sich über alle anderen, bevor sie sich umdreht */
 .desk .card.is-lift, .desk .card.is-lift.is-up, .desk .card.is-lift.is-picked { transform: rotate(0deg) scale(1.45); }
-.desk .card.is-lift .face { box-shadow: 0 0 0 1px #ffa0fa, 0 24px 50px rgba(12,8,20,0.7), 0 0 44px rgba(255,0,254,0.55) !important; }
+.desk .card.is-lift .face { box-shadow: 0 0 0 1px #8ee8ee, 0 24px 50px rgba(12,8,20,0.7), 0 0 44px rgba(89,213,220,0.55) !important; }
 
 /* Geöffnete Karte: größer und mittig auf großen Bildschirmen */
 @media (min-width: 761px) {
