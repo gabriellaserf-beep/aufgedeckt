@@ -782,3 +782,4 @@ body { background: #1a1029; }
 /* Trennpunkt: auch ohne Flex-Ausrichtung mittig */
 .big__sep { vertical-align: middle; }
 .series__head > span { line-height: 1; }
+.series__all { justify-self: start; align-self: flex-start; margin-top: 4px; height: 40px; font-size: 0.875rem; }

@@ -512,7 +512,9 @@
         return '<div class="sib' + (me ? " is-me" : "") + '"><button type="button" class="card sib__card' + (up ? " is-up" : "") + '" data-j="' + j + '"' + (me ? ' disabled aria-current="true"' : "") +
           ' aria-label="' + esc(up ? CARDS[j].titel + (me ? " (diese Karte)" : " öffnen") : "Dazugehörige Karte aufdecken") + '"><span class="card__inner">' + backHTML() + frontHTML(j) + "</span></button>" +
           '<span class="sib__teil">' + esc(shortTeil(CARDS[j].teil) || String(all.indexOf(j) + 1)) + (done && !me ? " ✓" : "") + "</span></div>";
-      }).join("") + "</div></section>";
+      }).join("") + "</div>" +
+      (all.filter(function (j) { return state.done.indexOf(j) < 0; }).length > 1 ? '<button type="button" class="btn btn--secondary series__all" id="dropAll">Alle ' + all.filter(function (j) { return state.done.indexOf(j) < 0; }).length + ' Karten der Reihe ablegen</button>' : "") +
+      "</section>";
   }
   function openSibling(j, btn) {
     var go = function () {
@@ -607,6 +609,13 @@
       "</div>";
     o.hidden = false; o.scrollTop = 0;
     animateGrafik(o.querySelector(".big__media--grafik"), c.grafik);
+    var da = $("#dropAll", o); if (da) da.addEventListener("click", function () {
+      var all = CARDS.map(function (_, j) { return j; }).filter(function (j) { return groupKey(j) === groupKey(idx) && state.done.indexOf(j) < 0; });
+      all.forEach(function (j) { state.up = state.up.filter(function (i) { return i !== j; }); state.done.push(j); });
+      state.done = state.done.filter(function (j, k) { return state.done.indexOf(j) === k; });
+      save(); justDone = idx; closeOverlays(true); render(); justDone = null; var pg = $("#played"); if (pg) pg.scrollTop = 0;
+      toast(all.length + " Karten abgelegt.");
+    });
     o.querySelectorAll(".sib__card[data-j]").forEach(function (b) { if (!b.disabled) b.addEventListener("click", function () { openSibling(+b.dataset.j, b); }); });
     var ta = $("#note", o);
     ta.addEventListener("input", function () { state.notes[idx] = ta.value; save(); });
