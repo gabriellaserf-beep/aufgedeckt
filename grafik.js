@@ -377,31 +377,57 @@
     return svg('<defs>' + defs + '</defs>' + out, "10 30 300 126");
   }
 
-  /* Emotionsregulation: Irritation → Bus mit Passagieren → Reaktion (gezeichnet) */
+  /* Emotionsregulation: Irritation → leuchtender Bus mit Passagieren → Reaktion */
   function bus() {
-    var Y = "#F9CE1F", out = '<defs><marker id="bsA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="' + LIME + '"/></marker></defs>' +
-      '<path d="M14 104 H66" fill="none" stroke="' + LIME + '" stroke-width="1.6" marker-end="url(#bsA)"/>' + t(40, 94, "Irritation", 9.5, 800, LIME) +
-      '<path d="M254 104 H306" fill="none" stroke="' + LIME + '" stroke-width="1.6" marker-end="url(#bsA)"/>' + t(280, 94, "Reaktion", 9.5, 800, LIME) +
-      /* Karosserie */
-      '<path d="M78 128 V70 Q78 58 90 58 H222 Q236 58 240 72 L246 96 V128 Z" fill="#220736" stroke="' + Y + '" stroke-width="1.8" stroke-linejoin="round"/>' +
-      '<path d="M78 112 H246" stroke="' + Y + '" stroke-opacity="0.45" stroke-width="1"/>';
-    /* Fenster mit Passagieren: Farben = verschiedene Anteile */
-    var P = ["#b794e8", AQUA, "#ff7af8"];
+    var Y = "#F9CE1F", O = "#F9851F", L = "#b794e8", defs =
+      '<marker id="bsA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="' + LIME + '"/></marker>' +
+      '<linearGradient id="bsBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe98a"/><stop offset="0.45" stop-color="' + Y + '"/><stop offset="1" stop-color="' + O + '"/></linearGradient>' +
+      '<linearGradient id="bsGl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a1d5c"/><stop offset="1" stop-color="#160a26"/></linearGradient>' +
+      '<linearGradient id="bsShine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></linearGradient>' +
+      '<radialGradient id="bsBeam" cx="0" cy="0.5" r="1"><stop offset="0" stop-color="#fff6c8" stop-opacity="0.7"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></radialGradient>';
+    var out = '';
+    /* Pfeile */
+    out += '<path d="M12 106 H58" fill="none" stroke="' + LIME + '" stroke-width="1.6" marker-end="url(#bsA)"/>' + t(35, 96, "Irritation", 9.5, 800, LIME) +
+      '<path d="M262 106 H308" fill="none" stroke="' + LIME + '" stroke-width="1.6" marker-end="url(#bsA)"/>' + t(285, 96, "Reaktion", 9.5, 800, LIME);
+    /* Fahrtlinien hinten */
+    out += '<path d="M58 76 h10 M60 86 h8 M58 124 h10" stroke="' + Y + '" stroke-opacity="0.5" stroke-width="1.4" stroke-linecap="round"/>';
+    /* Scheinwerferkegel */
+    out += '<path d="M246 110 L276 98 L276 124 Z" fill="url(#bsBeam)"/>';
+    /* Schatten */
+    out += '<ellipse cx="158" cy="146" rx="88" ry="5" fill="#000" fill-opacity="0.35"/>';
+    /* Karosserie */
+    out += '<g style="filter:drop-shadow(0 0 12px ' + O + '66)">' +
+      '<path d="M72 136 V74 Q72 58 88 58 H224 Q238 58 243 72 L250 98 Q252 104 252 110 V136 Z" fill="url(#bsBody)"/>' +
+      '<path d="M76 70 Q76 62 88 62 H222 Q232 62 236 70 Z" fill="url(#bsShine)"/>' +
+      '<rect x="72" y="114" width="180" height="4" fill="' + O + '" fill-opacity="0.8"/>' +
+      '<rect x="72" y="120" width="180" height="1.4" fill="#ffffff" fill-opacity="0.35"/></g>';
+    /* Fenster mit Passagieren */
+    var P = [L, AQUA, "#ff7af8"];
     for (var i = 0; i < 3; i++) {
-      var x = 88 + i * 34;
-      out += '<rect x="' + x + '" y="66" width="28" height="30" rx="5" fill="none" stroke="' + Y + '" stroke-opacity="0.7" stroke-width="1.2"/>' +
-        '<circle cx="' + (x + 14) + '" cy="78" r="5" fill="' + P[i] + '"/><path d="M' + (x + 6) + ' 96 Q' + (x + 14) + ' 84 ' + (x + 22) + ' 96" fill="' + P[i] + '" fill-opacity="0.8"/>';
+      var x = 82 + i * 36;
+      out += '<rect x="' + x + '" y="68" width="30" height="34" rx="6" fill="url(#bsGl)" stroke="#fff3b0" stroke-opacity="0.6" stroke-width="1"/>' +
+        '<g style="filter:drop-shadow(0 0 4px ' + P[i] + ')"><circle cx="' + (x + 15) + '" cy="81" r="5.5" fill="' + P[i] + '"/><path d="M' + (x + 6) + ' 102 Q' + (x + 15) + ' 86 ' + (x + 24) + ' 102 Z" fill="' + P[i] + '"/></g>' +
+        '<path d="M' + (x + 4) + ' 72 L' + (x + 12) + ' 72 L' + (x + 4) + ' 84 Z" fill="#ffffff" fill-opacity="0.18"/>';
     }
-    /* Fahrerfenster + Fahrer:in (du) mit Lenkrad */
-    out += '<path d="M192 66 H226 L234 96 H192 Z" fill="none" stroke="' + Y + '" stroke-opacity="0.7" stroke-width="1.2" stroke-linejoin="round"/>' +
-      '<circle cx="206" cy="78" r="5" fill="' + LIME + '"/><path d="M198 96 Q206 84 214 96" fill="' + LIME + '" fill-opacity="0.85"/>' +
-      '<circle cx="219" cy="88" r="4.5" fill="none" stroke="' + LIME + '" stroke-width="1.2"/>' +
-      /* Räder */
-      '<circle cx="108" cy="130" r="11" fill="#1a1029" stroke="' + Y + '" stroke-width="1.8"/><circle cx="108" cy="130" r="3.5" fill="' + Y + '"/>' +
-      '<circle cx="216" cy="130" r="11" fill="#1a1029" stroke="' + Y + '" stroke-width="1.8"/><circle cx="216" cy="130" r="3.5" fill="' + Y + '"/>' +
-      '<rect x="242" y="102" width="6" height="6" rx="1.5" fill="' + Y + '"/>' +
-      t(212, 152, "du am Steuer", 8.5, 700, MUTED);
-    return svg(out, "6 44 308 118");
+    /* Fahrerfenster + du am Steuer */
+    out += '<path d="M192 68 H228 Q231 68 232 71 L240 102 H192 Z" fill="url(#bsGl)" stroke="#fff3b0" stroke-opacity="0.6" stroke-width="1"/>' +
+      '<g style="filter:drop-shadow(0 0 6px ' + LIME + ')"><circle cx="208" cy="81" r="5.5" fill="' + LIME + '"/><path d="M199 102 Q208 86 217 102 Z" fill="' + LIME + '"/>' +
+      '<circle cx="222" cy="92" r="5.5" fill="none" stroke="' + LIME + '" stroke-width="1.6"/><path d="M222 86.5 V97.5 M216.5 92 H227.5" stroke="' + LIME + '" stroke-width="0.8"/></g>' +
+      '<path d="M196 72 L204 72 L196 84 Z" fill="#ffffff" fill-opacity="0.18"/>';
+    /* Tür-/Detaillinien, Scheinwerfer, Rücklicht */
+    out += '<rect x="246" y="104" width="6" height="7" rx="2" fill="#fffbe0" style="filter:drop-shadow(0 0 5px #fff6c8)"/>' +
+      '<rect x="72" y="104" width="4" height="8" rx="1.5" fill="#ff5a5a"/>';
+    /* Räder */
+    [102, 218].forEach(function (cx) {
+      out += '<circle cx="' + cx + '" cy="136" r="12" fill="#1a1029" stroke="' + Y + '" stroke-width="2"/>' +
+        '<circle cx="' + cx + '" cy="136" r="6" fill="none" stroke="#ffe98a" stroke-opacity="0.7" stroke-width="1"/>' +
+        '<circle cx="' + cx + '" cy="136" r="2.6" fill="' + Y + '"/>';
+    });
+    /* Beschriftung du am Steuer */
+    out += '<path d="M208 74 L236 46" fill="none" stroke="' + LIME + '" stroke-opacity="0.7" stroke-width="0.9"/>' +
+      '<circle cx="208" cy="74" r="2.2" fill="' + INK + '" stroke="#fff" stroke-width="1"/><circle cx="236" cy="46" r="1.5" fill="' + LIME + '"/>' +
+      t(240, 49.5, "du am Steuer", 9, 800, LIME, "start");
+    return svg('<defs>' + defs + '</defs>' + out, "6 34 308 120");
   }
 
   /* Systemtheorie: Schiebepuzzle, ein Feld fehlt, ein Teil ist in Bewegung */
