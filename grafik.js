@@ -359,11 +359,11 @@
     C.forEach(function (c, i) {
       var x = 62 + i * 98, y = 74, s = c[0], g = 'url(#emG' + i + ')', icon = "";
       if (i === 0) {
-        /* Gehirn in Seitenansicht mit Windungen und Stamm */
-        icon = '<path d="M2 14 C2 20 4 24 7 27" fill="none" stroke="' + s + '" stroke-width="4.5" stroke-linecap="round"/>' +
-          '<path d="M8 12 C12 8 24 8 25 15 C25 21 15 23 9 19 Z" fill="' + g + '"/><path d="M11 14 Q17 12 23 14 M11 18 Q17 16 22 18" fill="none" stroke="#2a0f45" stroke-opacity="0.55" stroke-width="1.2" stroke-linecap="round"/>' +
-          '<path d="M-21 4 C-27 -2 -25 -14 -15 -16 C-13 -24 -1 -26 5 -20 C11 -26 23 -22 23 -12 C31 -9 30 3 24 7 C26 15 16 20 8 16 C4 22 -6 22 -8 16 C-16 20 -26 13 -21 4 Z" fill="' + g + '"/>' +
-          '<path d="M-15 -16 C-11 -10 -14 -4 -8 -2 M5 -20 C3 -12 9 -8 5 -2 M23 -12 C17 -8 19 -2 12 2 M-21 4 C-14 4 -11 8 -6 4 M24 7 C18 6 14 10 8 9 M-8 -2 C-2 0 0 6 6 4 M-8 16 C-6 10 -1 10 0 13" fill="none" stroke="#2a0f45" stroke-opacity="0.55" stroke-width="1.6" stroke-linecap="round"/>';
+        /* Gehirn von oben: zwei Hälften, Windungen als Linien (wie ein Line-Icon) */
+        var half = '<path d="M-1.2 -20 C-4 -24.5 -11 -24.5 -13 -19.5 C-19.5 -20.5 -23 -14 -20.5 -9 C-25.5 -5.5 -25.5 2 -20.5 4.5 C-24.5 9.5 -21.5 16.5 -15.5 16.5 C-14.5 22.5 -6 25.5 -1.2 22 Z" fill="' + g + '" fill-opacity="0.35"/>' +
+          '<path d="M-1.2 -20 C-4 -24.5 -11 -24.5 -13 -19.5 C-19.5 -20.5 -23 -14 -20.5 -9 C-25.5 -5.5 -25.5 2 -20.5 4.5 C-24.5 9.5 -21.5 16.5 -15.5 16.5 C-14.5 22.5 -6 25.5 -1.2 22 Z' +
+          ' M-12.5 -17 C-12.5 -13.5 -10 -11.5 -7 -11.5 M-19.5 -4.5 C-15 -4.5 -12 -2 -11 2 M-11 2 C-10 -1 -7 -2 -4.5 -1.5 M-16.5 10 C-13 9 -10 10 -8.5 13 M-9 5.5 C-9 9 -8 12 -5.5 14" fill="none" stroke="#e4d6ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>';
+        icon = half + '<g transform="scale(-1 1)">' + half + '</g>' + '<path d="M-1.2 -11 H-6 M1.2 -3 H6" stroke="#e4d6ff" stroke-width="2.4" stroke-linecap="round"/>';
       }
       if (i === 1) {
         /* Herz mit Glanz und Pulslinie */
