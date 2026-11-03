@@ -559,7 +559,7 @@
     if (!box) return;
     var svgEl = box.querySelector("svg"); if (!svgEl) return;
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    var type = String(spec || "").split(":")[0], DARK = /^(none|#2d1e4a|#220736|#0c0814|#1a1029|#231639|rgba\(.*)$/i;
+    var type = String(spec || "").split(":")[0], DARK = /^(none|#2d1e4a|#220736|#0c0814|#1a1029|#231639|rgba\(.*|url\(#pd.*)$/i;
     var kids = [].slice.call(svgEl.children).filter(function (e) { return e.tagName !== "defs"; });
     var hasT = function (e) { return !!e.getAttribute("transform"); };
     kids.forEach(function (e, i) { e.classList.add(hasT(e) ? "ga-fade" : "ga-in"); e.style.animationDelay = (Math.min(i, 40) * 28) + "ms"; });
@@ -576,7 +576,7 @@
     /* aktive, farbige Elemente pulsieren sanft */
     var live = [];
     svgEl.querySelectorAll("rect, circle, ellipse, g").forEach(function (e) {
-      var f = e.getAttribute("fill") || ""; if (e.tagName === "g") { if (/translate|rotate/.test(e.getAttribute("transform") || "") && e.querySelector("rect, path, circle, ellipse")) live.push(e); return; }
+      var f = e.getAttribute("fill") || ""; if (e.tagName === "g") { if (/translate|rotate/.test(e.getAttribute("transform") || "") && [].some.call(e.querySelectorAll("rect, path, circle, ellipse"), function (k) { var kf = k.getAttribute("fill") || ""; return kf && !DARK.test(kf); })) live.push(e); return; }
       if (e.getAttribute("filter")) { e.classList.add("ga-glow"); return; }
       if (!f || DARK.test(f) || f === "url(#bkS)" || hasT(e)) return;
       var w = +e.getAttribute("width") || (+e.getAttribute("r") || 0) * 2; if (w >= 30) live.push(e);
