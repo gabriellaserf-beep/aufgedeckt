@@ -269,17 +269,26 @@
 
   /* Weiterdenken: drei schräg gelegte Notizzettel mit Fragezeichen */
   function reflexion(n) {
-    var out = "";
-    [[-6, 70, 64], [3, 160, 56], [-3, 250, 66]].forEach(function (p, i) {
-      var on = !n || n === i + 1, w = 74, h = 62;
-      out += '<g transform="rotate(' + p[0] + " " + p[1] + " " + p[2] + ')">' +
-        '<rect x="' + (p[1] - w / 2) + '" y="' + (p[2] - h / 2) + '" width="' + w + '" height="' + h + '" rx="6" fill="' + (on ? PAPER : "#2d1e4a") + '" stroke="' + PAPER + '" stroke-opacity="' + (on ? 1 : 0.45) + '" stroke-width="1.5"/>' +
-        t(p[1], p[2] + 16, "?", 46, 900, on ? INK : "rgba(246,244,251,0.55)") + "</g>";
+    var C = [AQUA, "#b794e8", "#ff7af8"], defs = "", out = "";
+    [[-6, 70, 66], [3, 160, 60], [-3, 250, 68]].forEach(function (p, i) {
+      var on = !n || n === i + 1, w = 72, h = 62, c = C[i], x = p[1] - w / 2, y = p[2] - h / 2;
+      defs += '<linearGradient id="rfG' + i + '" x1="0" y1="0" x2="0.6" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="' + c + '"/><stop offset="1" stop-color="' + c + '" stop-opacity="0.75"/></linearGradient>' +
+        '<linearGradient id="rfD' + i + '" x1="0" y1="0" x2="0.6" y2="1"><stop offset="0" stop-color="' + c + '" stop-opacity="0.22"/><stop offset="1" stop-color="#1a1029" stop-opacity="0.9"/></linearGradient>';
+      var g = '<g transform="rotate(' + p[0] + ' ' + p[1] + ' ' + p[2] + ')"' + (on ? ' style="filter:drop-shadow(0 0 14px ' + c + '88)"' : '') + '>';
+      g += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="9" fill="url(#' + (on ? 'rfG' : 'rfD') + i + ')" stroke="' + c + '" stroke-opacity="' + (on ? 1 : 0.55) + '" stroke-width="1.4"/>';
+      if (on) g += '<path d="M' + (x + 6) + ' ' + (y + 6) + ' H' + (x + w * 0.55) + ' L' + (x + 6) + ' ' + (y + h * 0.6) + ' Z" fill="#ffffff" fill-opacity="0.35"/>';
+      g += t(p[1], p[2] + 15, "?", 44, 900, on ? INK : c, "middle", on ? '' : ' fill-opacity="0.75"');
+      /* Nummer */
+      g += '<circle cx="' + (x + w - 4) + '" cy="' + (y + 4) + '" r="8" fill="' + (on ? INK : "#1a1029") + '" stroke="' + c + '" stroke-width="1.2"/>' + t(x + w - 4, y + 7.3, String(i + 1), 9, 900, c);
+      out += g + '</g>';
+      if (on) [[-44, -30, 3], [42, -34, 2.2], [46, 26, 2.6], [-42, 30, 1.8]].forEach(function (s) {
+        var sx = p[1] + s[0], sy = p[2] + s[1], r = s[2];
+        out += '<path d="M' + sx + ' ' + (sy - r * 2) + ' Q' + sx + ' ' + sy + ' ' + (sx + r * 2) + ' ' + sy + ' Q' + sx + ' ' + sy + ' ' + sx + ' ' + (sy + r * 2) + ' Q' + sx + ' ' + sy + ' ' + (sx - r * 2) + ' ' + sy + ' Q' + sx + ' ' + sy + ' ' + sx + ' ' + (sy - r * 2) + ' Z" fill="' + c + '"/>';
+      });
     });
-    out += '<defs><linearGradient id="rfl" x1="0" x2="1"><stop offset="0" stop-color="' + LIME + '"/><stop offset="1" stop-color="' + AQUA + '"/></linearGradient></defs>' +
-      '<path d="M40 112 H280" stroke="url(#rfl)" stroke-width="2" stroke-linecap="round" opacity="0.7"/>';
-    return svg(out, "0 18 320 100");
+    return svg('<defs>' + defs + '</defs>' + out, "0 18 320 104");
   }
+
 
   /* Boxenstop: Thermometer 1–10, quer liegend */
   function thermo() {
