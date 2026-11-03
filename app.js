@@ -598,6 +598,7 @@
       [].forEach.call(T, function (e, i) { at(e, i === T.length - 1 ? 300 : 1900 + (i % 2) * 90, "1s"); });
       live.forEach(function (e) { e.classList.remove("ga-pulse"); }); return;
     }
+    if (type === "reflexion") live = [].slice.call(svgEl.querySelectorAll("g[data-live]"));
     if (type === "thermo") { svgEl.querySelectorAll("rect:not([transform])").forEach(function (e, i) { e.classList.add("ga-grow"); e.style.animationDelay = (150 + i * 40) + "ms"; }); }
     live.slice(0, 4).forEach(function (e, i) { e.classList.add(e.tagName === "g" ? "ga-float" : "ga-pulse"); e.style.setProperty("--gd", delay + i * 300 + "ms"); });
   }
