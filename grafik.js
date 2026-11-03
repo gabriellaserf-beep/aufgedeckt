@@ -495,9 +495,41 @@
     if (c.kategorie === "reflexion") return PAPER;
     return null;
   };
+  /* Einheitlicher Look: flache Farbflächen bekommen Glanzverlauf + Leuchten, dunkle Flächen werden getöntes Glas */
+  var DARKS = /^#(220736|2d1e4a|1a1029|231639|0c0814|170a28)$/i, POLISH = /^(checkliste|uebung|felder|stile|playlist|buecher|fuehrung|eskalation|harvard|batna|leaf|sages|ablauf|thermo|puzzle)$/;
+  function mix(hex, to, k) {
+    var n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255, T = to ? 255 : 0;
+    r = Math.round(r + (T - r) * k); g = Math.round(g + (T - g) * k); b = Math.round(b + (T - b) * k);
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
+  function polish(s) {
+    var defs = {}, cnt = 0;
+    s = s.replace(/<(rect|circle|ellipse|path|polygon)\b([^>]*?)(\/?)>/g, function (m, tag, attrs, sl) {
+      var fm = attrs.match(/\sfill="(#[0-9a-fA-F]{6})"/); if (!fm) return m;
+      var c = fm[1].toLowerCase(), sm = attrs.match(/\sstroke="(#[0-9a-fA-F]{6})"/), id;
+      if (c === "#ffffff" || c === "#f6f4fb") return m;
+      if (DARKS.test(c)) {
+        if (!sm) return m;
+        var sc = sm[1].toLowerCase(); id = "pd" + sc.slice(1);
+        defs[id] = '<linearGradient id="' + id + '" x1="0" y1="0" x2="0.5" y2="1"><stop offset="0" stop-color="' + sc + '" stop-opacity="0.26"/><stop offset="1" stop-color="#1a1029" stop-opacity="0.92"/></linearGradient>';
+        return "<" + tag + attrs.replace(fm[0], ' fill="url(#' + id + ')"') + sl + ">";
+      }
+      id = "pg" + c.slice(1);
+      defs[id] = '<linearGradient id="' + id + '" x1="0" y1="0" x2="0.45" y2="1"><stop offset="0" stop-color="' + mix(c, 1, 0.5) + '"/><stop offset="0.45" stop-color="' + c + '"/><stop offset="1" stop-color="' + mix(c, 0, 0.28) + '"/></linearGradient>';
+      var big = true, w = attrs.match(/\swidth="([\d.]+)"/), r = attrs.match(/\sr="([\d.]+)"/);
+      if ((w && +w[1] < 10) || (r && +r[1] < 5)) big = false;
+      var out = attrs.replace(fm[0], ' fill="url(#' + id + ')"');
+      if (big && !/\sstyle=/.test(out) && !/\sfilter=/.test(out) && cnt++ < 24) out += ' style="filter:drop-shadow(0 0 6px ' + c + '70)"';
+      return "<" + tag + out + sl + ">";
+    });
+    var d = Object.keys(defs).map(function (k) { return defs[k]; }).join("");
+    return d ? s.replace(/(<svg[^>]*>)/, "$1<defs>" + d + "</defs>") : s;
+  }
   window.GRAFIK = function (spec) {
     if (!spec) return "";
     var p = String(spec).split(":"), fn = MAP[p[0]];
-    return fn ? fn(p[1] ? parseInt(p[1], 10) : 0) : "";
+    if (!fn) return "";
+    var out = fn(p[1] ? parseInt(p[1], 10) : 0);
+    return POLISH.test(p[0]) ? polish(out) : out;
   };
 })();
