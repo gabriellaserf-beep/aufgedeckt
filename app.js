@@ -599,6 +599,11 @@
       live.forEach(function (e) { e.classList.remove("ga-pulse"); }); return;
     }
     if (type === "reflexion") live = [].slice.call(svgEl.querySelectorAll("g[data-live]"));
+    if (type === "empathie") {
+      /* alle drei Symbole gleich, ganz sanft und versetzt */
+      [].forEach.call(svgEl.querySelectorAll("g[data-live]"), function (e, i) { e.classList.add("ga-float", "ga-soft"); e.style.setProperty("--gd", delay + i * 500 + "ms"); });
+      return;
+    }
     if (type === "thermo") { svgEl.querySelectorAll("rect:not([transform])").forEach(function (e, i) { e.classList.add("ga-grow"); e.style.animationDelay = (150 + i * 40) + "ms"; }); }
     live.slice(0, 4).forEach(function (e, i) { e.classList.add(e.tagName === "g" ? "ga-float" : "ga-pulse"); e.style.setProperty("--gd", delay + i * 300 + "ms"); });
   }

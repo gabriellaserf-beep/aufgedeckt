@@ -384,7 +384,7 @@
           '<path d="M22 -22 l2 -6 M22 -22 l6 -2 M18 -18 l2 -6 M18 -18 l6 -2" stroke="' + s + '" stroke-width="1.6" stroke-linecap="round"/>';
       }
       out += '<g style="filter:drop-shadow(0 0 10px ' + s + '55)"><circle cx="' + x + '" cy="' + y + '" r="34" fill="url(#emB' + i + ')" stroke="' + s + '" stroke-width="1.4"/></g>' +
-        '<g transform="translate(' + x + ' ' + y + ')" style="filter:drop-shadow(0 0 5px ' + s + '88)">' + icon + '</g>' +
+        '<g transform="translate(' + x + ' ' + y + ')" data-live="1" style="filter:drop-shadow(0 0 5px ' + s + '88)">' + icon + '</g>' +
         t(x, y + 54, c[1], 10, 900, s) + t(x, y + 67, c[2], 8.5, 700, MUTED);
     });
     return svg('<defs>' + defs + '</defs>' + out, "10 30 300 126");

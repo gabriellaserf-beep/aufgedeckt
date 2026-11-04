@@ -787,3 +787,8 @@ body { background: #1a1029; }
 /* Reihe: Hervorhebung in Aqua statt Magenta */
 .sib__card:not(.is-up) .face.back { box-shadow: 0 0 0 1px rgba(89,213,220,0.55), 0 8px 18px -6px rgba(89,213,220,0.45); }
 .sib__card:not([disabled]):hover .face { box-shadow: 0 0 0 1px #8ee8ee, 0 0 22px rgba(89,213,220,0.5); }
+
+/* sanftes, gleichmäßiges Schweben (z. B. Empathie-Symbole) */
+.ga-float.ga-soft { animation-name: gaFloatSoft; animation-duration: 3.6s; }
+.ga-float.ga-soft.ga-fade { animation: gaFade 0.6s var(--ease-out) both, gaFloatSoft 3.6s var(--ease-in-out) var(--gd, 1s) infinite; }
+@keyframes gaFloatSoft { 0%, 100% { translate: 0 0; } 50% { translate: 0 -1.5px; } }
