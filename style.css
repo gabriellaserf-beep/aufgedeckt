@@ -792,3 +792,6 @@ body { background: #1a1029; }
 .ga-float.ga-soft { animation-name: gaFloatSoft; animation-duration: 3.6s; }
 .ga-float.ga-soft.ga-fade { animation: gaFade 0.6s var(--ease-out) both, gaFloatSoft 3.6s var(--ease-in-out) var(--gd, 1s) infinite; }
 @keyframes gaFloatSoft { 0%, 100% { translate: 0 0; } 50% { translate: 0 -1.5px; } }
+
+/* ruhigere Zeilenenden in Fließtexten */
+.big p, .big li, .big__text, .big__impuls { text-wrap: pretty; }

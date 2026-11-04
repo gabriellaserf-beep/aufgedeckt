@@ -14,7 +14,9 @@
 
   /* Weiche Trennstellen (&shy;) für lange Wörter aus TRENNUNGEN einsetzen */
   var HY = (window.TRENNUNGEN || []).map(function (w) { return [w.replace(/\|/g, ""), w.replace(/\|/g, "\u00ad")]; });
-  function hy(s) { s = String(s == null ? "" : s); HY.forEach(function (p) { s = s.split(p[0]).join(p[1]); }); return s; }
+  /* Kein einzelnes Wort eines neuen Satzes am Zeilenende: erstes Wort nach . ! ? fest mit dem zweiten verbinden */
+  function glue(s) { return s.replace(/([.!?…]["“”»«‘’']?) +([^\s]{1,16}) +(?=\S)/g, "$1 $2\u00A0"); }
+  function hy(s) { s = String(s == null ? "" : s); HY.forEach(function (p) { s = s.split(p[0]).join(p[1]); }); return glue(s); }
 
   /* ---------- Speichern ---------- */
   function load() {
