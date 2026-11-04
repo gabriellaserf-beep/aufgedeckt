@@ -565,8 +565,13 @@
   function animateGrafik(box, spec) {
     if (!box) return;
     var svgEl = box.querySelector("svg"); if (!svgEl) return;
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { try { svgEl.pauseAnimations(); svgEl.setCurrentTime(8.5); } catch (e) {} return; }
     var type = String(spec || "").split(":")[0], DARK = /^(none|#2d1e4a|#220736|#0c0814|#1a1029|#231639|rgba\(.*|url\(#pd.*)$/i;
+    if (svgEl.querySelector("[data-own-anim]")) {
+      /* Grafik mit eigener Animation: von vorn starten, sonst nichts dazu */
+      try { svgEl.setCurrentTime(0); } catch (e) {}
+      svgEl.classList.add("ga-own"); return;
+    }
     var kids = [].slice.call(svgEl.children).filter(function (e) { return e.tagName !== "defs"; });
     var hasT = function (e) { return !!e.getAttribute("transform"); };
     kids.forEach(function (e, i) { e.classList.add(hasT(e) ? "ga-fade" : "ga-in"); e.style.animationDelay = (Math.min(i, 40) * 28) + "ms"; });

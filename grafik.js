@@ -124,13 +124,43 @@
         t(168, 84, word, 38, 900, col, "start", 'letter-spacing="-0.5"') + t(170, 106, sub + (up ? "  ↑" : "  ↓"), 12, 800, MUTED, "start");
       return svg(out, "0 8 320 136");
     }
-    var o = '<circle cx="78" cy="100" r="46" fill="#2d1e4a" stroke="#f4005e" stroke-width="2"/>' + t(78, 106, "CRASH", 16, 900, "#f4005e") +
-      '<circle cx="242" cy="100" r="46" fill="' + AQUA + '"/>' + t(242, 106, "COACH", 16, 900, INK) +
-      '<path d="M128 80 Q160 56 192 80" fill="none" stroke="' + LIME + '" stroke-width="3" marker-end="url(#pa)"/>' +
-      '<path d="M192 120 Q160 144 128 120" fill="none" stroke="' + LIME + '" stroke-width="3" marker-end="url(#pa)"/>' +
-      '<defs><marker id="pa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="' + LIME + '"/></marker></defs>' +
-      t(160, 106, "3×", 18, 900, LIME);
-    return svg(o, "0 48 320 104");
+    /* Problem-Lösungs-Gymnastik: ein Lichtpunkt pendelt CRASH → COACH → CRASH … 3× und endet bei COACH */
+    var R = "#f4005e", D = "9s", cL = 70, cR = 250, cy = 98, rr = 38;
+    var top = "Q160 40 214 78", bot = "Q160 156 106 118";
+    var leg1 = "L106 78 " + top + " L" + cR + " " + cy, leg2 = "L214 118 " + bot + " L" + cL + " " + cy;
+    var motion = "M" + cL + " " + cy + " " + leg1 + " " + leg2 + " " + leg1 + " " + leg2 + " " + leg1;
+    /* Zeitpunkte (Anteil am Zyklus): 5 Wege à 0.16, danach Pause bei COACH */
+    function lit(on) { var kt = [0], v = [0]; on.forEach(function (w) { kt.push(w[0] - 0.015, w[0], w[1], Math.min(1, w[1] + 0.015)); v.push(0, 1, 1, 0); }); kt.push(1); v.push(v[v.length - 1]);
+      for (var i = 1; i < kt.length; i++) if (kt[i] < kt[i - 1]) kt[i] = kt[i - 1];
+      return '<animate attributeName="opacity" dur="' + D + '" repeatCount="indefinite" keyTimes="' + kt.map(function (x) { return x.toFixed(3); }).join(";") + '" values="' + v.join(";") + '"/>'; }
+    var crashOn = [[0.015, 0.04], [0.32, 0.35], [0.64, 0.67]], coachOn = [[0.16, 0.19], [0.48, 0.51], [0.8, 0.985]];
+    var o = '<defs><marker id="pa" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="' + LIME + '"/></marker>' +
+      '<radialGradient id="ugT"><stop offset="0" stop-color="#ffffff"/><stop offset="0.4" stop-color="' + LIME + '"/><stop offset="1" stop-color="' + LIME + '" stop-opacity="0"/></radialGradient></defs>' +
+      '<g data-own-anim="1">';
+    /* Bahnen: zarte Grundlinie + fließende Striche in Pfeilrichtung */
+    [["M106 78 " + top, 0], ["M214 118 " + bot, 1]].forEach(function (b) {
+      o += '<path d="' + b[0] + '" fill="none" stroke="' + LIME + '" stroke-opacity="0.22" stroke-width="3" stroke-linecap="round" marker-end="url(#pa)"/>' +
+        '<path d="' + b[0] + '" fill="none" stroke="' + LIME + '" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 9"><animate attributeName="stroke-dashoffset" from="30" to="0" dur="0.9s" repeatCount="indefinite"/></path>';
+    });
+    /* Lichtpunkt (unter den Kugeln, verschwindet in ihnen) */
+    o += '<g><circle r="9" fill="url(#ugT)"/><circle r="3.6" fill="#ffffff"/><animateMotion dur="' + D + '" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.8;1" calcMode="linear" path="' + motion + '"/></g>';
+    /* Kugeln: Glas-Grund + leuchtende Ebene, die aufgeht, wenn der Punkt ankommt */
+    [[cL, R, "CRASH", crashOn], [cR, AQUA, "COACH", coachOn]].forEach(function (k) {
+      o += '<circle cx="' + k[0] + '" cy="' + cy + '" r="' + rr + '" fill="#1a1029"/>' +
+        '<circle cx="' + k[0] + '" cy="' + cy + '" r="' + rr + '" fill="#1a1029" stroke="' + k[1] + '" stroke-width="1.6"/>' +
+        '<g opacity="0">' + lit(k[3]) + '<circle cx="' + k[0] + '" cy="' + cy + '" r="' + rr + '" fill="' + k[1] + '"/></g>' +
+        t(k[0], cy + 5, k[2], 14, 900, k[1], "middle", 'style="mix-blend-mode:normal"') +
+        '<g opacity="0">' + lit(k[3]) + t(k[0], cy + 5, k[2], 14, 900, INK) + '</g>';
+    });
+    /* Mitte: 3× pendeln + drei Zählpunkte, die nacheinander aufleuchten */
+    o += t(160, 102, "3×", 20, 900, LIME) + t(160, 114, "pendeln", 7.5, 800, MUTED);
+    [0.16, 0.48, 0.8].forEach(function (at, i) {
+      var x = 150 + i * 10;
+      o += '<circle cx="' + x + '" cy="124" r="2.6" fill="none" stroke="' + LIME + '" stroke-opacity="0.5" stroke-width="1"/>' +
+        '<circle cx="' + x + '" cy="124" r="2.6" fill="' + LIME + '" opacity="0"><animate attributeName="opacity" dur="' + D + '" repeatCount="indefinite" keyTimes="0;' + (at - 0.01).toFixed(3) + ';' + at + ';0.985;1" values="0;0;1;1;0"/></circle>';
+    });
+    o += t(cR, cy + rr + 14, "Ende", 7.5, 800, MUTED) + '</g>';
+    return svg(o, "20 30 280 128");
   }
 
   /* Playlist: Schallplatte mit Phasen-Nummer */
