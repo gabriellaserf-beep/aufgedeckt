@@ -16,7 +16,12 @@
   var HY = (window.TRENNUNGEN || []).map(function (w) { return [w.replace(/\|/g, ""), w.replace(/\|/g, "\u00ad")]; });
   /* Kein einzelnes Wort eines neuen Satzes am Zeilenende: erstes Wort nach . ! ? fest mit dem zweiten verbinden */
   function glue(s) { return s.replace(/([.!?…]["“”»«‘’']?) +([^\s]{1,16}) +(?=\S)/g, "$1 $2\u00A0"); }
-  function hy(s) { s = String(s == null ? "" : s); HY.forEach(function (p) { s = s.split(p[0]).join(p[1]); }); return glue(s); }
+  var SIL = {}; (window.SILBEN || []).forEach(function (w) { SIL[w.replace(/\|/g, "")] = w.replace(/\|/g, "\u00ad"); });
+  function hy(s) {
+    s = String(s == null ? "" : s); HY.forEach(function (p) { s = s.split(p[0]).join(p[1]); });
+    s = s.replace(/[A-Za-zÄÖÜäöüß\u00ad]+/g, function (w) { return w.indexOf("\u00ad") < 0 && SIL[w] ? SIL[w] : w; });
+    return glue(s);
+  }
 
   /* ---------- Speichern ---------- */
   function load() {
