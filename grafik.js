@@ -550,19 +550,42 @@
     return svg('<defs>' + defs + '</defs>' + out, "6 34 308 124");
   }
 
-  /* Systemtheorie: Schiebepuzzle, ein Feld fehlt, ein Teil ist in Bewegung */
+  /* Systemtheorie: Schiebepuzzle, das sich wirklich bewegt – jede Verschiebung verändert die ganze Anordnung */
   function puzzle() {
-    var cols = [AQUA, "#b794e8", "#ff7af8", LIME, AQUA, "#b794e8", "#ff7af8", LIME], out = "", k = 0, sz = 40, g = 4, x0 = 98, y0 = 34;
-    for (var r = 0; r < 3; r++) for (var c = 0; c < 3; c++) {
-      if (r === 2 && c === 2) continue;
-      var mov = r === 2 && c === 1, x = x0 + c * (sz + g) + (mov ? 14 : 0), y = y0 + r * (sz + g), col = cols[k++];
-      out += '<rect x="' + x + '" y="' + y + '" width="' + sz + '" height="' + sz + '" rx="7" fill="' + (mov ? col : "#220736") + '" fill-opacity="' + (mov ? 0.9 : 1) + '" stroke="' + col + '" stroke-opacity="' + (mov ? 1 : 0.55) + '" stroke-width="1.2"/>' +
-        '<circle cx="' + (x + sz / 2) + '" cy="' + (y + sz / 2) + '" r="5" fill="' + (mov ? INK : col) + '" fill-opacity="' + (mov ? 0.5 : 0.6) + '"/>';
+    var cols = [AQUA, "#b794e8", "#ff7af8", LIME, AQUA, "#b794e8", "#ff7af8", "#F9CE1F"], sz = 40, g = 5, x0 = 97, y0 = 30;
+    var cell = function (c) { return [x0 + c[0] * (sz + g), y0 + c[1] * (sz + g)]; };
+    /* Leerfeld wandert diesen Weg und wieder zurück */
+    var path = [[2, 2], [1, 2], [1, 1], [2, 1], [2, 0], [1, 0], [0, 0], [0, 1]];
+    path = path.concat(path.slice(0, -1).reverse());
+    var steps = path.length - 1, STEP = 1.5, MOVE = 0.6, DUR = steps * STEP;
+    var pos = [], home = [];
+    for (var r = 0, k = 0; r < 3; r++) for (var c = 0; c < 3; c++) { if (r === 2 && c === 2) continue; pos.push([c, r]); home.push([c, r]); k++; }
+    var times = [0], hist = pos.map(function (p) { return [p.slice()]; }), mov = pos.map(function () { return [0]; });
+    for (var st = 0; st < steps; st++) {
+      var from = path[st + 1], to = path[st], who = -1;
+      pos.forEach(function (p, i) { if (p[0] === from[0] && p[1] === from[1]) who = i; });
+      times.push(st * STEP + 0.0001, st * STEP + MOVE);
+      pos.forEach(function (p, i) { hist[i].push(p.slice()); mov[i].push(i === who ? 1 : 0); });
+      pos[who] = to.slice();
+      pos.forEach(function (p, i) { hist[i].push(p.slice()); mov[i].push(i === who ? 1 : 0); });
     }
-    out += '<defs><marker id="pzA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="' + LIME + '"/></marker></defs>' +
-      '<rect x="' + (x0 - 6) + '" y="' + (y0 - 6) + '" width="' + (3 * sz + 2 * g + 12) + '" height="' + (3 * sz + 2 * g + 12) + '" rx="12" fill="none" stroke="rgba(246,244,251,0.25)" stroke-width="1"/>' +
-      '<path d="M' + (x0 + sz + g + 6) + ' ' + (y0 + 2 * (sz + g) + sz + 16) + ' h16" stroke="' + LIME + '" stroke-width="1.4" stroke-linecap="round" marker-end="url(#pzA)"/>';
-    return svg(out, "40 22 240 162");
+    times.push(DUR); hist.forEach(function (h) { h.push(h[h.length - 1]); }); mov.forEach(function (m) { m.push(0); });
+    var kt = times.map(function (x) { return (x / DUR).toFixed(4); }).join(";");
+    var spl = times.slice(1).map(function () { return "0.45 0 0.3 1"; }).join(";");
+    var out = '<g data-own-anim="1">' +
+      '<rect x="' + (x0 - 7) + '" y="' + (y0 - 7) + '" width="' + (3 * sz + 2 * g + 14) + '" height="' + (3 * sz + 2 * g + 14) + '" rx="14" fill="#1a1029" fill-opacity="0.6" stroke="rgba(246,244,251,0.22)" stroke-width="1.2"/>';
+    /* Rillen der Felder */
+    for (var rr = 0; rr < 3; rr++) for (var cc = 0; cc < 3; cc++) { var q = cell([cc, rr]); out += '<rect x="' + q[0] + '" y="' + q[1] + '" width="' + sz + '" height="' + sz + '" rx="8" fill="#000" fill-opacity="0.18"/>'; }
+    pos.forEach(function (p, i) {
+      var h0 = cell(home[i]), col = cols[i];
+      var vals = hist[i].map(function (h) { var q = cell(h); return (q[0] - h0[0]) + " " + (q[1] - h0[1]); }).join(";");
+      out += '<g><animateTransform attributeName="transform" type="translate" dur="' + DUR + 's" repeatCount="indefinite" calcMode="spline" keyTimes="' + kt + '" keySplines="' + spl + '" values="' + vals + '"/>' +
+        '<rect x="' + h0[0] + '" y="' + h0[1] + '" width="' + sz + '" height="' + sz + '" rx="8" fill="#1a1029" stroke="' + col + '" stroke-width="1.3"/>' +
+        '<g opacity="0"><animate attributeName="opacity" dur="' + DUR + 's" repeatCount="indefinite" keyTimes="' + kt + '" values="' + mov[i].join(";") + '"/>' +
+        '<rect x="' + h0[0] + '" y="' + h0[1] + '" width="' + sz + '" height="' + sz + '" rx="8" fill="' + col + '"/></g>' +
+        '<circle cx="' + (h0[0] + sz / 2) + '" cy="' + (h0[1] + sz / 2) + '" r="5" fill="' + col + '" fill-opacity="0.85"/></g>';
+    });
+    return svg(out + '</g>', "40 18 240 164");
   }
 
   /* Persönlichkeit: Silhouette, in fünf Splitter zerlegt – Motive, Annahmen, Schemata, Normen, Regeln */
