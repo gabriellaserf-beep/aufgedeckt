@@ -10,6 +10,7 @@
     return '<text x="' + x + '" y="' + y + '" font-size="' + size + '" font-weight="' + (w || 800) + '" fill="' + (fill || PAPER) + '" text-anchor="' + (anchor || "middle") + '" ' + (extra || "") + ">" + s + "</text>";
   }
   function lines(x, y, arr, size, w, fill, lh) { return arr.map(function (s, i) { return t(x, y + i * (lh || size * 1.15), s, size, w, fill); }).join(""); }
+  function mixC(c1, c2, k) { var A = parseInt(c1.slice(1), 16), B = parseInt(c2.slice(1), 16), f = function (s) { return Math.round(((A >> s) & 255) + ((((B >> s) & 255) - ((A >> s) & 255)) * k)); }; return "#" + ((1 << 24) + (f(16) << 16) + (f(8) << 8) + f(0)).toString(16).slice(1); }
   function dim(on) { return on ? 1 : 0.2; }
 
   /* Konfliktfelder: vier Kacheln, in der Mitte der Konflikt */
@@ -89,8 +90,16 @@
     for (var i = 0; i < 10; i++) {
       var a0 = (i / 10) * Math.PI * 2 - Math.PI / 2 + 0.07, a1 = ((i + 1) / 10) * Math.PI * 2 - Math.PI / 2 - 0.07;
       var d = "M" + (cx + Math.cos(a0) * r).toFixed(1) + " " + (cy + Math.sin(a0) * r).toFixed(1) + " A" + r + " " + r + " 0 0 1 " + (cx + Math.cos(a1) * r).toFixed(1) + " " + (cy + Math.sin(a1) * r).toFixed(1);
-      out += '<path d="' + d + '" fill="none" stroke="' + (i < n ? "url(#pr)" : LINE) + '" stroke-width="' + (i === n - 1 ? 10 : 6) + '" stroke-linecap="round"/>';
+      /* durchgehender Verlauf über alle aktiven Segmente: jedes Segment geht von seiner Startfarbe nahtlos in die nächste über */
+      var stroke = LINE;
+      if (i < n) {
+        var k0 = n > 1 ? i / n : 0, k1 = n > 1 ? (i + 1) / n : 1, id = "pr" + n + "_" + i;
+        defs += '<linearGradient id="' + id + '" gradientUnits="userSpaceOnUse" x1="' + (cx + Math.cos(a0) * r).toFixed(1) + '" y1="' + (cy + Math.sin(a0) * r).toFixed(1) + '" x2="' + (cx + Math.cos(a1) * r).toFixed(1) + '" y2="' + (cy + Math.sin(a1) * r).toFixed(1) + '"><stop offset="0" stop-color="' + mixC(LIME, AQUA, k0) + '"/><stop offset="1" stop-color="' + mixC(LIME, AQUA, k1) + '"/></linearGradient>';
+        stroke = "url(#" + id + ")";
+      }
+      out += '<path d="' + d + '" fill="none" stroke="' + stroke + '" stroke-width="' + (i === n - 1 ? 10 : 6) + '" stroke-linecap="round"/>';
     }
+    defs = defs.replace('</defs>', '') + '</defs>';
     out += defs + t(cx, cy + 15, (n < 10 ? "0" : "") + n, 44, 900, "url(#pr)") + t(cx, cy + 31, "von 10", 9, 700, MUTED);
     return svg(out, "40 4 240 120");
   }
