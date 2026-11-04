@@ -293,10 +293,15 @@
   /* Boxenstop: Thermometer 1–10, quer liegend */
   function thermo() {
     var out = '<defs><linearGradient id="th" x1="0" x2="1"><stop offset="0" stop-color="#f4005e"/><stop offset="0.45" stop-color="#F9851F"/><stop offset="0.75" stop-color="' + AQUA + '"/><stop offset="1" stop-color="' + LIME + '"/></linearGradient></defs>' +
-      '<rect x="52" y="44" width="236" height="22" rx="11" fill="#1a1029" stroke="rgba(246,244,251,0.35)" stroke-width="1.5"/>' +
+      /* Röhre + Kolben als ein Umriss: erst beide Umrisse, dann die Überschneidung innen abdecken */
       '<circle cx="44" cy="55" r="20" fill="#1a1029" stroke="rgba(246,244,251,0.35)" stroke-width="1.5"/>' +
+      '<rect x="52" y="44" width="236" height="22" rx="11" fill="#1a1029" stroke="rgba(246,244,251,0.35)" stroke-width="1.5"/>' +
+      '<circle cx="44" cy="55" r="19.2" fill="#1a1029"/>' +
+      '<rect x="50" y="44.8" width="22" height="20.4" fill="#1a1029"/>' +
+      /* Füllstand, dann der rote Kolben davor */
+      '<rect x="44" y="49" width="244" height="12" rx="6" fill="url(#th)"/>' +
       '<circle cx="44" cy="55" r="13" fill="#f4005e"/>' +
-      '<rect x="44" y="49" width="244" height="12" rx="6" fill="url(#th)"/>';
+      '<ellipse cx="39" cy="50" rx="4.5" ry="2.6" transform="rotate(-30 39 50)" fill="#ffffff" fill-opacity="0.45"/>';
     for (var i = 1; i <= 10; i++) { var x = 60 + (i - 1) * 24.5; out += '<path d="M' + x + ' 72 V80" stroke="' + MUTED + '" stroke-width="1.5"/>' + t(x, 96, String(i), 11, 900, PAPER); }
     return svg(out, "0 26 320 82");
   }
