@@ -410,7 +410,9 @@
     out += '<g clip-path="url(#ebClip)"><g>' + drift(-16, "4s") + '<path d="' + waterFill + '" fill="' + AQUA + '" fill-opacity="0.1"/>' +
       '<path d="' + waterTop + '" fill="none" stroke="' + AQUA + '" stroke-width="1.6" stroke-linecap="round" style="filter:drop-shadow(0 0 4px ' + AQUA + ')"/></g></g>';
     /* Ebenen-Titel */
-    out += t(14, W - 10, "sichtbar", 9.5, 900, PAPER, "start") + t(14, W + 18, "weniger sichtbar", 9.5, 900, AQUA, "start");
+    out += /* Ebenen-Namen bewusst anders als die Begriffe: dünner, kleiner, gedämpft, mit kurzem Strich davor */
+      '<path d="M14 ' + (W - 13) + ' h8 M14 ' + (W + 15) + ' h8" stroke="' + MUTED + '" stroke-width="1" stroke-linecap="round"/>' +
+      t(26, W - 10, "sichtbar", 8.5, 500, MUTED, "start", 'letter-spacing="0.3"') + t(26, W + 18, "weniger sichtbar", 8.5, 500, MUTED, "start", 'letter-spacing="0.3"');
     /* Beschriftungen mit Punkt + Linie */
     function lab(ax, ay, lx, ly, txt, col) {
       var left = lx < 160, ex = lx + (left ? 6 : -6);
