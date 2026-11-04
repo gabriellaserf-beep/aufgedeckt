@@ -304,17 +304,39 @@
   }
 
   /* Gesprächsablauf: acht Stationen, je zwei pro Karte */
+  /* Gesprächsablauf: vier Phasen als Kacheln mit Symbol (ich sage – du sagst – wir lösen – wir vereinbaren) */
   function ablauf(n) {
-    var S = ["Einstieg", "Wahr-|nehmung", "Sicht|Gegenüber", "Verständnis", "Lösung", "Kriterien", "Verein-|barung", "Abschluss"], out = "";
-    out += '<path d="M36 92 H284" stroke="rgba(183,148,232,0.35)" stroke-width="3"/>';
-    S.forEach(function (s, i) {
-      var x = 36 + i * 35.4, on = !n || Math.floor(i / 2) + 1 === n, y = i % 2 ? 128 : 60;
-      out += '<circle cx="' + x + '" cy="92" r="' + (on ? 11 : 7) + '" fill="' + (on ? "#b794e8" : "#2d1e4a") + '" stroke="#b794e8" stroke-width="2"/>' +
-        '<path d="M' + x + " " + (i % 2 ? 103 : 81) + " V" + (i % 2 ? 112 : 72) + '" stroke="#b794e8" stroke-opacity="' + (on ? 1 : 0.3) + '" stroke-width="1.5"/>' +
-        lines(x, i % 2 ? 126 : 50 - (s.indexOf("|") >= 0 ? 12 : 0), s.split("|"), 10, on ? 900 : 700, on ? PAPER : MUTED, 12);
+    var L = "#b794e8", P = [
+      { s: ["Einstieg", "Wahrnehmung"], i: "ich" }, { s: ["Sicht Gegenüber", "Verständnis"], i: "du" },
+      { s: ["Lösung", "Kriterien"], i: "wir" }, { s: ["Vereinbarung", "Abschluss"], i: "ok" }
+    ], W = 60, G = 14, H = 54, x0 = 160 - (4 * W + 3 * G) / 2, y0 = 40, out = "";
+    function icon(k, c, fill) {
+      var st = ' fill="' + (fill ? c : "none") + '" stroke="' + c + '" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"';
+      if (k === "ich") return '<path d="M-11 -9 H11 Q14 -9 14 -6 V4 Q14 7 11 7 H-2 L-8 12 V7 H-11 Q-14 7 -14 4 V-6 Q-14 -9 -11 -9 Z"' + st + '/>' +
+        '<path d="M-7 -2 H7 M-7 2 H3" stroke="' + (fill ? "#b794e8" : c) + '" stroke-width="1.6" stroke-linecap="round"/>';
+      if (k === "du") return '<path d="M-15 -10 H1 Q4 -10 4 -7 V0 Q4 3 1 3 H-6 L-11 7 V3 H-15 Q-18 3 -18 0 V-7 Q-18 -10 -15 -10 Z"' + st + '/>' +
+        '<path d="M-1 -2 H15 Q18 -2 18 1 V8 Q18 11 15 11 H13 V15 L8 11 H-1 Q-4 11 -4 8 V1 Q-4 -2 -1 -2 Z"' + st.replace('fill="' + (fill ? c : "none") + '"', 'fill="' + (fill ? c : "#1a1029") + '"') + '/>';
+      if (k === "wir") return '<path d="M0 -13 A9 9 0 0 1 6 2 Q4 4 4 7 H-4 Q-4 4 -6 2 A9 9 0 0 1 0 -13 Z"' + st + '/>' +
+        '<path d="M-3.5 10.5 H3.5 M-2.5 13.5 H2.5" stroke="' + c + '" stroke-width="1.8" stroke-linecap="round"/>' +
+        '<path d="M-14 -8 l-3 -2 M14 -8 l3 -2 M-15 0 h-3 M15 0 h3" stroke="' + c + '" stroke-width="1.4" stroke-linecap="round" stroke-opacity="0.7"/>';
+      return '<circle r="12"' + st + '/><path d="M-5.5 0.5 L-1.5 4.5 L6 -4" fill="none" stroke="' + (fill ? "#b794e8" : c) + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';
+    }
+    /* Verbindungen zwischen den Kacheln */
+    for (var j = 0; j < 3; j++) {
+      var cx = x0 + (j + 1) * W + j * G + G / 2, done = n && j + 1 < n;
+      out += '<path d="M' + (cx - 3) + ' ' + (y0 + H / 2 - 4) + ' L' + (cx + 2) + ' ' + (y0 + H / 2) + ' L' + (cx - 3) + ' ' + (y0 + H / 2 + 4) + '" fill="none" stroke="' + L + '" stroke-opacity="' + (done ? 0.9 : 0.4) + '" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>';
+    }
+    P.forEach(function (p, i) {
+      var on = !n || n === i + 1, x = x0 + i * (W + G), cx = x + W / 2, past = n && i + 1 < n;
+      var tile = '<rect x="' + x + '" y="' + y0 + '" width="' + W + '" height="' + H + '" rx="12" fill="' + (on ? L : "#2d1e4a") + '" stroke="' + L + '" stroke-opacity="' + (on ? 1 : past ? 0.7 : 0.4) + '" stroke-width="1.3"/>' +
+        '<g transform="translate(' + cx + ' ' + (y0 + H / 2 + 1) + ')">' + icon(p.i, on ? INK : L, on) + '</g>' +
+        '<circle cx="' + (x + 10) + '" cy="' + (y0 + 10) + '" r="6" fill="' + (on ? INK : "#1a1029") + '" stroke="' + L + '" stroke-opacity="' + (on ? 0 : 0.5) + '"/>' + t(x + 10, y0 + 13, String(i + 1), 7.5, 900, on ? L : MUTED);
+      out += on && n ? '<g transform="translate(0 -4)">' + tile + '</g>' : '<g' + (on || past ? '' : ' opacity="0.75"') + '>' + tile + '</g>';
+      out += t(cx, y0 + H + 17, p.s[0], 8, on ? 900 : 700, on ? PAPER : MUTED) + t(cx, y0 + H + 28, p.s[1], 8, on ? 900 : 700, on ? PAPER : MUTED);
     });
-    return svg(out, "0 26 320 120");
+    return svg(out, "0 28 320 104");
   }
+
 
   /* Weiterdenken: drei schräg gelegte Notizzettel mit Fragezeichen */
   function reflexion(n) {
