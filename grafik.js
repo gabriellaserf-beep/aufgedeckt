@@ -352,10 +352,7 @@
       /* Nummer */
       g += '<circle cx="' + (x + w - 4) + '" cy="' + (y + 4) + '" r="8" fill="' + (on ? INK : "#1a1029") + '" stroke="' + c + '" stroke-width="1.2"/>' + t(x + w - 4, y + 7.3, String(i + 1), 9, 900, c);
       out += g + '</g>';
-      if (on) [[-47, -21, 2.4, 0.9], [-8, -44, 1.4, 0.6], [49, 9, 1.7, 0.75]].forEach(function (s) {
-        var sx = p[1] + s[0], sy = p[2] + s[1], r = s[2];
-        out += '<path d="M' + sx + ' ' + (sy - r * 2) + ' Q' + sx + ' ' + sy + ' ' + (sx + r * 2) + ' ' + sy + ' Q' + sx + ' ' + sy + ' ' + sx + ' ' + (sy + r * 2) + ' Q' + sx + ' ' + sy + ' ' + (sx - r * 2) + ' ' + sy + ' Q' + sx + ' ' + sy + ' ' + sx + ' ' + (sy - r * 2) + ' Z" fill="' + c + '" fill-opacity="' + s[3] + '"/>';
-      });
+      /* keine Funkel-Sterne */
     });
     return svg('<defs>' + defs + '</defs>' + out, "0 18 320 104");
   }
