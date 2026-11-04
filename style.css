@@ -795,3 +795,5 @@ body { background: #1a1029; }
 
 /* ruhigere Zeilenenden in Fließtexten */
 .big p, .big li, .big__text, .big__impuls { text-wrap: pretty; }
+/* Elemente mit eigener SVG-Animation (animateTransform) drehen/verschieben sich um ihre echten Koordinaten */
+.big__media--grafik .grafik.ga-own *, .big__media--grafik .grafik :has(> animateTransform) { transform-box: view-box !important; transform-origin: 0 0 !important; }
