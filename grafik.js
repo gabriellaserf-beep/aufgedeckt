@@ -125,25 +125,25 @@
       return svg(out, "0 8 320 136");
     }
     /* Problem-Lösungs-Gymnastik: ein Lichtpunkt pendelt CRASH → COACH → CRASH … 3× und endet bei COACH */
-    var R = "#f4005e", D = "9s", cL = 70, cR = 250, cy = 98, rr = 38;
+    var R = "#f4005e", D = "16s", cL = 70, cR = 250, cy = 98, rr = 38;
     var top = "Q160 40 214 78", bot = "Q160 156 106 118";
     var leg1 = "L106 78 " + top + " L" + cR + " " + cy, leg2 = "L214 118 " + bot + " L" + cL + " " + cy;
     var motion = "M" + cL + " " + cy + " " + leg1 + " " + leg2 + " " + leg1 + " " + leg2 + " " + leg1;
     /* Zeitpunkte (Anteil am Zyklus): 5 Wege à 0.16, danach Pause bei COACH */
-    function lit(on) { var kt = [0], v = [0]; on.forEach(function (w) { kt.push(w[0] - 0.015, w[0], w[1], Math.min(1, w[1] + 0.015)); v.push(0, 1, 1, 0); }); kt.push(1); v.push(v[v.length - 1]);
+    function lit(on) { var kt = [0], v = [0]; on.forEach(function (w) { kt.push(w[0] - 0.03, w[0], w[1], Math.min(1, w[1] + 0.03)); v.push(0, 1, 1, 0); }); kt.push(1); v.push(v[v.length - 1]);
       for (var i = 1; i < kt.length; i++) if (kt[i] < kt[i - 1]) kt[i] = kt[i - 1];
       return '<animate attributeName="opacity" dur="' + D + '" repeatCount="indefinite" keyTimes="' + kt.map(function (x) { return x.toFixed(3); }).join(";") + '" values="' + v.join(";") + '"/>'; }
     var crashOn = [[0.015, 0.04], [0.32, 0.35], [0.64, 0.67]], coachOn = [[0.16, 0.19], [0.48, 0.51], [0.8, 0.985]];
-    var o = '<defs><marker id="pa" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="' + LIME + '"/></marker>' +
+    var o = '<defs><marker id="pa" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="7" markerHeight="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M2 1.5 L9.5 6 L2 10.5" fill="none" stroke="' + LIME + '" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>' +
       '<radialGradient id="ugT"><stop offset="0" stop-color="#ffffff"/><stop offset="0.4" stop-color="' + LIME + '"/><stop offset="1" stop-color="' + LIME + '" stop-opacity="0"/></radialGradient></defs>' +
       '<g data-own-anim="1">';
     /* Bahnen: zarte Grundlinie + fließende Striche in Pfeilrichtung */
     [["M106 78 " + top, 0], ["M214 118 " + bot, 1]].forEach(function (b) {
-      o += '<path d="' + b[0] + '" fill="none" stroke="' + LIME + '" stroke-opacity="0.22" stroke-width="3" stroke-linecap="round" marker-end="url(#pa)"/>' +
-        '<path d="' + b[0] + '" fill="none" stroke="' + LIME + '" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 9"><animate attributeName="stroke-dashoffset" from="30" to="0" dur="0.9s" repeatCount="indefinite"/></path>';
+      o += '<path d="' + b[0] + '" fill="none" stroke="' + LIME + '" stroke-opacity="0.18" stroke-width="1.2" stroke-linecap="round" marker-end="url(#pa)"/>' +
+        '<path d="' + b[0] + '" fill="none" stroke="' + LIME + '" stroke-opacity="0.85" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="0.1 6"><animate attributeName="stroke-dashoffset" from="12.2" to="0" dur="2.6s" repeatCount="indefinite"/></path>';
     });
     /* Lichtpunkt (unter den Kugeln, verschwindet in ihnen) */
-    o += '<g><circle r="9" fill="url(#ugT)"/><circle r="3.6" fill="#ffffff"/><animateMotion dur="' + D + '" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.8;1" calcMode="linear" path="' + motion + '"/></g>';
+    o += '<g><circle r="8" fill="url(#ugT)" opacity="0.8"/><circle r="2.8" fill="#ffffff"/><animateMotion dur="' + D + '" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.8;1" calcMode="linear" path="' + motion + '"/></g>';
     /* Kugeln: Glas-Grund + leuchtende Ebene, die aufgeht, wenn der Punkt ankommt */
     [[cL, R, "CRASH", crashOn], [cR, AQUA, "COACH", coachOn]].forEach(function (k) {
       o += '<circle cx="' + k[0] + '" cy="' + cy + '" r="' + rr + '" fill="#1a1029"/>' +
