@@ -410,8 +410,7 @@
     out += '<g clip-path="url(#ebClip)"><g>' + drift(-16, "4s") + '<path d="' + waterFill + '" fill="' + AQUA + '" fill-opacity="0.1"/>' +
       '<path d="' + waterTop + '" fill="none" stroke="' + AQUA + '" stroke-width="1.6" stroke-linecap="round" style="filter:drop-shadow(0 0 4px ' + AQUA + ')"/></g></g>';
     /* Ebenen-Titel */
-    out += t(14, W - 18, "über Wasser", 7.5, 800, MUTED, "start") + t(14, W - 8, "sichtbar", 9.5, 900, PAPER, "start") +
-      t(14, W + 16, "unter Wasser", 7.5, 800, MUTED, "start") + t(14, W + 27, "weniger sichtbar", 9.5, 900, AQUA, "start");
+    out += t(14, W - 10, "sichtbar", 9.5, 900, PAPER, "start") + t(14, W + 18, "weniger sichtbar", 9.5, 900, AQUA, "start");
     /* Beschriftungen mit Punkt + Linie */
     function lab(ax, ay, lx, ly, txt, col) {
       var left = lx < 160, ex = lx + (left ? 6 : -6);
