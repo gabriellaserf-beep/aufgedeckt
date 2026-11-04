@@ -383,8 +383,14 @@
       '<linearGradient id="ebSh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + AQUA + '"/><stop offset="1" stop-color="#3a9aa3"/></linearGradient>' +
       '<linearGradient id="ebU1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + AQUA + '" stop-opacity="0.7"/><stop offset="1" stop-color="' + L + '" stop-opacity="0.18"/></linearGradient>' +
       '<linearGradient id="ebU2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + AQUA + '" stop-opacity="0.45"/><stop offset="1" stop-color="' + L + '" stop-opacity="0.1"/></linearGradient>' +
-      '<clipPath id="ebClip"><rect x="8" y="' + W + '" width="304" height="130"/></clipPath>';
-    var out = '<rect x="8" y="' + W + '" width="304" height="124" fill="url(#ebSea)"/>';
+      '<clipPath id="ebClip"><rect x="8" y="' + (W - 6) + '" width="304" height="136"/></clipPath>';
+    function wv(y, x0, x1) { var d = "M" + x0 + " " + y; for (var x = x0; x < x1; x += 16) d += " q4 -3 8 0 t8 0"; return d; }
+    function drift(dx, dur) { return '<animateTransform attributeName="transform" type="translate" from="0 0" to="' + dx + ' 0" dur="' + dur + '" repeatCount="indefinite"/>'; }
+    var waterTop = wv(W, -24, 344), waterFill = waterTop + " L344 200 L-24 200 Z";
+    /* Wasser hinten: Oberkante ist dieselbe Welle wie die Linie und wandert mit */
+    var out = '<g data-own-anim="1"><g clip-path="url(#ebClip)"><g>' + drift(-16, "4s") + '<path d="' + waterFill + '" fill="url(#ebSea)"/></g></g>';
+    /* Eisberg schaukelt ganz leicht im Wasser */
+    out += '<g><animateTransform attributeName="transform" type="translate" values="0 0;0 1.6;0 0" dur="7s" repeatCount="indefinite"/>';
     /* Unterwasser-Teil: Facetten */
     out += '<g style="filter:drop-shadow(0 0 10px ' + AQUA + '55)">' +
       '<path d="M126 ' + W + ' L198 ' + W + ' L230 98 L244 136 L222 170 L166 186 L110 172 L86 132 L100 96 Z" fill="url(#ebU2)"/>' +
@@ -399,11 +405,14 @@
       '<path d="M130 ' + W + ' L148 40 L158 48 L170 26 L164 ' + W + ' Z" fill="url(#ebHi)"/>' +
       '<path d="M158 48 L170 26 L176 56 Z" fill="#ffffff" fill-opacity="0.6"/></g>';
     /* Wasserlinie mit Welle */
-    var wave = "M8 " + W;
-    for (var x = 8; x < 312; x += 16) wave += " q4 -3 8 0 t8 0";
-    out += '<path d="' + wave + '" fill="none" stroke="' + AQUA + '" stroke-width="1.6" stroke-linecap="round" style="filter:drop-shadow(0 0 4px ' + AQUA + ')"/>';
+    out += '</g>';
+    /* Wasser vorne: zarter Schleier über dem Teil unter Wasser + zwei wandernde Wellenlinien */
+    out += '<g clip-path="url(#ebClip)"><g>' + drift(-16, "4s") + '<path d="' + waterFill + '" fill="' + AQUA + '" fill-opacity="0.1"/>' +
+      '<path d="' + waterTop + '" fill="none" stroke="' + AQUA + '" stroke-width="1.6" stroke-linecap="round" style="filter:drop-shadow(0 0 4px ' + AQUA + ')"/></g>' +
+      '<g>' + drift(16, "6s") + '<path d="' + wv(W + 6, -40, 344) + '" fill="none" stroke="' + AQUA + '" stroke-opacity="0.3" stroke-width="1" stroke-linecap="round"/></g></g>';
     /* Ebenen-Titel */
-    out += t(14, W - 10, "sichtbare Ebene", 9, 900, PAPER, "start") + t(14, W + 16, "weniger sichtbare Ebene", 9, 900, AQUA, "start");
+    out += t(14, W - 18, "über Wasser", 7.5, 800, MUTED, "start") + t(14, W - 8, "sichtbar", 9.5, 900, PAPER, "start") +
+      t(14, W + 16, "unter Wasser", 7.5, 800, MUTED, "start") + t(14, W + 27, "weniger sichtbar", 9.5, 900, AQUA, "start");
     /* Beschriftungen mit Punkt + Linie */
     function lab(ax, ay, lx, ly, txt, col) {
       var left = lx < 160, ex = lx + (left ? 6 : -6);
@@ -415,7 +424,7 @@
     out += lab(178, 46, 236, 34, "Aussagen,", PAPER) + t(240, 49, "Forderungen", 9.5, 800, PAPER, "start") +
       lab(124, 106, 70, 120, "Interessen", AQUA) + lab(118, 146, 70, 158, "Bedürfnisse", AQUA) +
       lab(206, 108, 252, 104, "Werte", L) + lab(200, 162, 252, 168, "Motive", L);
-    return svg('<defs>' + defs + '</defs>' + out, "6 18 308 176");
+    return svg('<defs>' + defs + '</defs>' + out + '</g>', "6 18 308 176");
   }
 
   /* Empathie: Gehirn (kognitiv), Herz (emotional), Zielscheibe mit Pfeil (intentional) */
