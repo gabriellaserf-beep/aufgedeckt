@@ -36,8 +36,20 @@
         '<circle cx="' + po[0].toFixed(1) + '" cy="' + po[1].toFixed(1) + '" r="2.4" fill="' + q.c + '" fill-opacity="' + (on ? 1 : 0.5) + '"/>' +
         lines(lx, ly, q.n, act ? 12 : 10.5, act ? 900 : 800, on ? (act ? PAPER : q.c) : "rgba(179,168,207,0.6)", 12).replace(/text-anchor="middle"/g, 'text-anchor="' + q.an + '"');
     });
-    out += '<circle cx="' + cx + '" cy="' + cy + '" r="31" fill="#220736" stroke="rgba(246,244,251,0.12)"/>' +
-      '<circle cx="' + cx + '" cy="' + cy + '" r="25" fill="url(#fpr)"/>' + t(cx, cy + 3.5, "Konflikt", 9.5, 900, INK);
+    /* Konflikt als zackiger Stern, der sich langsam verformt und dreht */
+    var star = function (seed) {
+      var N = 11, d = "", rnd = function (i) { var x = Math.sin(seed * 97.3 + i * 12.9898) * 43758.5453; return x - Math.floor(x); };
+      for (var i = 0; i < N * 2; i++) {
+        var outer = i % 2 === 0, r = outer ? 31 + rnd(i) * 9 : 22 + rnd(i) * 2, w = (i / (N * 2)) * Math.PI * 2 + (rnd(i + 50) - 0.5) * 0.16;
+        d += (i ? " L" : "M") + (cx + Math.cos(w) * r).toFixed(1) + " " + (cy + Math.sin(w) * r).toFixed(1);
+      }
+      return d + " Z";
+    };
+    var shapes = [star(1), star(2), star(3), star(4)];
+    out += '<g><animateTransform attributeName="transform" type="rotate" from="0 ' + cx + ' ' + cy + '" to="360 ' + cx + ' ' + cy + '" dur="60s" repeatCount="indefinite"/>' +
+      '<path d="' + shapes[0] + '" fill="url(#fpr)" stroke="url(#fpr)" stroke-width="2.5" stroke-linejoin="round" style="filter:drop-shadow(0 0 10px rgba(181,253,66,0.45))">' +
+      '<animate attributeName="d" dur="10s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.25;0.5;0.75;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1" values="' + shapes.concat([shapes[0]]).join(";") + '"/></path></g>' +
+      t(cx, cy + 3.5, "Konflikt", 9.5, 900, INK);
     return svg(out, "-24 12 368 166");
   }
 
