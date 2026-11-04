@@ -190,26 +190,25 @@
     out += '<rect x="22" y="' + shelf + '" width="276" height="6" rx="3" fill="rgba(201,196,242,0.28)"/><rect x="22" y="' + (shelf + 6) + '" width="276" height="10" fill="url(#bkF)" opacity="0"/>';
     books.forEach(function (b, j) {
       var on = topic === j + 1, w = 72, cx = 70 + j * 90, x = cx - w / 2, y = shelf - b.h - (on ? 0 : 5), tr = on ? ' transform="translate(0 -12) rotate(-5 ' + cx + " " + shelf + ')"' : "";
-      var g = "<g" + tr + ">", PG = on ? "#fbf3dc" : "#3a2a5a", PL = on ? "#d9caa2" : "rgba(201,196,242,0.25)";
-      if (on) g += '<rect x="' + (x + 6) + '" y="' + (y + 10) + '" width="' + (w - 12) + '" height="' + (b.h - 10) + '" rx="8" fill="' + O + '" opacity="0.7" filter="url(#bkG)"/>';
-      /* Seitenblock: schaut rechts und unten unter dem Deckel hervor */
-      g += '<rect x="' + (x + 5) + '" y="' + (y + 3) + '" width="' + (w - 3) + '" height="' + (b.h - 1) + '" rx="3" fill="' + PG + '"/>';
-      for (var q = 0; q < 3; q++) g += '<path d="M' + (x + w - 2.5 + q * 1.2) + ' ' + (y + 6) + ' V' + (y + b.h - 1) + '" stroke="' + PL + '" stroke-width="0.6"/>' +
-        '<path d="M' + (x + 8) + ' ' + (y + b.h - 0.5 + q * 1.1 - 1.6) + ' H' + (x + w - 1) + '" stroke="' + PL + '" stroke-width="0.6"/>';
-      /* Deckel */
-      g += '<rect x="' + x + '" y="' + y + '" width="' + (w - 2) + '" height="' + (b.h - 3) + '" rx="4" fill="' + (on ? "url(#bkA)" : "#220736") + '" stroke="' + (on ? "#ffe9a0" : LIL) + '" stroke-opacity="' + (on ? 1 : 0.35) + '" stroke-width="1.2"/>';
-      if (on) g += '<rect x="' + x + '" y="' + y + '" width="' + (w - 2) + '" height="' + (b.h - 3) + '" rx="4" fill="url(#bkS)"/>';
+      /* Buch in leichter 3D-Ansicht von oben links: Rücken (links), Seitenschnitt (oben), Vorderdeckel */
+      var g = "<g" + tr + ">", d = 9, k = 5, fx = x + d, fw = w - d, top = y + k, h = b.h - k;
+      var CV = on ? "url(#bkA)" : "#220736", SP = on ? "#d9781a" : "#2d1e4a", PG = on ? "#fbf3dc" : "#3a2a5a", ED = on ? "#ffe9a0" : LIL, EO = on ? 1 : 0.35;
+      if (on) g += '<rect x="' + (fx + 4) + '" y="' + (top + 10) + '" width="' + (fw - 8) + '" height="' + (h - 10) + '" rx="8" fill="' + O + '" opacity="0.7" filter="url(#bkG)"/>';
+      /* Seitenschnitt oben */
+      g += '<path d="M' + fx + ' ' + top + ' L' + (x) + ' ' + y + ' L' + (x + fw) + ' ' + y + ' L' + (fx + fw) + ' ' + top + ' Z" fill="' + PG + '" stroke="' + ED + '" stroke-opacity="' + EO * 0.6 + '" stroke-width="0.8" stroke-linejoin="round"/>';
+      for (var q = 1; q <= 3; q++) g += '<path d="M' + (fx - d * q / 4) + ' ' + (top - k * q / 4) + ' H' + (fx + fw - d * q / 4) + '" stroke="' + (on ? "#d9caa2" : "rgba(201,196,242,0.25)") + '" stroke-width="0.5"/>';
       /* Buchrücken links */
-      var bc = on ? INK : LIL, bo = on ? 0.5 : 0.3;
-      g += '<rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="9" height="' + (b.h - 5) + '" rx="3" fill="' + (on ? "#c96a12" : "#2d1e4a") + '" fill-opacity="' + (on ? 0.55 : 1) + '"/>' +
-        '<path d="M' + (x + 10.5) + ' ' + (y + 2) + ' V' + (y + b.h - 5) + '" stroke="' + bc + '" stroke-opacity="' + bo + '" stroke-width="0.8"/>' +
-        '<path d="M' + (x + 3) + ' ' + (y + 10) + ' H' + (x + 8) + ' M' + (x + 3) + ' ' + (y + b.h - 13) + ' H' + (x + 8) + '" stroke="' + bc + '" stroke-opacity="' + bo + '" stroke-width="1.2"/>';
-      /* Titel-Schild auf dem Deckel */
-      g += '<rect x="' + (x + 16) + '" y="' + (y + 8) + '" width="' + (w - 26) + '" height="1.6" rx="0.8" fill="' + bc + '" fill-opacity="' + bo + '"/>';
-      var ty = y + (b.h - 3) / 2 - (b.l.length - 1) * 5.2 + 3.2;
-      g += lines(cx + 4, ty, b.l, 8.6, 900, on ? INK : "rgba(201,196,242,0.6)", 10.2);
-      /* Lesezeichen am aktiven Buch */
-      if (on) g += '<path d="M' + (x + w - 18) + ' ' + (y + b.h - 4) + ' v12 l4 -3.5 l4 3.5 v-12 Z" fill="#ff7af8"/>';
+      g += '<path d="M' + x + ' ' + y + ' L' + fx + ' ' + top + ' V' + (top + h) + ' L' + x + ' ' + (y + h) + ' Z" fill="' + SP + '" stroke="' + ED + '" stroke-opacity="' + EO * 0.6 + '" stroke-width="0.8" stroke-linejoin="round"/>';
+      [0.18, 0.82].forEach(function (f) { var yy = y + h * f; g += '<path d="M' + x + ' ' + yy + ' L' + fx + ' ' + (yy + k) + '" stroke="' + (on ? INK : LIL) + '" stroke-opacity="' + (on ? 0.4 : 0.3) + '" stroke-width="1.4"/>'; });
+      /* Vorderdeckel */
+      g += '<rect x="' + fx + '" y="' + top + '" width="' + fw + '" height="' + h + '" rx="2.5" fill="' + CV + '" stroke="' + ED + '" stroke-opacity="' + EO + '" stroke-width="1.1"/>';
+      if (on) g += '<rect x="' + fx + '" y="' + top + '" width="' + fw + '" height="' + h + '" rx="2.5" fill="url(#bkS)"/>';
+      /* Titelrahmen auf dem Deckel */
+      g += '<rect x="' + (fx + 5) + '" y="' + (top + 5) + '" width="' + (fw - 10) + '" height="' + (h - 10) + '" rx="1.5" fill="none" stroke="' + (on ? INK : LIL) + '" stroke-opacity="' + (on ? 0.35 : 0.25) + '" stroke-width="0.8"/>';
+      var ty = top + h / 2 - (b.l.length - 1) * 5.1 + 3.2;
+      g += lines(fx + fw / 2, ty, b.l, 8.4, 900, on ? INK : "rgba(201,196,242,0.6)", 10.2);
+      /* Lesezeichen (aqua) am aktiven Buch */
+      if (on) g += '<path d="M' + (fx + fw - 14) + ' ' + (top + h - 1) + ' v12 l4 -3.5 l4 3.5 v-12 Z" fill="' + AQUA + '"/>';
       out += g + "</g>";
     });
     /* Stufen-Schalter */

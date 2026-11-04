@@ -576,7 +576,7 @@
     var hasT = function (e) { return !!e.getAttribute("transform"); };
     kids.forEach(function (e, i) { e.classList.add(hasT(e) ? "ga-fade" : "ga-in"); e.style.animationDelay = (Math.min(i, 40) * 28) + "ms"; });
     /* Linien ohne Füllung zeichnen sich */
-    svgEl.querySelectorAll("path, polyline, line").forEach(function (e, i) {
+    if (type !== "buecher") svgEl.querySelectorAll("path, polyline, line").forEach(function (e, i) {
       var f = e.getAttribute("fill"); if (f && f !== "none") return; if (!e.getTotalLength) return;
       var L = 0; try { L = e.getTotalLength(); } catch (x) {} if (!L || L < 20) return;
       e.style.strokeDasharray = L; e.style.strokeDashoffset = L; e.classList.add("ga-draw"); e.style.animationDelay = (200 + i * 60) + "ms";
@@ -611,6 +611,7 @@
       live.forEach(function (e) { e.classList.remove("ga-pulse"); }); return;
     }
     if (type === "reflexion") live = [].slice.call(svgEl.querySelectorAll("g[data-live]"));
+    if (type === "buecher") live = live.filter(function (e) { return e.tagName === "g"; });
     if (type === "empathie") {
       /* alle drei Symbole gleich, ganz sanft und versetzt */
       [].forEach.call(svgEl.querySelectorAll("g[data-live]"), function (e, i) { e.classList.add("ga-float", "ga-soft"); e.style.setProperty("--gd", delay + i * 500 + "ms"); });
