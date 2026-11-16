@@ -797,3 +797,7 @@ body { background: #1a1029; }
 .big p, .big li, .big__text, .big__impuls { text-wrap: pretty; }
 /* Elemente mit eigener SVG-Animation (animateTransform) drehen/verschieben sich um ihre echten Koordinaten */
 .big__media--grafik .grafik.ga-own *, .big__media--grafik .grafik :has(> animateTransform) { transform-box: view-box !important; transform-origin: 0 0 !important; }
+
+/* Notiz-Markierung in der Liste: kleines Notiz-Symbol statt grünem Punkt */
+.pgrp .mini__note { width: 16px; height: 16px; border-radius: 0; background: none; box-shadow: none; display: grid; place-items: center; }
+.pgrp .mini__note svg { width: 14px; height: 14px; fill: none; stroke: var(--lime); stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 0 4px rgba(181,253,66,0.5)); }

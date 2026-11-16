@@ -173,7 +173,7 @@
     $("#layBtn").setAttribute("aria-label", "Auslage: " + cur[1] + " – ändern");
     el.innerHTML = LAYOUTS.map(function (l) { var on = (state.layout || "stapel") === l[0];
       return '<button type="button" class="lay' + (on ? " is-on" : "") + '" aria-pressed="' + on + '" data-l="' + l[0] + '">' + shapeIcon(l[0]) + "<span>" + l[1] + "</span></button>"; }).join("") +
-      '<button type="button" class="lay lay--rand" data-l="zufall"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="8.5" cy="8.5" r="1.3" class="dot"/><circle cx="15.5" cy="8.5" r="1.3" class="dot"/><circle cx="12" cy="12" r="1.3" class="dot"/><circle cx="8.5" cy="15.5" r="1.3" class="dot"/><circle cx="15.5" cy="15.5" r="1.3" class="dot"/></svg><span>Zufall</span></button>';
+      '';
   }
 
   /* ---------- Schreibtisch-Gegenstände: liegen zufällig neben dem Tisch ---------- */
@@ -446,7 +446,7 @@
         b.style.setProperty("--acc", k.farbe); b.style.setProperty("--i", n); b.style.setProperty("--r", ((n % 3) - 1) * 1.5 + "deg"); b.style.zIndex = n + 1;
         b.title = CARDS[idx].titel;
         b.setAttribute("aria-label", CARDS[idx].titel + (hasNote ? ", mit Notiz" : "") + " — öffnen");
-        b.innerHTML = '<span class="mini__teil">' + esc(shortTeil(CARDS[idx].teil) || "") + '</span><span class="mini__title">' + esc(hy(CARDS[idx].titel)) + "</span>" + (hasNote ? '<span class="mini__note" aria-hidden="true"></span>' : "");
+        b.innerHTML = '<span class="mini__teil">' + esc(shortTeil(CARDS[idx].teil) || "") + '</span><span class="mini__title">' + esc(hy(CARDS[idx].titel)) + "</span>" + (hasNote ? '<span class="mini__note" title="Du hast hier eine Notiz"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10l4 4v12H5z"/><path d="M15 4v4h4M8 12h8M8 16h5"/></svg></span>' : "");
         b.addEventListener("click", function () { lastFocus = b; openReader(idx); });
         fan.appendChild(b);
       });
