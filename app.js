@@ -535,11 +535,15 @@
     var sib = siblings(idx); if (!sib.length) return "";
     var all = CARDS.map(function (_, j) { return j; }).filter(function (j) { return groupKey(j) === groupKey(idx); });
     var open = sib.filter(function (j) { return state.done.indexOf(j) < 0 && !isUp(j); }).length;
+    /* Reihen mit fester Reihenfolge: Startkarte markieren, solange sie noch nicht aufgedeckt ist */
+    var ORDERED = /^(checkliste|uebung|felder|stile|eskalation|kommunikation\|(Harvard-Methode|BATNA|LEAF-Methode|SAG-ES-Methode|Gesprächsablauf)|beduerfnisse\|Wortkarte)$/;
+    var start = all[0], showStart = ORDERED.test(groupKey(idx)) && start !== idx && state.done.indexOf(start) < 0 && !isUp(start);
     return '<section class="series" aria-label="Dazugehörige Karten"><h3 class="series__head">Gehört dazu<span>' +
       (open ? '<b class="big__sep" aria-hidden="true">·</b>' + open + (open === 1 ? " Karte" : " Karten") + " noch verdeckt" : '<b class="big__sep" aria-hidden="true">·</b>alle aufgedeckt') + '</span></h3><div class="series__row">' +
       all.map(function (j) {
         var me = j === idx, done = state.done.indexOf(j) >= 0, up = isUp(j) || done || me;
-        return '<div class="sib' + (me ? " is-me" : "") + '"><button type="button" class="card sib__card' + (up ? " is-up" : "") + '" data-j="' + j + '"' + (me ? ' disabled aria-current="true"' : "") +
+        var st = showStart && j === start;
+        return '<div class="sib' + (me ? " is-me" : "") + (st ? " is-start" : "") + '">' + (st ? '<span class="sib__start">hier starten</span>' : '') + '<button type="button" class="card sib__card' + (up ? " is-up" : "") + '" data-j="' + j + '"' + (me ? ' disabled aria-current="true"' : "") +
           ' aria-label="' + esc(up ? CARDS[j].titel + (me ? " (diese Karte)" : " öffnen") : "Dazugehörige Karte aufdecken") + '"><span class="card__inner">' + backHTML() + frontHTML(j) + "</span></button>" +
           '<span class="sib__teil">' + esc(shortTeil(CARDS[j].teil) || String(all.indexOf(j) + 1)) + (done && !me ? " ✓" : "") + "</span></div>";
       }).join("") + "</div>" +
